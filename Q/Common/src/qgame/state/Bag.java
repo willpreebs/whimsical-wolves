@@ -1,0 +1,78 @@
+package qgame.state;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static qgame.util.ValidationUtil.validateArg;
+
+
+public class Bag<T>{
+  private final List<T> items;
+
+  public Bag() {
+    this.items = new ArrayList<>();
+  }
+
+  public Bag(Bag<T> items) {
+    this.items = new ArrayList<>(items.viewItems());
+  }
+
+  public Bag(Collection<T> items) {
+    this.items = new ArrayList<>(items);
+  }
+
+
+  public void add(T item) throws IllegalArgumentException {
+    this.items.add(item);
+  }
+
+  public void addAll(Collection<T> itemsToAdd) throws IllegalArgumentException {
+    this.items.addAll(itemsToAdd);
+  }
+
+  public void addAll(Bag<T> itemsToAdd) throws IllegalArgumentException {
+    this.items.addAll(itemsToAdd.viewItems());
+  }
+
+  private Map<T, Integer> itemCounts(Collection<T> itemsToCount) {
+    Map<T, Integer> counts = new HashMap<>();
+    itemsToCount.forEach(item -> counts.put(item, 1 +counts.getOrDefault(item, 0)));
+    return counts;
+  }
+
+  public boolean contains(Collection<T> itemsToRemove) throws IllegalArgumentException {
+    Map<T, Integer> bagCounts = itemCounts(this.items);
+    Map<T, Integer> otherCounts = itemCounts(itemsToRemove);
+    for (T item : otherCounts.keySet()) {
+      if (!bagCounts.containsKey(item) ||
+      bagCounts.get(item) < otherCounts.get(item)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public void remove(Collection<T> itemsToRemove) throws IllegalArgumentException {
+    validateArg(this::contains, itemsToRemove, "Cannot remove tiles this bag does not have");
+    itemsToRemove.forEach(this.items::remove);
+  }
+
+  public Collection<T> viewItems() {
+    return new ArrayList<>(this.items);
+  }
+
+  public Collection<T> getItems(int count) {
+    validateArg(size -> size >= count, this.items.size(), "Cannot request more items than bag "
+      + "capacity.");
+
+    List<T> newItems = this.items.subList(0, count);
+    return new ArrayList<>(newItems);
+  }
+
+  public int size() {
+    return this.items.size();
+  }
+}

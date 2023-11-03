@@ -1,0 +1,62 @@
+package qgame.player.strategy;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import qgame.state.map.Posn;
+import qgame.state.map.QGameMap;
+import qgame.state.map.Tile;
+import qgame.rule.placement.PlacementRule;
+import qgame.state.Placement;
+import qgame.state.PlayerGameState;
+import qgame.util.PosnUtil;
+
+/**
+ * Represents a player strategy in which the smallest tile that can extend
+ * the board is selected to be placed. If there are multiple placements for this
+ * smallest tile, it selects the location with the most tile neighbors. If there
+ * are further ties, then it selects the smallest per rowcolumn strategy.
+ */
+public class LdasgStrategy extends SmallestRowColumnTileStrategy {
+
+  public LdasgStrategy(PlacementRule rules) {
+    super(rules);
+  }
+
+  private List<Posn> neighborsWithTiles(Posn posn, QGameMap state) {
+    return PosnUtil.neighbors(posn)
+      .stream()
+      .filter(state::posnHasTile)
+      .toList();
+  }
+
+  private int neighborsWithTilesSize(Posn posn, QGameMap state) {
+    return neighborsWithTiles(posn, state).size();
+  }
+  private int maxConstrained(List<Posn> posns, QGameMap board) {
+    return posns
+      .stream()
+      .map(posn -> this.neighborsWithTiles(posn, board))
+      .map(List::size)
+      .reduce(0, Math::max);
+  }
+  private List<Posn> maxConstrainedNeighbors(List<Posn> posns, QGameMap board) {
+    int maxConstrainSize = maxConstrained(posns, board);
+    return new ArrayList<>(posns
+        .stream()
+        .filter(posn -> neighborsWithTilesSize(posn, board) == maxConstrainSize)
+        .toList());
+  }
+
+  private Posn bestPosition(List<Posn> posns, QGameMap board) {
+    List<Posn> maxConstrainedPositions = maxConstrainedNeighbors(posns, board);
+    maxConstrainedPositions.sort(PosnUtil::rowColumnCompare);
+    return maxConstrainedPositions.get(0);
+  }
+
+  protected Placement makePlacementGivenPositions(PlayerGameState state, List<Posn> legalPlaces) {
+    Tile bestTile = bestTile(state);
+    Posn best = bestPosition(legalPlaces, state.viewBoard());
+    return new Placement(best, bestTile);
+  }
+}
