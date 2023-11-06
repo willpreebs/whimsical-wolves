@@ -99,7 +99,7 @@ public class BasicQGameRefereeTest {
     List<PlayerInfo> info = new ArrayList<>();
     info.add(new PlayerInfo(0, List.of(new TileImpl(orange, star))));
     info.add(new PlayerInfo(0, List.of(new TileImpl(orange, square))));
-    stateForceFirstPass = new BasicQGameState(map, new ArrayList<>(), info);
+    stateForceFirstPass = new BasicQGameState(map, new Bag<>(), info);
   }
 
   @Before
@@ -110,7 +110,7 @@ public class BasicQGameRefereeTest {
     List<PlayerInfo> info = new ArrayList<>();
     info.add(new PlayerInfo(0, List.of(new TileImpl(orange, star))));
     info.add(new PlayerInfo(0, List.of(new TileImpl(orange, circle))));
-    allPass = new BasicQGameState(map, new ArrayList<>(), info);
+    allPass = new BasicQGameState(map, new Bag<>(), info);
   }
 
   @Test
@@ -170,7 +170,7 @@ public class BasicQGameRefereeTest {
   public void initOnePassOneExchange1() {
     onePassOneExchange1 =
       new BasicQGameStateBuilder()
-        .addRefTile(new TileImpl(blue, eightStar))
+        .addTileBag(new TileImpl(blue, eightStar))
         .placeTile(new Posn(0, 0), new TileImpl(red, clover))
         .addPlayerInfo(new PlayerInfo(1, List.of(new TileImpl(green, square))))
         .addPlayerInfo(new PlayerInfo(5, List.of(new TileImpl(yellow, star))))
@@ -181,7 +181,7 @@ public class BasicQGameRefereeTest {
   public void initOnePassOneExchange2() {
     onePassOneExchange2 =
       new BasicQGameStateBuilder()
-        .addRefTile(new TileImpl(blue, eightStar))
+        .addTileBag(new TileImpl(blue, eightStar))
         .placeTile(new Posn(0, 0), new TileImpl(red, clover))
         .addPlayerInfo(new PlayerInfo(5, List.of(new TileImpl(red, star))))
         .addPlayerInfo(new PlayerInfo(1, List.of(new TileImpl(green, square))))
@@ -213,7 +213,7 @@ public class BasicQGameRefereeTest {
   @Before
   public void initEndAfterPlaceAll(){
     placeAll = new BasicQGameStateBuilder()
-      .addRefTile(new TileImpl(blue, eightStar))
+      .addTileBag(new TileImpl(blue, eightStar))
       .placeTile(new Posn(0, 0), new TileImpl(red, clover))
       .addPlayerInfo(new PlayerInfo(0, List.of(new TileImpl(red, eightStar),
         new TileImpl(green, eightStar))))
@@ -241,7 +241,7 @@ public class BasicQGameRefereeTest {
   public void testPlayersFailToSetup() throws IOException {
     QGameState state = new BasicQGameStateBuilder()
       .placeTile(new Posn(0, 0), new TileImpl(red, diamond))
-      .addRefTile(new TileImpl(orange, square), new TileImpl(green, star), new TileImpl(red,
+      .addTileBag(new TileImpl(orange, square), new TileImpl(green, star), new TileImpl(red,
         square))
       .addPlayerInfo(new PlayerInfo(0,
         List.of(new TileImpl(purple, eightStar), new TileImpl(green, circle))))
@@ -269,7 +269,7 @@ public class BasicQGameRefereeTest {
   public void testAllPlayersFailToSetup() throws IOException {
     QGameState state = new BasicQGameStateBuilder()
       .placeTile(new Posn(0, 0), new TileImpl(red, diamond))
-      .addRefTile(new TileImpl(orange, square), new TileImpl(green, star), new TileImpl(red,
+      .addTileBag(new TileImpl(orange, square), new TileImpl(green, star), new TileImpl(red,
         square))
       .addPlayerInfo(new PlayerInfo(0,
         List.of(new TileImpl(purple, eightStar), new TileImpl(green, circle))))
@@ -298,7 +298,7 @@ public class BasicQGameRefereeTest {
   public void test3WinnersSortedProperly() throws IOException {
     QGameState state = new BasicQGameStateBuilder()
       .placeTile(new Posn(1, 0), new TileImpl(red, diamond))
-      .addRefTile(new TileImpl(green, square))
+      .addTileBag(new TileImpl(green, square))
       .addPlayerInfo(new PlayerInfo(2,
         List.of(new TileImpl(purple, eightStar), new TileImpl(green, circle))))
       .addPlayerInfo(new PlayerInfo(2,
@@ -325,7 +325,7 @@ public class BasicQGameRefereeTest {
   public void testTakeTurnRemovesProperly() throws IOException {
     QGameState state = new BasicQGameStateBuilder()
       .placeTile(new Posn(1, 0), new TileImpl(red, diamond))
-      .addRefTile(new TileImpl(green, square))
+      .addTileBag(new TileImpl(green, square))
       .addPlayerInfo(new PlayerInfo(2,
         List.of(new TileImpl(purple, eightStar), new TileImpl(green, circle))))
       .addPlayerInfo(new PlayerInfo(2,
@@ -349,7 +349,7 @@ public class BasicQGameRefereeTest {
   public void testWinnerStillInResults() throws IOException {
     QGameState state = new BasicQGameStateBuilder()
       .placeTile(new Posn(1, 0), new TileImpl(red, diamond))
-      .addRefTile(new TileImpl(green, square))
+      .addTileBag(new TileImpl(green, square))
       .addPlayerInfo(new PlayerInfo(3,
         List.of(new TileImpl(red, eightStar), new TileImpl(green, circle))))
       .addPlayerInfo(new PlayerInfo(2,
@@ -373,7 +373,7 @@ public class BasicQGameRefereeTest {
   public void testSameColorPlaceAllTilesInSecondRound() throws IOException {
     QGameState state = new BasicQGameStateBuilder()
       .placeTile(new Posn(1, 0), new TileImpl(red, square))
-      .addRefTile(new TileImpl(green, square))
+      .addTileBag(new TileImpl(green, square))
       .addPlayerInfo(new PlayerInfo(2,
         List.of(new TileImpl(red, eightStar), new TileImpl(green, circle))))
       .addPlayerInfo(new PlayerInfo(12,
@@ -398,7 +398,7 @@ public class BasicQGameRefereeTest {
   public void testAllRemovedVarious() throws IOException {
     QGameState state = new BasicQGameStateBuilder()
       .placeTile(new Posn(1, 0), new TileImpl(red, square))
-      .addRefTile(new TileImpl(green, square))
+      .addTileBag(new TileImpl(green, square))
       .addPlayerInfo(new PlayerInfo(2,
         List.of(new TileImpl(red, eightStar), new TileImpl(green, circle))))
       .addPlayerInfo(new PlayerInfo(12,
@@ -423,8 +423,8 @@ public class BasicQGameRefereeTest {
   public void testLockoutGame() throws IOException {
     QGameState state = new BasicQGameStateBuilder()
       .placeTile(new Posn(-3, 0), new TileImpl(green, eightStar))
-      .addRefTile(new TileImpl(purple, eightStar))
-      .addRefTile(new TileImpl(red, clover))
+      .addTileBag(new TileImpl(purple, eightStar))
+      .addTileBag(new TileImpl(red, clover))
       .addPlayerInfo(new PlayerInfo(0,
         List.of(new TileImpl(red, eightStar), new TileImpl(green, circle))))
       .addPlayerInfo(new PlayerInfo(0,
@@ -448,7 +448,7 @@ public class BasicQGameRefereeTest {
   public void testLockoutGame2() throws IOException {
     QGameState state = new BasicQGameStateBuilder()
       .placeTile(new Posn(-3, 0), new TileImpl(green, eightStar))
-      .addRefTile(new TileImpl(purple, eightStar))
+      .addTileBag(new TileImpl(purple, eightStar))
       .addPlayerInfo(new PlayerInfo(0,
         List.of(new TileImpl(red, eightStar), new TileImpl(green, circle))))
       .addPlayerInfo(new PlayerInfo(0,

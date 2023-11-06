@@ -12,13 +12,13 @@ import qgame.player.PlayerInfo;
 
 public class BasicQGameStateBuilder implements StateBuilder{
   private final Map<Posn, Tile> board;
-  private final List<Tile> refTiles;
+  private final Bag<Tile> refTiles;
   private final List<PlayerInfo> playerInfos;
 
 
   public BasicQGameStateBuilder() {
     this.board = new HashMap<>();
-    this.refTiles = new ArrayList<>();
+    this.refTiles = new Bag<>();
     this.playerInfos = new ArrayList<>();
   }
 
@@ -38,8 +38,8 @@ public class BasicQGameStateBuilder implements StateBuilder{
   }
 
   @Override
-  public StateBuilder addRefTile(Tile... tiles) {
-    this.refTiles.addAll(List.of(tiles));
+  public StateBuilder addTileBag(Tile... bag) {
+    this.refTiles.addAll(List.of(bag));
     return this;
   }
 

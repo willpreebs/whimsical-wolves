@@ -35,7 +35,7 @@ public interface StateBuilder {
    * @return a StateBuilder whose ref's tiles are updated by.
    * this method.
    */
-  StateBuilder addRefTile(Tile... tiles);
+  StateBuilder addTileBag(Tile... tileBag);
 
   /**
    * Creates a StateBuilder whose playerInfo has

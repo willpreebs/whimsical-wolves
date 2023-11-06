@@ -16,6 +16,7 @@ import qgame.player.strategy.LdasgStrategy;
 import qgame.player.strategy.TurnStrategy;
 import qgame.referee.GameResults;
 import qgame.rule.placement.PlacementRule;
+import qgame.state.Bag;
 import qgame.state.BasicPlayerGameState;
 import qgame.state.BasicQGameState;
 import qgame.state.Placement;
@@ -315,7 +316,7 @@ public class JsonConverter {
   public static QGameState JStateToQGameState(JsonElement jState) {
     JsonObject jStateObj = jState.getAsJsonObject();
     QGameMap gameMap = qGameMapFromJMap(jStateObj.get("map"));
-    List<Tile> tiles = new ArrayList<>(tilesFromJTileArray(jStateObj.get("tile*")));
+    Bag<Tile> tiles = new Bag<>(tilesFromJTileArray(jStateObj.get("tile*")));
     List<PlayerInfo> players = playerInfosFromJPlayers(jStateObj.get("players"));
     return new BasicQGameState(gameMap, tiles, players);
   }
@@ -330,6 +331,19 @@ public class JsonConverter {
       default -> throw new IllegalStateException("Unexpected value: " + exn);
     };
   }
+
+    private static DummyAIPlayer.Cheat cheatFromJCheat(JsonElement element) {
+    String exn = getAsString(element);
+    return switch (exn) {
+      case "non-adjacent-coordinate" -> DummyAIPlayer.Cheat.NOT_ADJACENT;
+      case "tile-not-owned" -> DummyAIPlayer.Cheat.NOT_OWNED;
+      case "not-a-line" -> DummyAIPlayer.Cheat.NOT_INLINE;
+      case "bad-ask-for-tiles" -> DummyAIPlayer.Cheat.NOT_ENOUGH_TILES;
+      case "no-fit" -> DummyAIPlayer.Cheat.NOT_LEGAL_PLACEMENT;
+      default -> throw new IllegalStateException("Unexpected value: " + exn);
+    };
+  }
+
   private static Player playerFromJActorSpec(JsonElement element, PlacementRule rule) {
     JsonElement[] spec = getAsArray(element);
     validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
@@ -343,9 +357,31 @@ public class JsonConverter {
     return new DummyAIPlayer(name, strat, step);
   }
 
+  private static Player playerFromJActorSpecA(JsonElement element, PlacementRule rule) {
+    JsonElement[] spec = getAsArray(element);
+    validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
+    String name = getAsString(spec[0]);
+    validateArg(size -> size <= 20, name.length(), "Name must be at most 20 characters");
+    TurnStrategy strat = jStrategyToStrategy(spec[1], rule);
+    DummyAIPlayer.FailStep step = DummyAIPlayer.FailStep.NONE;
+    DummyAIPlayer.Cheat cheat = DummyAIPlayer.Cheat.NONE;
+    if (spec.length == 3) {
+      step = failStepFromExn(spec[2]);
+    }
+    if (spec.length == 4) {
+      cheat = cheatFromJCheat(spec[3]);
+    }
+    return new DummyAIPlayer(name, strat, step, cheat);
+  }
+
   public static List<Player> playersFromJActors(JsonElement element, PlacementRule rule) {
     JsonElement[] players = getAsArray(element);
     return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpec(spec, rule)).toList());
+  }
+
+  public static List<Player> playersFromJActorSpecA(JsonElement element, PlacementRule rule) {
+    JsonElement[] players = getAsArray(element);
+    return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpecA(spec, rule)).toList());
   }
 
   public static JsonElement jResultsFromGameResults(GameResults results) {
@@ -383,5 +419,7 @@ public class JsonConverter {
     result.add("players", players);
     return result;
   }
+
+
 
 }

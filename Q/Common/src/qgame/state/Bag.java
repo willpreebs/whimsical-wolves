@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static qgame.util.ValidationUtil.validateArg;
 
@@ -74,5 +75,12 @@ public class Bag<T>{
 
   public int size() {
     return this.items.size();
+  }
+
+  // removes a random item from this bag and returns the item
+  public T removeRandomItem() {
+    Random r = new Random();
+    int randIndex = r.nextInt(items.size());
+    return items.remove(randIndex);
   }
 }

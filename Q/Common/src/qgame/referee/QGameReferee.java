@@ -24,4 +24,7 @@ public interface QGameReferee {
    * running a game is not possible given the list of players.
    */
   GameResults playGame(QGameState state, List<Player> players) throws IllegalStateException;
+
+  
+  GameResults playGame(List<Player> players) throws IllegalStateException;
 }

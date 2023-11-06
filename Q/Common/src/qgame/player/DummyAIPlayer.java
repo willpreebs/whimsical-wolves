@@ -10,19 +10,26 @@ import qgame.state.map.Tile;
 public class DummyAIPlayer implements Player{
 
   public enum FailStep {NONE, SETUP, TAKE_TURN, NEW_TILES, WIN}
+  public enum Cheat {NONE, NOT_ADJACENT, NOT_OWNED, NOT_INLINE, NOT_ENOUGH_TILES, NOT_LEGAL_PLACEMENT}
 
   private final Player player;
-  private final FailStep failStep;
   private final TurnStrategy strategy;
+  private final FailStep failStep;
+  private final Cheat cheat;
 
   public DummyAIPlayer(String name, TurnStrategy strat) {
-    this(name, strat, FailStep.NONE);
+    this(name, strat, FailStep.NONE, Cheat.NONE);
   }
 
   public DummyAIPlayer(String name, TurnStrategy strat, FailStep step) {
+    this(name, strat, step, Cheat.NONE);
+  }
+
+  public DummyAIPlayer(String name, TurnStrategy strat, FailStep step, Cheat cheat) {
     player = new SimpleAIPlayer(name, strat);
-    failStep = step;
     this.strategy = strat;
+    failStep = step;
+    this.cheat = cheat;
   }
 
   private void failIfStep(FailStep step) {
@@ -38,6 +45,7 @@ public class DummyAIPlayer implements Player{
   @Override
   public TurnAction takeTurn(PlayerGameState ref) throws IllegalStateException {
     failIfStep(FailStep.TAKE_TURN);
+    // TODO: implement cheats
     return player.takeTurn(ref);
   }
 

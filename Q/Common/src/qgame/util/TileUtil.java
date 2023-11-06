@@ -1,12 +1,15 @@
 package qgame.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
 import qgame.state.map.Tile;
+import qgame.state.map.TileImpl;
+import qgame.state.Bag;
 import qgame.state.Placement;
 
 import static qgame.util.ValidationUtil.validateArg;
@@ -90,5 +93,19 @@ public class TileUtil {
 
   public static boolean sameShape(Tile tile1, Tile tile2) {
     return tile1.shape() == tile2.shape();
+  }
+
+  public static Bag<Tile> getTileBag(int numTiles) {
+    Tile.Shape[] shapes = Tile.Shape.values();
+    Tile.Color[] colors = Tile.Color.values();
+
+    List<Tile> bag = new ArrayList<>();
+    for (int i = 0; i < numTiles; i++) {
+      i %= colors.length * shapes.length;
+      Tile t = new TileImpl(colors[i % colors.length], shapes[i / shapes.length]);
+      bag.add(t);
+    }
+    Collections.shuffle(bag);
+    return new Bag<>(bag);
   }
 }

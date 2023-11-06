@@ -31,7 +31,7 @@ public class BasicQGameState implements QGameState {
    * @param tiles the list of tiles in a game
    * @param players list of who will play in the game
    */
-  public BasicQGameState(QGameMap map, List<Tile> tiles, List<PlayerInfo> players)
+  public BasicQGameState(QGameMap map, Bag<Tile> tiles, List<PlayerInfo> players)
     throws IllegalArgumentException {
     validate(map, tiles, players);
     this.board = new QGameMapImpl(map.getBoardState());
@@ -46,10 +46,10 @@ public class BasicQGameState implements QGameState {
    * @param tiles the referee's tiles
    * @param players the list of players represented through their information
    */
-  private void validate(QGameMap map,  List<Tile> tiles,
+  private void validate(QGameMap map,  Bag<Tile> tiles,
                    List<PlayerInfo> players) {
     ValidationUtil.nonNullObj(map, "Map cannot be null");
-    nonNull(tiles, "Tiles");
+    nonNull(List.of(tiles.viewItems()), "Tiles");
     nonNull(players, "Players");
   }
 

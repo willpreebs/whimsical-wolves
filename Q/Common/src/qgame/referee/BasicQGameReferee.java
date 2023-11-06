@@ -1,6 +1,7 @@
 package qgame.referee;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -18,8 +19,12 @@ import qgame.action.PassAction;
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
 import qgame.state.Bag;
+import qgame.state.BasicQGameState;
+import qgame.state.BasicQGameStateBuilder;
+import qgame.state.map.Posn;
 import qgame.state.map.QGameMap;
 import qgame.state.map.Tile;
+import qgame.util.TileUtil;
 import qgame.player.Player;
 import qgame.player.PlayerInfo;
 import qgame.rule.placement.PlacementRule;
@@ -40,6 +45,9 @@ public class BasicQGameReferee implements QGameReferee {
   private final ScoringRule scoringRules;
   private final int timeOut;
   private final int ALL_TILE_BONUS;
+
+  private final int TOTAL_TILES = 1080;
+  private final int NUM_PLAYER_TILES = 6;
 
   private QGameState currentGameState;
   private List<Player> players;
@@ -65,17 +73,46 @@ public class BasicQGameReferee implements QGameReferee {
     return getResults();
   }
 
+  @Override
+  public GameResults playGame(List<Player> players) {
 
-  private void setupPlayer(Player player, List<Player> remainingPlayers) {
-    try {
-      QGameMap map = this.currentGameState.viewBoard();
-      Bag<Tile> tiles = this.currentGameState.getCurrentPlayerState().getCurrentPlayerTiles();
-      player.setup(map, tiles);
-      remainingPlayers.add(player);
+    Bag<Tile> tileBag = TileUtil.getTileBag(TOTAL_TILES);
+
+    List<PlayerInfo> playerInfos = getDefaultPlayerInfos(players, tileBag);
+
+    QGameState state = new BasicQGameStateBuilder()
+    .addTileBag(tileBag.viewItems().toArray(new Tile[0]))
+    .placeTile(new Posn(0, 0), tileBag.removeRandomItem())
+    .addPlayerInfo(playerInfos.toArray(new PlayerInfo[0]))
+    .build();
+
+    return playGame(state, players);
+  }
+
+  private List<PlayerInfo> getDefaultPlayerInfos(List<Player> players, Bag<Tile> tileBag) {
+
+    List<PlayerInfo> infos = new ArrayList<>();
+
+    for (Player p : players) {
+      PlayerInfo info = new PlayerInfo(0, tileBag.getItems(this.NUM_PLAYER_TILES));
+      infos.add(info);
     }
-    catch (IllegalStateException e) {
+
+    return infos;
+  }
+
+  private void handlePlayerException(Player player) {
       ruleBreakers.add(player.name());
       this.currentGameState.removeCurrentPlayer();
+  }
+
+
+  private void setupPlayer(Player player, Bag<Tile> tiles, QGameMap board) {
+
+    try {
+      player.setup(board, tiles);
+    } catch (IllegalStateException e) {
+      handlePlayerException(player);
     }
   }
   /**
@@ -85,14 +122,12 @@ public class BasicQGameReferee implements QGameReferee {
    */
   private void setupPlayers() {
     List<PlayerInfo> info = currentGameState.playerInformation();
-    validateState(l -> l.size() == info.size(),
-      players, "Players does not match playerInfo");
-    List<Player> remainingPlayers = new ArrayList<>();
-    while (!this.players.isEmpty()) {
-      Player current = this.players.remove(0);
-      setupPlayer(current, remainingPlayers);
+    // validateState(l -> l.size() == info.size(),
+    //   players, "Players does not match playerInfo");
+
+    for (int i = 0; i < players.size(); i++) {
+      setupPlayer(players.get(i), info.get(i).tiles(), currentGameState.viewBoard());
     }
-    this.players = remainingPlayers;
   }
 
   // Highest score among the player infos. Returns 0 when there are no players.
