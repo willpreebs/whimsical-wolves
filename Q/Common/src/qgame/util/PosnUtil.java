@@ -7,7 +7,8 @@ import qgame.state.map.Posn;
 import qgame.state.map.QGameMap;
 
 /**
- * Utilities class which abstracts methods used across several classes.
+ * Utilities class which abstracts methods used across several classes
+ * on Posn objects.
  */
 public class PosnUtil {
   /**

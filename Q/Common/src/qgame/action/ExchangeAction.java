@@ -1,6 +1,5 @@
 package qgame.action;
 
-import static qgame.util.ValidationUtil.nonNullObj;
 
 /**
  * An implementation of TurnAction. Supports getting the player that is performing an Exchange

@@ -9,7 +9,13 @@ import java.util.Random;
 
 import static qgame.util.ValidationUtil.validateArg;
 
-
+/**
+ * Represents a collection of T. While it is similar to a
+ * Collections object, what makes it unique is that instead of getting specific
+ * items T, a user of this class can request a number of Ts to retrieve from
+ * the bag, and these items once requested are removed from the bag.
+ * @param <T>
+ */
 public class Bag<T>{
   private final List<T> items;
 
@@ -44,6 +50,13 @@ public class Bag<T>{
     return counts;
   }
 
+  /**
+   * Returns whether all the items in the collection of itemsToRemove are
+   * in this bag.
+   * @param itemsToRemove list of items to check for
+   * @return true if all items are present in the bag, false if not.
+   * @throws IllegalArgumentException if the collection is invalid (null)
+   */
   public boolean contains(Collection<T> itemsToRemove) throws IllegalArgumentException {
     Map<T, Integer> bagCounts = itemCounts(this.items);
     Map<T, Integer> otherCounts = itemCounts(itemsToRemove);
@@ -66,9 +79,8 @@ public class Bag<T>{
   }
 
   public Collection<T> getItems(int count) {
-    validateArg(size -> size >= count, this.items.size(), "Cannot request more items than bag "
-      + "capacity.");
-
+    validateArg(size -> size >= count, this.items.size(), "Cannot request more items "
+            + "than bag capacity.");
     List<T> newItems = this.items.subList(0, count);
     return new ArrayList<>(newItems);
   }
