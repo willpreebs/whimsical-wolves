@@ -17,8 +17,8 @@ import qgame.state.PlayerGameState;
 import qgame.state.map.Tile;
 
 /**
- * Represents a graphical view of a Q game state. Currently displays the game board,
- * the tiles the first player owns, the remaining referee tiles, and the scores of all of the
+ * Represents a graphical view of a Q game state. Currently, displays the game board,
+ * the tiles the first player owns, the remaining referee tiles, and the scores of all the
  * players in the game.
  */
 public class GameStateView extends JFrame {
