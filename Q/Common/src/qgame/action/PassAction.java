@@ -5,8 +5,5 @@ package qgame.action;
  * without issue.
  */
 public final class PassAction implements TurnAction {
-  @Override
-  public <T> T accept(TurnVisitor<T> visitor) {
-    return visitor.visitPass();
-  }
+
 }

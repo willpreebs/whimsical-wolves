@@ -16,9 +16,4 @@ public final class ExchangeAction implements TurnAction {
 
   }
 
-
-  @Override
-  public <T> T accept(TurnVisitor<T> visitor) {
-     return visitor.visitExchange(this);
-  }
 }

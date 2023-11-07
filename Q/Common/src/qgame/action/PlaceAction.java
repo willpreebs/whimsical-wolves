@@ -35,9 +35,4 @@ public final class PlaceAction implements TurnAction {
     return new ArrayList<>(this.placementList);
   }
 
-  @Override
-  public <T> T accept(TurnVisitor<T> visitor) {
-
-    return visitor.visitPlacements(this);
-  }
 }
