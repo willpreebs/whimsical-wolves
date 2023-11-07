@@ -2,7 +2,7 @@ package qgame.rule.scoring;
 
 import java.util.List;
 
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.state.Placement;
 
 /**
@@ -10,7 +10,7 @@ import qgame.state.Placement;
  */
 public class PointPerTileRule implements ScoringRule{
   @Override
-  public int pointsFor(List<Placement> placements, QGameMap map) {
+  public int pointsFor(List<Placement> placements, IMap map) {
     return placements.size();
   }
 }

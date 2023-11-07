@@ -17,16 +17,16 @@ import qgame.player.strategy.TurnStrategy;
 import qgame.referee.GameResults;
 import qgame.rule.placement.PlacementRule;
 import qgame.state.Bag;
-import qgame.state.BasicPlayerGameState;
-import qgame.state.BasicQGameState;
-import qgame.state.Placement;
-import qgame.state.PlayerGameState;
+import qgame.state.QPlayerGameState;
 import qgame.state.QGameState;
+import qgame.state.Placement;
+import qgame.state.IPlayerGameState;
+import qgame.state.IGameState;
 import qgame.state.map.Posn;
-import qgame.state.map.QGameMap;
-import qgame.state.map.QGameMapImpl;
+import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Tile;
-import qgame.state.map.TileImpl;
+import qgame.state.map.QTile;
 import qgame.util.PosnUtil;
 
 import static java.util.Arrays.stream;
@@ -82,12 +82,12 @@ public class JsonConverter {
    * @param element the JMap that is a 2D Jason array
    * @return a QGameMap
    */
-  public static QGameMap qGameMapFromJMap(JsonElement element) {
+  public static IMap qGameMapFromJMap(JsonElement element) {
     Map<Posn, Tile> map = new HashMap<>();
     JsonElement[] arr = getAsArray(element);
     Stream.of(arr)
       .forEach(ele -> updateRowFromJRow(map, ele));
-    return new QGameMapImpl(map);
+    return new QMap(map);
   }
 
   private static SortedMap<Integer, SortedMap<Integer, Tile>> create2DMapFromState(Map<Posn, Tile> posnMap) {
@@ -127,7 +127,7 @@ public class JsonConverter {
     return jMap;
   }
 
-  public static JsonElement jMapFromQGameMap(QGameMap map) {
+  public static JsonElement jMapFromQGameMap(IMap map) {
     SortedMap<Integer, SortedMap<Integer, Tile>> rowMap = create2DMapFromState(map.getBoardState());
     return createJMapFrom2DMap(rowMap);
   }
@@ -158,7 +158,7 @@ public class JsonConverter {
     String colorName = obj.get("color").getAsString();
     String shapeName = obj.get("shape").getAsString();
 
-    return new TileImpl(Tile.Color.fromString(colorName), Tile.Shape.fromString(shapeName));
+    return new QTile(Tile.Color.fromString(colorName), Tile.Shape.fromString(shapeName));
   }
 
   public static Collection<Tile> tilesFromJTileArray(JsonElement element) {
@@ -232,7 +232,7 @@ public class JsonConverter {
    JsonObject jPlayer = element.getAsJsonObject();
    int score = getAsInt(jPlayer.get("score"));
    Collection<Tile> tiles = tilesFromJTileArray(jPlayer.get("tile*"));
-   return new PlayerInfo(score, tiles);
+   return new PlayerInfo(score, tiles, "");
   }
 
   public static List<PlayerInfo> playerInfosFromJPlayers(JsonElement element) {
@@ -246,25 +246,25 @@ public class JsonConverter {
       .toList();
   }
 
-  public static PlayerGameState playerGameStateFromJPub(JsonElement jPub)
+  public static IPlayerGameState playerGameStateFromJPub(JsonElement jPub)
     throws IllegalArgumentException {
     JsonObject jPubAsObj = jPub.getAsJsonObject();
-    QGameMap board = qGameMapFromJMap(jPubAsObj.get("map"));
+    IMap board = qGameMapFromJMap(jPubAsObj.get("map"));
     int tiles = getAsInt(jPubAsObj.get("tile*"));
     List<Integer> scores = scoresFromJPlayers(jPubAsObj.get("players"));
     JsonElement[] playerArr = getAsArray(jPubAsObj.get("players"));
     List<Tile> currentPlayerTiles = tilesFromJPlayer(playerArr[0]);
-    return new BasicPlayerGameState(scores, board, tiles, currentPlayerTiles);
+    return new QPlayerGameState(scores, board, tiles, currentPlayerTiles, "");
   }
 
-  private static JsonElement jPlayerFromPlayerState(PlayerGameState state) {
+  private static JsonElement jPlayerFromPlayerState(IPlayerGameState state) {
     JsonObject player = new JsonObject();
     player.add("score", new JsonPrimitive(state.playerScores().get(0)));
     player.add("tile*", jTilesFromTiles(state.getCurrentPlayerTiles().viewItems()));
     return player;
   }
 
-  public static JsonElement playerStateToJPub(PlayerGameState state) {
+  public static JsonElement playerStateToJPub(IPlayerGameState state) {
     JsonObject jPub = new JsonObject();
     jPub.add("map", jMapFromQGameMap(state.viewBoard()));
     jPub.add("tile*", new JsonPrimitive(state.remainingTiles()));
@@ -313,12 +313,12 @@ public class JsonConverter {
   }
 
 
-  public static QGameState JStateToQGameState(JsonElement jState) {
+  public static IGameState JStateToQGameState(JsonElement jState) {
     JsonObject jStateObj = jState.getAsJsonObject();
-    QGameMap gameMap = qGameMapFromJMap(jStateObj.get("map"));
+    IMap gameMap = qGameMapFromJMap(jStateObj.get("map"));
     Bag<Tile> tiles = new Bag<>(tilesFromJTileArray(jStateObj.get("tile*")));
     List<PlayerInfo> players = playerInfosFromJPlayers(jStateObj.get("players"));
-    return new BasicQGameState(gameMap, tiles, players);
+    return new QGameState(gameMap, tiles, players);
   }
 
   private static DummyAIPlayer.FailStep failStepFromExn(JsonElement element) {
@@ -405,7 +405,7 @@ public class JsonConverter {
     object.add("tile*", jTilesFromTiles(info.tiles().viewItems()));
     return object;
   }
-  public static JsonElement jStateFromQGameState(QGameState state) {
+  public static JsonElement jStateFromQGameState(IGameState state) {
     JsonElement map = jMapFromQGameMap(state.viewBoard());
     JsonElement tiles = jTilesFromTiles(state.refereeTiles().viewItems());
     JsonArray players = new JsonArray();

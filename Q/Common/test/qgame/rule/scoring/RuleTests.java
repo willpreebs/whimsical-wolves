@@ -10,10 +10,10 @@ import java.util.Map;
 
 import qgame.state.Placement;
 import qgame.state.map.Posn;
-import qgame.state.map.QGameMap;
-import qgame.state.map.QGameMapImpl;
+import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Tile;
-import qgame.state.map.TileImpl;
+import qgame.state.map.QTile;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -40,15 +40,15 @@ public class RuleTests {
   ScoringRule qRule = new QRule(6);
   ScoringRule multi = new MultiScoringRule(perTile, contiguousTile, qRule);
 
-  QGameMap allOwnedMap;
+  IMap allOwnedMap;
 
-  QGameMap oneQMap;
+  IMap oneQMap;
 
-  QGameMap twoQMap;
+  IMap twoQMap;
 
-  QGameMap multConsecutiveSeqMap;
+  IMap multConsecutiveSeqMap;
 
-  QGameMap oneTile;
+  IMap oneTile;
 
   List<Placement> placements1;
   List<Placement> placements2;
@@ -58,62 +58,62 @@ public class RuleTests {
 
   @Before
   public void init() {
-    allOwnedMap = new QGameMapImpl(new TileImpl(purple, clover), new Posn(0, 0));
+    allOwnedMap = new QMap(new QTile(purple, clover), new Posn(0, 0));
 
 
     placements1 = new ArrayList<>();
-    placements1.add(new Placement(new Posn(0, 1), new TileImpl(purple, star)));
-    placements1.add(new Placement(new Posn(0, -1), new TileImpl(purple, square)));
+    placements1.add(new Placement(new Posn(0, 1), new QTile(purple, star)));
+    placements1.add(new Placement(new Posn(0, -1), new QTile(purple, square)));
 
     Map<Posn, Tile> oneQTiles = new HashMap<>();
-    oneQTiles.put(new Posn(-5, 0), new TileImpl(orange, square));
-    oneQTiles.put(new Posn(-4, 0), new TileImpl(orange, diamond));
-    oneQTiles.put(new Posn(-3, 0), new TileImpl(orange, star));
-    oneQTiles.put(new Posn(-2, 0), new TileImpl(orange, circle));
-    oneQTiles.put(new Posn(-1, 0), new TileImpl(orange, eight));
+    oneQTiles.put(new Posn(-5, 0), new QTile(orange, square));
+    oneQTiles.put(new Posn(-4, 0), new QTile(orange, diamond));
+    oneQTiles.put(new Posn(-3, 0), new QTile(orange, star));
+    oneQTiles.put(new Posn(-2, 0), new QTile(orange, circle));
+    oneQTiles.put(new Posn(-1, 0), new QTile(orange, eight));
 
-    oneQMap = new QGameMapImpl(oneQTiles);
+    oneQMap = new QMap(oneQTiles);
 
     placements2 = new ArrayList<>();
-    placements2.add(new Placement(new Posn(-6, 0), new TileImpl(orange, clover)));
+    placements2.add(new Placement(new Posn(-6, 0), new QTile(orange, clover)));
 
 
 
     Map<Posn, Tile> twoQTiles = new HashMap<>();
-    twoQTiles.put(new Posn(-5, 0), new TileImpl(red, circle));
-    twoQTiles.put(new Posn(-4, 0), new TileImpl(orange, circle));
-    twoQTiles.put(new Posn(-3, 0), new TileImpl(blue, circle));
-    twoQTiles.put(new Posn(-2, 0), new TileImpl(green, circle));
-    twoQTiles.put(new Posn(-1, 0), new TileImpl(purple, circle));
-    twoQTiles.put(new Posn(-1, -1), new TileImpl(purple, diamond));
+    twoQTiles.put(new Posn(-5, 0), new QTile(red, circle));
+    twoQTiles.put(new Posn(-4, 0), new QTile(orange, circle));
+    twoQTiles.put(new Posn(-3, 0), new QTile(blue, circle));
+    twoQTiles.put(new Posn(-2, 0), new QTile(green, circle));
+    twoQTiles.put(new Posn(-1, 0), new QTile(purple, circle));
+    twoQTiles.put(new Posn(-1, -1), new QTile(purple, diamond));
 
-    twoQTiles.put(new Posn(0, -5), new TileImpl(yellow, clover));
-    twoQTiles.put(new Posn(0, -4), new TileImpl(yellow, square));
-    twoQTiles.put(new Posn(0, -3), new TileImpl(yellow, star));
-    twoQTiles.put(new Posn(0, -2), new TileImpl(yellow, eight));
-    twoQTiles.put(new Posn(0, -1), new TileImpl(yellow, diamond));
-    twoQMap = new QGameMapImpl(twoQTiles);
+    twoQTiles.put(new Posn(0, -5), new QTile(yellow, clover));
+    twoQTiles.put(new Posn(0, -4), new QTile(yellow, square));
+    twoQTiles.put(new Posn(0, -3), new QTile(yellow, star));
+    twoQTiles.put(new Posn(0, -2), new QTile(yellow, eight));
+    twoQTiles.put(new Posn(0, -1), new QTile(yellow, diamond));
+    twoQMap = new QMap(twoQTiles);
 
     placements3 = new ArrayList<>();
-    placements3.add(new Placement(new Posn(-6, 0), new TileImpl(orange, clover)));
-    placements3.add(new Placement(new Posn(0, 0), new TileImpl(orange, square)));
+    placements3.add(new Placement(new Posn(-6, 0), new QTile(orange, clover)));
+    placements3.add(new Placement(new Posn(0, 0), new QTile(orange, square)));
 
     Map<Posn, Tile> multConsecutiveTiles = new HashMap<>();
-    multConsecutiveTiles.put(new Posn(0, 0), new TileImpl(red, star));
-    multConsecutiveTiles.put(new Posn(0, 1), new TileImpl(orange, star));
-    multConsecutiveTiles.put(new Posn(0, 2), new TileImpl(green, star));
-    multConsecutiveSeqMap = new QGameMapImpl(multConsecutiveTiles);
+    multConsecutiveTiles.put(new Posn(0, 0), new QTile(red, star));
+    multConsecutiveTiles.put(new Posn(0, 1), new QTile(orange, star));
+    multConsecutiveTiles.put(new Posn(0, 2), new QTile(green, star));
+    multConsecutiveSeqMap = new QMap(multConsecutiveTiles);
 
     placements4 = new ArrayList<>();
-    placements4.add(new Placement(new Posn(1, 0), new TileImpl(red, circle)));
-    placements4.add(new Placement(new Posn(1, 1), new TileImpl(orange, circle)));
-    placements4.add(new Placement(new Posn(1, 2), new TileImpl(green, circle)));
+    placements4.add(new Placement(new Posn(1, 0), new QTile(red, circle)));
+    placements4.add(new Placement(new Posn(1, 1), new QTile(orange, circle)));
+    placements4.add(new Placement(new Posn(1, 2), new QTile(green, circle)));
 
     Map<Posn, Tile> oneMap = new HashMap<>();
-    oneMap.put(new Posn(0, 0), new TileImpl(purple, eight));
-    oneTile = new QGameMapImpl(oneMap);
+    oneMap.put(new Posn(0, 0), new QTile(purple, eight));
+    oneTile = new QMap(oneMap);
     placements5 = new ArrayList<>();
-    placements5.add(new Placement(new Posn(1, 0), new TileImpl(purple, clover)));
+    placements5.add(new Placement(new Posn(1, 0), new QTile(purple, clover)));
 
   }
 
@@ -213,15 +213,15 @@ public class RuleTests {
   @Test
   public void testFailingInstructorTest() {
     Map<Posn, Tile> map = new HashMap<>();
-    map.put(new Posn(-1, 3), new TileImpl(purple, star));
-    map.put(new Posn(0, 2), new TileImpl(green, eight));
-    map.put(new Posn(0, 3), new TileImpl(green, star));
-    map.put(new Posn(-1, 2), new TileImpl(purple, eight));
+    map.put(new Posn(-1, 3), new QTile(purple, star));
+    map.put(new Posn(0, 2), new QTile(green, eight));
+    map.put(new Posn(0, 3), new QTile(green, star));
+    map.put(new Posn(-1, 2), new QTile(purple, eight));
 
     List<Placement> placements = new ArrayList<>(
-      List.of(new Placement(new Posn(-1, 2), new TileImpl(purple, eight))));
+      List.of(new Placement(new Posn(-1, 2), new QTile(purple, eight))));
 
-    int points = multi.pointsFor(placements, new QGameMapImpl(map));
+    int points = multi.pointsFor(placements, new QMap(map));
     assertEquals(5, points);
 
   }

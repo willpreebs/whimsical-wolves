@@ -5,10 +5,10 @@ import java.util.List;
 import qgame.action.PassAction;
 import qgame.action.TurnAction;
 import qgame.state.Bag;
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 import qgame.player.Player;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 class TimeOutPlayer implements Player {
 
@@ -26,7 +26,7 @@ class TimeOutPlayer implements Player {
   }
 
   @Override
-  public TurnAction takeTurn(PlayerGameState ref) throws IllegalStateException {
+  public TurnAction takeTurn(IPlayerGameState ref) throws IllegalStateException {
     try {
       Thread.sleep(this.timeToWait);
     } catch (InterruptedException e) {
@@ -36,7 +36,7 @@ class TimeOutPlayer implements Player {
   }
 
   @Override
-  public void setup(QGameMap map, Bag<Tile> tiles) throws IllegalStateException {
+  public void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException {
 
   }
 

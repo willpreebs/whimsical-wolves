@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.Map;
 
 import qgame.state.map.Posn;
-import qgame.state.map.QGameMapImpl;
+import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.player.PlayerInfo;
 
-public class BasicQGameStateBuilder implements StateBuilder{
+public class QStateBuilder implements IStateBuilder{
   private final Map<Posn, Tile> board;
   private final Bag<Tile> refTiles;
   private final List<PlayerInfo> playerInfos;
 
 
-  public BasicQGameStateBuilder() {
+  public QStateBuilder() {
     this.board = new HashMap<>();
     this.refTiles = new Bag<>();
     this.playerInfos = new ArrayList<>();
@@ -24,7 +24,7 @@ public class BasicQGameStateBuilder implements StateBuilder{
 
 
   @Override
-  public StateBuilder placeTiles(Placement... placements) {
+  public IStateBuilder placeTiles(Placement... placements) {
     for (Placement(Posn posn, Tile tile) : placements) {
       this.board.put(posn, tile);
     }
@@ -32,24 +32,24 @@ public class BasicQGameStateBuilder implements StateBuilder{
   }
 
   @Override
-  public StateBuilder placeTile(Posn posn, Tile tile) {
+  public IStateBuilder placeTile(Posn posn, Tile tile) {
     this.board.put(posn, tile);
     return this;
   }
 
   @Override
-  public StateBuilder addTileBag(Tile... bag) {
+  public IStateBuilder addTileBag(Tile... bag) {
     this.refTiles.addAll(List.of(bag));
     return this;
   }
 
   @Override
-  public StateBuilder addPlayerInfo(PlayerInfo... infos) {
+  public IStateBuilder addPlayerInfo(PlayerInfo... infos) {
     this.playerInfos.addAll(List.of(infos));
     return this;
   }
 
-  public QGameState build() {
-    return new BasicQGameState(new QGameMapImpl(board), refTiles, playerInfos);
+  public IGameState build() {
+    return new QGameState(new QMap(board), refTiles, playerInfos);
   }
 }

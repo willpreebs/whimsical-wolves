@@ -15,7 +15,7 @@ import static qgame.util.ValidationUtil.validateArg;
  * placed tiles, getting a tile at a given position, and extending the map by placing a tile next
  * to a neighbor.
  */
-public class QGameMapImpl implements QGameMap {
+public class QMap implements IMap {
   private final Map<Posn, Tile> tileMap;
 
   /**
@@ -24,7 +24,7 @@ public class QGameMapImpl implements QGameMap {
    * @param tile The starting tile for the game.
    * @param posn The position that the starting tile should be placed at.
    */
-  public QGameMapImpl(Tile tile, Posn posn) {
+  public QMap(Tile tile, Posn posn) {
     ValidationUtil.nonNullObj(tile, "Tile cannot be null.");
     ValidationUtil.nonNullObj(posn, "Posn cannot be null.");
     this.tileMap = new HashMap<>();
@@ -36,7 +36,7 @@ public class QGameMapImpl implements QGameMap {
    *
    * @param tileMap A map of all used positions on the board and what tile mapped to the position
    */
-  public QGameMapImpl(Map<Posn, Tile> tileMap) {
+  public QMap(Map<Posn, Tile> tileMap) {
     ValidationUtil.nonNullObj(tileMap, "Tile Map cannot be null.");
     this.tileMap = new HashMap<>(tileMap);
   }

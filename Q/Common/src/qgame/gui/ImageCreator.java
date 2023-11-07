@@ -11,7 +11,7 @@ import java.util.Set;
 
 import qgame.state.Bag;
 import qgame.state.map.Posn;
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 import qgame.player.PlayerInfo;
 import qgame.state.Placement;
@@ -20,6 +20,8 @@ import qgame.state.Placement;
  * Represents a class that produces images of Q game components.
  */
 public class ImageCreator {
+
+  private static final int IMG_SIZE = 75;
 
   //top right bottom left
   private static int[][] diamondPoints(int size) {
@@ -81,8 +83,8 @@ public class ImageCreator {
     }
   }
   private static BufferedImage drawTile(Tile tile) {
-    int width = 75;
-    int height = 75;
+    int width = IMG_SIZE;
+    int height = IMG_SIZE;
     BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
     Graphics2D graphics = image.createGraphics();
     setColor(tile.color(), graphics);
@@ -155,24 +157,39 @@ public class ImageCreator {
     }
   }
 
-  public static BufferedImage drawPlayerInfo(PlayerInfo info) {
-    int imageSize = 75;
-    Bag<Tile> tiles = info.tiles();
+  // public static BufferedImage drawPlayerInfo(PlayerInfo info) {
+  //   Bag<Tile> tiles = info.tiles();
+
+  //   BufferedImage result =
+  //     new BufferedImage(tiles.size() * IMG_SIZE, IMG_SIZE, BufferedImage.TYPE_4BYTE_ABGR);
+  //   Graphics2D graphics = result.createGraphics();
+  //   graphics.setColor(new Color(255, 216, 179));
+  //   graphics.fillRect(0, 0, result.getWidth(), result.getHeight());
+
+  //   List<BufferedImage> images = tiles.viewItems().stream().map(ImageCreator::drawTile).toList();
+  //   for (int i = 0; i < images.size(); i++) {
+  //     graphics.drawImage(images.get(i), IMG_SIZE * i, 0, null);
+  //   }
+  //   return result;
+  // }
+
+  public static BufferedImage drawTiles(Bag<Tile> refTiles, int maxTiles) {
+    int numTiles = Math.min(refTiles.size(), maxTiles);
 
     BufferedImage result =
-      new BufferedImage(tiles.size() * imageSize, imageSize, BufferedImage.TYPE_4BYTE_ABGR);
+      new BufferedImage(numTiles * IMG_SIZE, IMG_SIZE, BufferedImage.TYPE_4BYTE_ABGR);
     Graphics2D graphics = result.createGraphics();
     graphics.setColor(new Color(255, 216, 179));
     graphics.fillRect(0, 0, result.getWidth(), result.getHeight());
 
-    List<BufferedImage> images = tiles.viewItems().stream().map(ImageCreator::drawTile).toList();
+    List<BufferedImage> images = refTiles.getItems(numTiles).stream().map(ImageCreator::drawTile).toList();
     for (int i = 0; i < images.size(); i++) {
-      graphics.drawImage(images.get(i), imageSize * i, 0, null);
+      graphics.drawImage(images.get(i), IMG_SIZE * i, 0, null);
     }
     return result;
   }
-  public static BufferedImage drawBoard(QGameMap map) {
-    int imageSize = 75;
+
+  public static BufferedImage drawBoard(IMap map) {
 
     Set<Posn> posns = map.getBoardState().keySet();
     int topRow = posns.stream().map(Posn::y).reduce(Integer.MAX_VALUE, Integer::min);
@@ -183,7 +200,7 @@ public class ImageCreator {
     int width = rightCol - leftCol + 1;
     int height = bottomRow - topRow + 1;
 
-    BufferedImage image = new BufferedImage(width * imageSize, height * imageSize,
+    BufferedImage image = new BufferedImage(width * IMG_SIZE, height * IMG_SIZE,
       BufferedImage.TYPE_4BYTE_ABGR);
     Graphics2D graphics = image.createGraphics();
     graphics.setColor(new Color(255, 216, 179));
@@ -192,8 +209,8 @@ public class ImageCreator {
     for (Map.Entry<Posn, Tile> entry : map.getBoardState().entrySet()) {
       Placement p = new Placement(entry.getKey(), entry.getValue());
       BufferedImage placementImage = drawPlacement(p);
-      int y = (p.posn().y() - topRow) * imageSize;
-      int x = (p.posn().x() - leftCol) * imageSize;
+      int y = (p.posn().y() - topRow) * IMG_SIZE;
+      int x = (p.posn().x() - leftCol) * IMG_SIZE;
       graphics.drawImage(placementImage, x, y, null);
     }
     return image;

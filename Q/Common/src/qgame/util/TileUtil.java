@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import qgame.state.map.Tile;
-import qgame.state.map.TileImpl;
+import qgame.state.map.QTile;
 import qgame.state.Bag;
 import qgame.state.Placement;
 
@@ -102,7 +102,7 @@ public class TileUtil {
     List<Tile> bag = new ArrayList<>();
     for (int i = 0; i < numTiles; i++) {
       i %= colors.length * shapes.length;
-      Tile t = new TileImpl(colors[i % colors.length], shapes[i / shapes.length]);
+      Tile t = new QTile(colors[i % colors.length], shapes[i / shapes.length]);
       bag.add(t);
     }
     Collections.shuffle(bag);

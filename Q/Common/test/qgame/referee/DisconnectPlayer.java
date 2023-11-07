@@ -4,10 +4,10 @@ import java.util.List;
 
 import qgame.action.TurnAction;
 import qgame.state.Bag;
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 import qgame.player.Player;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 public class DisconnectPlayer implements Player {
 
@@ -23,12 +23,12 @@ public class DisconnectPlayer implements Player {
   }
 
   @Override
-  public TurnAction takeTurn(PlayerGameState ref) throws IllegalStateException {
+  public TurnAction takeTurn(IPlayerGameState ref) throws IllegalStateException {
     throw new IllegalStateException("Disconnected.");
   }
 
   @Override
-  public void setup(QGameMap map, Bag<Tile> tiles) throws IllegalStateException {
+  public void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException {
 
   }
 

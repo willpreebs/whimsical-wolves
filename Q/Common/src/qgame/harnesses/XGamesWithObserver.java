@@ -8,12 +8,12 @@ import com.google.gson.JsonStreamParser;
 
 import qgame.json.JsonConverter;
 import qgame.player.Player;
-import qgame.referee.BasicQGameReferee;
+import qgame.referee.QReferee;
 import qgame.referee.GameResults;
-import qgame.referee.QGameReferee;
+import qgame.referee.IReferee;
 import qgame.rule.placement.PlacementRule;
 import qgame.rule.scoring.ScoringRule;
-import qgame.state.QGameState;
+import qgame.state.IGameState;
 
 public class XGamesWithObserver {
     
@@ -24,10 +24,10 @@ public class XGamesWithObserver {
         JsonElement jState = parser.next();
         JsonElement jActorSpecA = parser.next();
 
-        QGameState state = JsonConverter.JStateToQGameState(jState);
+        IGameState state = JsonConverter.JStateToQGameState(jState);
         List<Player> players = JsonConverter.playersFromJActorSpecA(jActorSpecA, rules);
         
-        QGameReferee ref = new BasicQGameReferee(rules, scoreRules, 10000, 6);
+        IReferee ref = new QReferee(rules, scoreRules, 10000, 6);
         GameResults r = ref.playGame(state, players);
         System.out.println(JsonConverter.jResultsFromGameResults(r));
     }

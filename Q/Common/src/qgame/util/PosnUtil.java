@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 
 import qgame.state.map.Posn;
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 
 /**
  * Utilities class which abstracts methods used across several classes
@@ -59,15 +59,15 @@ public class PosnUtil {
       new Posn(posn.y() - 1, posn.x()), new Posn(posn.y() + 1, posn.x()));
   }
 
-  public static boolean hasVerticalNeighbor(Posn posn, QGameMap state) {
+  public static boolean hasVerticalNeighbor(Posn posn, IMap state) {
     return hasDirectionalNeighbor(posn, state, PosnUtil::sameCol);
   }
 
-  public static boolean hasHorizontalNeighbor(Posn posn, QGameMap state) {
+  public static boolean hasHorizontalNeighbor(Posn posn, IMap state) {
     return hasDirectionalNeighbor(posn, state, PosnUtil::sameRow);
   }
 
-  public static boolean hasDirectionalNeighbor(Posn posn, QGameMap state, BiPredicate<Posn,
+  public static boolean hasDirectionalNeighbor(Posn posn, IMap state, BiPredicate<Posn,
     Posn> pred) {
     List<Posn> neighbors = neighbors(posn);
 

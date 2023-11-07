@@ -2,7 +2,7 @@ package qgame.rule.scoring;
 
 import java.util.List;
 
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.state.Placement;
 
 /**
@@ -18,5 +18,5 @@ public interface ScoringRule {
    * @param map The game map to score
    * @return The points earned by the given placements for this rule.
    */
-  int pointsFor(List<Placement> placements, QGameMap map);
+  int pointsFor(List<Placement> placements, IMap map);
 }

@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 
 import qgame.state.map.Posn;
 import qgame.state.Placement;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 import qgame.util.PosnUtil;
 
 import static qgame.util.ValidationUtil.validateArg;
@@ -24,7 +24,7 @@ public class ExtendSameLineRule extends ARule {
   }
 
   @Override
-  public boolean validPlacements(List<Placement> placements, PlayerGameState map) {
+  public boolean validPlacements(List<Placement> placements, IPlayerGameState map) {
     validateArg(Predicate.not(List::isEmpty), placements, "Placements cannot be empty.");
     List<Posn> posns = placements
       .stream()

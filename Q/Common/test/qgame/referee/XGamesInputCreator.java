@@ -13,7 +13,7 @@ import java.util.List;
 import qgame.json.JsonConverter;
 import qgame.player.DummyAIPlayer;
 import qgame.player.Player;
-import qgame.state.QGameState;
+import qgame.state.IGameState;
 
 class XGamesInputCreator {
 
@@ -44,7 +44,7 @@ class XGamesInputCreator {
     return jActors;
   }
 
-  public static boolean createTest(QGameState state, List<Player> players, GameResults results,
+  public static boolean createTest(IGameState state, List<Player> players, GameResults results,
                                 String path, int num) throws IOException {
     JsonElement JState = JsonConverter.jStateFromQGameState(state);
 

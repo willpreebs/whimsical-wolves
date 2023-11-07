@@ -7,12 +7,12 @@ import qgame.action.ExchangeAction;
 import qgame.action.PassAction;
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
-import qgame.state.BasicPlayerGameState;
+import qgame.state.QPlayerGameState;
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.rule.placement.PlacementRule;
 import qgame.state.Placement;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 import qgame.util.TileUtil;
 
 public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
@@ -24,34 +24,34 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
   }
 
 
-  private PlayerGameState copy(PlayerGameState state) {
-    return new BasicPlayerGameState(state.playerScores(), state.viewBoard(),
-      state.remainingTiles(), state.getCurrentPlayerTiles().viewItems());
+  private IPlayerGameState copy(IPlayerGameState state) {
+    return new QPlayerGameState(state.playerScores(), state.viewBoard(),
+      state.remainingTiles(), state.getCurrentPlayerTiles().viewItems(), state.playerName());
   }
-  private PlayerGameState applyPlacements(PlayerGameState state, List<Placement> placements) {
-    PlayerGameState clone = copy(state);
+  private IPlayerGameState applyPlacements(IPlayerGameState state, List<Placement> placements) {
+    IPlayerGameState clone = copy(state);
     for (Placement placement : placements) {
       clone.makePlacement(placement);
     }
     return clone;
   }
 
-  private boolean canPlaceTile(Tile tile, PlayerGameState state) {
+  private boolean canPlaceTile(Tile tile, IPlayerGameState state) {
     List<Posn> possiblePlaces = placeRules.validPositionsForTile(tile, state);
     return !possiblePlaces.isEmpty();
   }
 
   private boolean placementFollowsRules(Placement placement, List<Placement> priorPlacements,
-                                        PlayerGameState state) {
+                                        IPlayerGameState state) {
     List<Placement> priorPlacementClone = new ArrayList<>(priorPlacements);
     priorPlacementClone.add(placement);
     return placeRules.validPlacements(priorPlacementClone, state);
   }
 
   private boolean canPlaceTileGivenPlacements(Tile tile,
-                                              PlayerGameState startState,
+                                              IPlayerGameState startState,
                                               List<Placement> priorPlacements) {
-    PlayerGameState currentState = applyPlacements(startState, priorPlacements);
+    IPlayerGameState currentState = applyPlacements(startState, priorPlacements);
     List<Posn> possiblePlaces = placeRules.validPositionsForTile(tile, currentState);
     List<Placement> possiblePlacements = possiblePlaces.stream()
       .map(posn -> new Placement(posn, tile))
@@ -60,24 +60,24 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
     return !possiblePlacements.isEmpty();
   }
 
-  private boolean canMakePlacements(PlayerGameState startState, List<Placement> priorPlacements) {
-    PlayerGameState currentState = applyPlacements(startState, priorPlacements);
+  private boolean canMakePlacements(IPlayerGameState startState, List<Placement> priorPlacements) {
+    IPlayerGameState currentState = applyPlacements(startState, priorPlacements);
     List<Tile> tiles =  new ArrayList<>(currentState.getCurrentPlayerTiles().viewItems());
     return tiles
       .stream()
       .anyMatch(tile -> canPlaceTileGivenPlacements(tile, startState, priorPlacements));
   }
 
-  private boolean canMakePlacements(PlayerGameState state) {
+  private boolean canMakePlacements(IPlayerGameState state) {
     return canMakePlacements(state, new ArrayList<>());
   }
-  protected abstract Placement makePlacementGivenPositions(PlayerGameState state,
+  protected abstract Placement makePlacementGivenPositions(IPlayerGameState state,
                                                       List<Posn> legalPlaces);
 
   private Placement makePlacement(
-                                  PlayerGameState startState,
+                                  IPlayerGameState startState,
                                   List<Placement> priorPlacements) {
-    PlayerGameState currentState = applyPlacements(startState, priorPlacements);
+    IPlayerGameState currentState = applyPlacements(startState, priorPlacements);
     Tile tile = bestTile(currentState);
     List<Posn> validPositions = placeRules.validPositionsForTile(tile, currentState);
     List<Posn> legalPlaces = validPositions
@@ -88,7 +88,7 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
       .toList();
     return makePlacementGivenPositions(currentState, new ArrayList<>(legalPlaces));
   }
-  protected Tile bestTile(PlayerGameState state) {
+  protected Tile bestTile(IPlayerGameState state) {
     List<Tile> tiles = new ArrayList<>(state.getCurrentPlayerTiles().viewItems());
     tiles.sort(TileUtil::smallestTile);
     for (Tile tile : tiles) {
@@ -100,9 +100,9 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
     throw new IllegalArgumentException("Cannot place any tiles on this state.");
   }
 
-  private PlaceAction makePlacements(PlayerGameState startState) {
+  private PlaceAction makePlacements(IPlayerGameState startState) {
     List<Placement> results = new ArrayList<>();
-    PlayerGameState currentState = copy(startState);
+    IPlayerGameState currentState = copy(startState);
     while (canMakePlacements(startState, results)) {
       Placement placement = makePlacement(startState, results);
       results.add(placement);
@@ -113,7 +113,7 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
 
 
   @Override
-  public TurnAction chooseAction(PlayerGameState state) {
+  public TurnAction chooseAction(IPlayerGameState state) {
     if (!canMakePlacements(state)) {
       if (state.remainingTiles() < state.getCurrentPlayerTiles().size()) {
         return new PassAction();

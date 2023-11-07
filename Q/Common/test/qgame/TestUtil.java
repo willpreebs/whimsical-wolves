@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import qgame.state.map.Tile;
-import qgame.state.map.TileImpl;
+import qgame.state.map.QTile;
 
 public class TestUtil {
 
@@ -13,7 +13,7 @@ public class TestUtil {
     for (Tile.Color color : Tile.Color.values()) {
       allTiles.put(color, new HashMap<>());
       for (Tile.Shape shape : Tile.Shape.values()) {
-        allTiles.get(color).put(shape, new TileImpl(color, shape));
+        allTiles.get(color).put(shape, new QTile(color, shape));
       }
     }
     return allTiles;

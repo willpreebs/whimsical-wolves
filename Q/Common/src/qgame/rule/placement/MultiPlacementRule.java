@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import qgame.state.Placement;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 public class MultiPlacementRule extends ARule {
 
@@ -18,7 +18,7 @@ public class MultiPlacementRule extends ARule {
   }
 
   @Override
-  public boolean validPlacements(List<Placement> placements, PlayerGameState gameState) {
+  public boolean validPlacements(List<Placement> placements, IPlayerGameState gameState) {
     return this.rules.stream().allMatch(rule -> rule.validPlacements(placements, gameState));
   }
 }

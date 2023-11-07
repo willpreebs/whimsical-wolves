@@ -11,10 +11,10 @@ import java.util.Map;
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
 import qgame.state.map.Posn;
-import qgame.state.map.QGameMap;
-import qgame.state.map.QGameMapImpl;
+import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Tile;
-import qgame.state.map.TileImpl;
+import qgame.state.map.QTile;
 import qgame.player.strategy.DagStrategy;
 import qgame.player.strategy.LdasgStrategy;
 import qgame.rule.placement.CorrectPlayerTilesRule;
@@ -23,9 +23,9 @@ import qgame.rule.placement.ExtendsBoardRule;
 import qgame.rule.placement.MatchTraitRule;
 import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.PlacementRule;
-import qgame.state.BasicPlayerGameState;
+import qgame.state.QPlayerGameState;
 import qgame.state.Placement;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 import static org.junit.Assert.*;
 
@@ -49,7 +49,7 @@ public class PlayerTest {
   Player player1;
   Player player2;
 
-  PlayerGameState state1;
+  IPlayerGameState state1;
 
 
   @Before
@@ -69,18 +69,18 @@ public class PlayerTest {
   @Before
   public void init3() {
     Map<Posn, Tile> boardMap = new HashMap<>();
-    boardMap.put(new Posn(0, 0), new TileImpl(orange, square));
-    boardMap.put(new Posn(0,-1), new TileImpl(orange, star));
-    boardMap.put(new Posn(-1, 0), new TileImpl(purple, star));
-    boardMap.put(new Posn(-2, 0), new TileImpl(purple, square));
-    boardMap.put(new Posn(-3,0), new TileImpl(purple, star));
+    boardMap.put(new Posn(0, 0), new QTile(orange, square));
+    boardMap.put(new Posn(0,-1), new QTile(orange, star));
+    boardMap.put(new Posn(-1, 0), new QTile(purple, star));
+    boardMap.put(new Posn(-2, 0), new QTile(purple, square));
+    boardMap.put(new Posn(-3,0), new QTile(purple, star));
 
-    QGameMap board1 = new QGameMapImpl(boardMap);
+    IMap board1 = new QMap(boardMap);
     List<Integer> scores = List.of(3, 2);
     List<Tile> playerTiles = List.of(
-      new TileImpl(purple, star), new TileImpl(red, eightStar), new TileImpl(green, star),
-      new TileImpl(red, star));
-    state1 = new BasicPlayerGameState(scores, board1, 3, playerTiles);
+      new QTile(purple, star), new QTile(red, eightStar), new QTile(green, star),
+      new QTile(red, star));
+    state1 = new QPlayerGameState(scores, board1, 3, playerTiles, "");
   }
   @Test
   public void testMoreConstrained1() {
@@ -89,9 +89,9 @@ public class PlayerTest {
 
     PlaceAction place = (PlaceAction) action;
     List<Placement> expected = new ArrayList<>();
-    expected.add(new Placement(new Posn(-1, -1), new TileImpl(red, star)));
-    expected.add(new Placement(new Posn(-3, -1), new TileImpl(green, star)));
-    expected.add(new Placement(new Posn(-2, -1), new TileImpl(purple, star)));
+    expected.add(new Placement(new Posn(-1, -1), new QTile(red, star)));
+    expected.add(new Placement(new Posn(-3, -1), new QTile(green, star)));
+    expected.add(new Placement(new Posn(-2, -1), new QTile(purple, star)));
 
     List<Placement> placementList = place.placements();
     assertEquals(expected, placementList);
@@ -104,9 +104,9 @@ public class PlayerTest {
 
     PlaceAction place = (PlaceAction) action;
     List<Placement> expected = new ArrayList<>();
-    expected.add(new Placement(new Posn(-4, 0), new TileImpl(red, star)));
-    expected.add(new Placement(new Posn(-5, 0), new TileImpl(green, star)));
-    expected.add(new Placement(new Posn(-6, 0), new TileImpl(purple, star)));
+    expected.add(new Placement(new Posn(-4, 0), new QTile(red, star)));
+    expected.add(new Placement(new Posn(-5, 0), new QTile(green, star)));
+    expected.add(new Placement(new Posn(-6, 0), new QTile(purple, star)));
 
     List<Placement> placementList = place.placements();
     assertEquals(expected, placementList);

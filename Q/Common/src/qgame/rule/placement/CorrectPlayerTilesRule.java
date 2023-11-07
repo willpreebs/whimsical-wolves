@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import qgame.state.Placement;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 import qgame.state.map.Tile;
 import qgame.util.TileUtil;
 
@@ -32,7 +32,7 @@ public class CorrectPlayerTilesRule extends ARule {
       .allMatch(tile -> validTileCount(tile, placementCounts, playerCounts));
   }
   @Override
-  public boolean validPlacements(List<Placement> placements, PlayerGameState map) {
+  public boolean validPlacements(List<Placement> placements, IPlayerGameState map) {
 
     Map<Tile, Integer> placementsMap = generateMapFromTiles(TileUtil.placementsToTiles(placements));
     Map<Tile, Integer> playerTileMap = generateMapFromTiles(map.getCurrentPlayerTiles().viewItems());

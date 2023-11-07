@@ -19,10 +19,10 @@ import qgame.action.PassAction;
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
 import qgame.state.Bag;
-import qgame.state.BasicQGameState;
-import qgame.state.BasicQGameStateBuilder;
+import qgame.state.QGameState;
+import qgame.state.QStateBuilder;
 import qgame.state.map.Posn;
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 import qgame.util.TileUtil;
 import qgame.player.Player;
@@ -30,8 +30,8 @@ import qgame.player.PlayerInfo;
 import qgame.rule.placement.PlacementRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.Placement;
-import qgame.state.PlayerGameState;
-import qgame.state.QGameState;
+import qgame.state.IPlayerGameState;
+import qgame.state.IGameState;
 
 import static qgame.util.ValidationUtil.validateArg;
 import static qgame.util.ValidationUtil.validateState;
@@ -40,7 +40,7 @@ import static qgame.util.ValidationUtil.validateState;
  * by prompting players for actions, updating the gameState to reflect said actions, and making
  * sure that the rules of the game are enforced throughout the game.
  */
-public class BasicQGameReferee implements QGameReferee {
+public class QReferee implements IReferee {
   private final PlacementRule placementRules;
   private final ScoringRule scoringRules;
   private final int timeOut;
@@ -49,11 +49,11 @@ public class BasicQGameReferee implements QGameReferee {
   private final int TOTAL_TILES = 1080;
   private final int NUM_PLAYER_TILES = 6;
 
-  private QGameState currentGameState;
+  private IGameState currentGameState;
   private List<Player> players;
   private List<String> ruleBreakers;
 
-  public BasicQGameReferee(PlacementRule placementRules, ScoringRule scoringRules, int timeout,
+  public QReferee(PlacementRule placementRules, ScoringRule scoringRules, int timeout,
                            int bonus) {
     this.placementRules = placementRules;
     this.scoringRules = scoringRules;
@@ -65,7 +65,7 @@ public class BasicQGameReferee implements QGameReferee {
   }
 
   @Override
-  public GameResults playGame(QGameState state, List<Player> players) throws IllegalStateException {
+  public GameResults playGame(IGameState state, List<Player> players) throws IllegalStateException {
     this.players = new ArrayList<>(players);
     this.currentGameState = state;
     setupPlayers();
@@ -80,7 +80,7 @@ public class BasicQGameReferee implements QGameReferee {
 
     List<PlayerInfo> playerInfos = getDefaultPlayerInfos(players, tileBag);
 
-    QGameState state = new BasicQGameStateBuilder()
+    IGameState state = new QStateBuilder()
     .addTileBag(tileBag.viewItems().toArray(new Tile[0]))
     .placeTile(new Posn(0, 0), tileBag.removeRandomItem())
     .addPlayerInfo(playerInfos.toArray(new PlayerInfo[0]))
@@ -94,7 +94,7 @@ public class BasicQGameReferee implements QGameReferee {
     List<PlayerInfo> infos = new ArrayList<>();
 
     for (Player p : players) {
-      PlayerInfo info = new PlayerInfo(0, tileBag.getItems(this.NUM_PLAYER_TILES));
+      PlayerInfo info = new PlayerInfo(0, tileBag.getItems(this.NUM_PLAYER_TILES), p.name());
       infos.add(info);
     }
 
@@ -107,7 +107,7 @@ public class BasicQGameReferee implements QGameReferee {
   }
 
 
-  private void setupPlayer(Player player, Bag<Tile> tiles, QGameMap board) {
+  private void setupPlayer(Player player, Bag<Tile> tiles, IMap board) {
 
     try {
       player.setup(board, tiles);
@@ -186,7 +186,7 @@ public class BasicQGameReferee implements QGameReferee {
 
   }
 
-  private Optional<TurnAction> getAndValidateAction(QGameState state, Player currentPlayer) {
+  private Optional<TurnAction> getAndValidateAction(IGameState state, Player currentPlayer) {
     TurnAction action;
     try {
       action = getAction(state, currentPlayer);
@@ -237,11 +237,11 @@ public class BasicQGameReferee implements QGameReferee {
       default -> throw new IllegalStateException("Unexpected value: " + action);
     };
   }
-  private TurnAction getAction(QGameState state, Player player)
+  private TurnAction getAction(IGameState state, Player player)
     throws ExecutionException, InterruptedException, TimeoutException {
     ThreadFactory factory = Thread.ofVirtual().factory();
     ExecutorService executor = Executors.newFixedThreadPool(1, factory);
-    PlayerGameState finalState = state.getCurrentPlayerState();
+    IPlayerGameState finalState = state.getCurrentPlayerState();
     Future<TurnAction> getAction = executor.submit(
       () -> player.takeTurn(finalState));
     return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
@@ -288,7 +288,7 @@ public class BasicQGameReferee implements QGameReferee {
     return true;
   }
 
-  private void setCurrentPlayerNTiles(QGameState state, int n) {
+  private void setCurrentPlayerNTiles(IGameState state, int n) {
     Bag<Tile> newTiles = new Bag<>(state.takeOutRefTiles(n));
     state.setCurrentPlayerHand(newTiles);
   }
@@ -327,16 +327,16 @@ public class BasicQGameReferee implements QGameReferee {
   }
 
 
-  private boolean canExchange(QGameState state) {
+  private boolean canExchange(IGameState state) {
     Bag<Tile> playerTiles = state.getCurrentPlayerState().getCurrentPlayerTiles();
     return playerTiles.size() <= state.refereeTiles().size();
   }
 
-  private boolean canPlace(PlaceAction place, QGameState state) {
+  private boolean canPlace(PlaceAction place, IGameState state) {
     return this.placementRules.validPlacements(place.placements(), state.getCurrentPlayerState());
   }
 
-  private boolean validTurn(TurnAction turnAction, QGameState state) {
+  private boolean validTurn(TurnAction turnAction, IGameState state) {
     return switch (turnAction) {
       case PassAction ignored -> true;
       case ExchangeAction ignored -> canExchange(state);
@@ -351,7 +351,7 @@ public class BasicQGameReferee implements QGameReferee {
    * @param placements list of placements player made on this turn.
    */
   private void scorePlacements(List<Placement> placements) {
-    QGameMap board = currentGameState.viewBoard();
+    IMap board = currentGameState.viewBoard();
     int score = this.scoringRules.pointsFor(placements, board);
     int bonus = placedAllTiles(placements) ? ALL_TILE_BONUS : 0;
     currentGameState.addScoreToCurrentPlayer(score + bonus);

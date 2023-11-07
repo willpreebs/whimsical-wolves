@@ -9,7 +9,7 @@ import java.util.List;
 import qgame.json.JsonConverter;
 import qgame.rule.placement.PlacementRule;
 import qgame.state.Placement;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 public class XLegal {
   public static void main(String[] args) {
@@ -17,7 +17,7 @@ public class XLegal {
     JsonElement jPub = parser.next();
     JsonElement jPlacements = parser.next();
 
-    PlayerGameState gameState = JsonConverter.playerGameStateFromJPub(jPub);
+    IPlayerGameState gameState = JsonConverter.playerGameStateFromJPub(jPub);
     List<Placement> placements = JsonConverter.placementsFromJPlacements(jPlacements);
     PlacementRule rules = HarnessUtil.createPlaceRules();
     if (rules.validPlacements(placements, gameState)) {

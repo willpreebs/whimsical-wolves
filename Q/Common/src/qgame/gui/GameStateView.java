@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import qgame.player.PlayerInfo;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 import qgame.state.map.Tile;
 
 /**
@@ -22,7 +22,7 @@ import qgame.state.map.Tile;
  * players in the game.
  */
 public class GameStateView extends JFrame {
-  public GameStateView(PlayerGameState state) {
+  public GameStateView(IPlayerGameState state) {
     super("Q Game State");
     Dimension fiveByFive = new Dimension(500, 500);
     this.setMinimumSize(new Dimension(500, 500));
@@ -38,7 +38,7 @@ public class GameStateView extends JFrame {
     this.setVisible(true);
   }
 
-  private Component createScroll(PlayerGameState state) {
+  private Component createScroll(IPlayerGameState state) {
     BufferedImage image = ImageCreator.drawBoard(state.viewBoard());
     JLabel mapPanel = new JLabel(new ImageIcon(image));
     ScrollPane scrollImage = new ScrollPane();
@@ -47,12 +47,12 @@ public class GameStateView extends JFrame {
     return scrollImage;
   }
 
-  private void addPlayerInfo(PlayerGameState state, Box box) {
+  private void addPlayerInfo(IPlayerGameState state, Box box) {
     List<Tile> tiles = new ArrayList<>(state.getCurrentPlayerTiles().viewItems());
     if (!tiles.isEmpty()) {
       PlayerInfo info
-        = new PlayerInfo(state.playerScores().get(0), tiles);
-      box.add(new PlayerInfoPanel(info));
+        = new PlayerInfo(state.playerScores().get(0), tiles, state.playerName());
+      box.add(new TilesPanel(info.tiles(), info.tiles().size()));
     }
     box.add(new HUDInfoPanel(state));
   }

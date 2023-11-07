@@ -4,10 +4,10 @@ import java.util.List;
 
 import qgame.action.TurnAction;
 import qgame.state.Bag;
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 import qgame.player.strategy.TurnStrategy;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 
 public class SimpleAIPlayer implements Player {
@@ -24,7 +24,7 @@ public class SimpleAIPlayer implements Player {
   }
 
   @Override
-  public TurnAction takeTurn(PlayerGameState gameState) throws IllegalStateException {
+  public TurnAction takeTurn(IPlayerGameState gameState) throws IllegalStateException {
     return strat.chooseAction(gameState);
   }
 
@@ -37,7 +37,7 @@ public class SimpleAIPlayer implements Player {
   }
 
   @Override
-  public void setup(QGameMap map, Bag<Tile> tiles) throws IllegalStateException {
+  public void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException {
   }
 
 

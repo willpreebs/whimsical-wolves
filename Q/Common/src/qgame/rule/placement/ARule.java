@@ -6,12 +6,12 @@ import java.util.List;
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.state.Placement;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 public abstract class ARule implements PlacementRule {
 
   @Override
-  public List<Posn> validPositionsForTile(Tile t, PlayerGameState gameState) {
+  public List<Posn> validPositionsForTile(Tile t, IPlayerGameState gameState) {
     List<Posn> validPosns = gameState.viewBoard().validPositions();
     return new ArrayList<>(
       validPosns

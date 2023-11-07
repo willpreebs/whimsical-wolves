@@ -13,7 +13,7 @@ import java.util.List;
 
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
-import qgame.state.map.TileImpl;
+import qgame.state.map.QTile;
 import static qgame.json.JsonConverter.tileFromJTile;
 import static qgame.json.JsonConverter.jCoordsFromPosns;
 
@@ -43,12 +43,12 @@ public class JsonConverterTest {
     jsonTile4 = gson.fromJson("{\"shape\": \"diamond\", \"color\": \"green\"}", JsonElement.class);
     jsonTile5 = gson.fromJson("{\"color\": \"yellow\", \"shape\": \"star\"}", JsonElement.class);
     jsonTile6 = gson.fromJson("{\"shape\": \"8star\", \"color\": \"red\"}", JsonElement.class);
-    tile1 = new TileImpl(Tile.Color.ORANGE, Tile.Shape.CIRCLE);
-    tile2 = new TileImpl(Tile.Color.BLUE, Tile.Shape.SQUARE);
-    tile3 = new TileImpl(Tile.Color.PURPLE, Tile.Shape.CLOVER);
-    tile4 = new TileImpl(Tile.Color.GREEN, Tile.Shape.DIAMOND);
-    tile5 = new TileImpl(Tile.Color.YELLOW, Tile.Shape.STAR);
-    tile6 = new TileImpl(Tile.Color.RED, Tile.Shape.EIGHT_STAR);
+    tile1 = new QTile(Tile.Color.ORANGE, Tile.Shape.CIRCLE);
+    tile2 = new QTile(Tile.Color.BLUE, Tile.Shape.SQUARE);
+    tile3 = new QTile(Tile.Color.PURPLE, Tile.Shape.CLOVER);
+    tile4 = new QTile(Tile.Color.GREEN, Tile.Shape.DIAMOND);
+    tile5 = new QTile(Tile.Color.YELLOW, Tile.Shape.STAR);
+    tile6 = new QTile(Tile.Color.RED, Tile.Shape.EIGHT_STAR);
   }
 
   private Posn posn(int y, int x) {

@@ -1,85 +1,142 @@
 package qgame.state;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
 
-import qgame.state.map.QGameMap;
-import qgame.state.map.Tile;
 import qgame.player.PlayerInfo;
+import qgame.state.map.IMap;
+import qgame.state.map.QMap;
+import qgame.state.map.Tile;
+import qgame.util.ValidationUtil;
+
+import static qgame.util.ValidationUtil.nonNull;
+import static qgame.util.ValidationUtil.validateState;
 
 /**
- * Contains all the information about the state of the Q Game that the referee knows.
+ * Represents an implementation of the Game State interface that uses the 
+ * rules known as "Basic Rules". The game state updates its board 
+ * and other variables like player score and turn order as per request
+ * from the referee's turn visitor.
  */
-public interface QGameState {
-  /**
-   * Gets a list of players based on whose turn it currently is. The first player in this list is
-   * the player whose turn it is, the second player in the list is the next up player, etc.
-   *
-   * @return list of players in chronological order of active turns
-   */
-  List<PlayerInfo> playerInformation();
+public class QGameState implements IGameState {
+
+  private IMap board;
+  private final Bag<Tile> refereeTiles;
+  private final List<PlayerInfo> playerInformation; // Players should always be kept in
+  // sequential order
 
   /**
-   * Gets an immutable copy of the game map.
-   * 
-   * @return QGameMapState
+   * Constructs the initial game state at the start of the game
+   * @param map, the initial Map of the board
+   * @param tiles the list of tiles in a game
+   * @param players list of who will play in the game
    */
-  QGameMap viewBoard();
+  public QGameState(IMap map, Bag<Tile> tiles, List<PlayerInfo> players)
+    throws IllegalArgumentException {
+    validate(map, tiles, players);
+    this.board = new QMap(map.getBoardState());
+    this.refereeTiles = new Bag<>(tiles);
+    this.playerInformation = new ArrayList<>(players);
+  }
 
   /**
-   * Gets how many tiles the ref has left.
-   * @return number of tiles the ref has left
+   * Determines whether all constructor parameters are valid before creating
+   * a new gameState.
+   * @param map the Map of all tiles on the board
+   * @param tiles the referee's tiles
+   * @param players the list of players represented through their information
    */
-  Bag<Tile> refereeTiles();
+  private void validate(IMap map,  Bag<Tile> tiles,
+                   List<PlayerInfo> players) {
+    ValidationUtil.nonNullObj(map, "Map cannot be null");
+    nonNull(List.of(tiles.viewItems()), "Tiles");
+    nonNull(players, "Players");
+  }
+
+
+  private void validateGameHasPlayers() {
+    validateState(Predicate.not(List::isEmpty), this.playerInformation,
+      "There are no players in the game.");
+  }
+
+  @Override
+  public List<PlayerInfo> playerInformation() {
+    return new ArrayList<>(this.playerInformation);
+  }
+
+  @Override
+  public IMap viewBoard() {
+    return this.board;
+  }
+
+  @Override
+  public Bag<Tile> refereeTiles() {
+    return new Bag<>(this.refereeTiles.viewItems());
+  }
+
+  private List<Integer> allScores() {
+    return new ArrayList<>(this.playerInformation
+      .stream()
+      .map(PlayerInfo::score)
+      .toList());
+  }
+  @Override
+  public IPlayerGameState getCurrentPlayerState() {
+    List<Integer> scores = allScores();
+    IMap boardState = viewBoard();
+    int tileCount = refereeTiles().size();
+    Bag<Tile> playerTile = currentPlayer().tiles();
+    String playerName = currentPlayer().name();
+    return new QPlayerGameState(scores, boardState, tileCount, playerTile, playerName);
+  }
+
+  @Override
+  public void shiftCurrentToBack() throws IllegalStateException {
+    validateGameHasPlayers();
+    this.playerInformation.add(this.playerInformation.remove(0));
+  }
+
+  @Override
+  public void addScoreToCurrentPlayer(int score) throws IllegalStateException {
+    validateGameHasPlayers();
+    this.playerInformation.get(0).incrementScore(score);
+  }
+
+  @Override
+  public void removeCurrentPlayer() {
+    validateGameHasPlayers();
+    this.playerInformation.remove(0);
+  }
+
+  @Override
+  public void setCurrentPlayerHand(Bag<Tile> tiles) throws IllegalStateException {
+    validateGameHasPlayers();
+    this.playerInformation.get(0).setTiles(tiles);
+  }
+
+  @Override
+  public void placeTile(Placement placement) {
+    board.placeTile(placement);
+  }
+
+  @Override
+  public Collection<Tile> takeOutRefTiles(int count) throws IllegalArgumentException {
+    Collection<Tile> newTiles = this.refereeTiles.getItems(count);
+    this.refereeTiles.remove(newTiles);
+    return newTiles;
+  }
+
+  @Override
+  public void giveRefereeTiles(Bag<Tile> tiles) throws IllegalArgumentException {
+    this.refereeTiles.addAll(tiles);
+  }
+
 
   /**
-   * Constructs a PlayerGameState from the current
-   * QGameState.
-   * @return all the information the current player should
-   * know about the current game.
+   * Returns the current player whose turn it is
+   * @return PlayerInfo corresponding to current turn's player.
    */
-  PlayerGameState getCurrentPlayerState();
-
-  /**
-   * Moves the first player in the game to the end of the rotation.
-   * @throws IllegalStateException if there are no players in the game.
-   */
-  void shiftCurrentToBack() throws IllegalStateException;
-
-  /**
-   * Adds a given number of points to the current player.
-   * @param score The amount of points to give to the first player
-   * @throws IllegalStateException if there are no players in the game.
-   */
-  void addScoreToCurrentPlayer(int score)  throws IllegalStateException;
-
-  /**
-   * Removes the first player in the game from the rotation.
-   * @throws IllegalStateException if there are no players in the game.
-   */
-  void removeCurrentPlayer() throws IllegalStateException;
-
-  /**
-   * Assigns the list of tiles to the current player in the game.
-   * @param tiles The tiles to be given to the current player.
-   * @throws IllegalStateException When there are no players in the game.
-   */
-  void setCurrentPlayerHand(Bag<Tile> tiles) throws IllegalStateException;
-
-
-  /**
-   * Places a tile at the given position on the game state's map.
-   * @param placement The tile.
-   */
-  void placeTile(Placement placement);
-
-  /**
-   * Gets a given number of tests
-   * @param count
-   * @return
-   * @throws IllegalArgumentException
-   */
-  Collection<Tile> takeOutRefTiles(int count) throws IllegalArgumentException;
-
-  void giveRefereeTiles(Bag<Tile> tiles) throws IllegalArgumentException;
+  private PlayerInfo currentPlayer() {
+    return this.playerInformation.get(0);
+  }
 }

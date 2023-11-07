@@ -3,14 +3,14 @@ package qgame.referee;
 import java.util.List;
 
 import qgame.player.Player;
-import qgame.state.QGameState;
+import qgame.state.IGameState;
 
 /**
  * Represents a QGameReferee, which acts like a function
  * that executes a game given a state and a list of players. It will
  * return the results of the game: including winners and rule-breakers.
  */
-public interface QGameReferee {
+public interface IReferee {
 
   /**
    * Takes a given game state and plays the game to completion, returning the winners and players
@@ -23,7 +23,7 @@ public interface QGameReferee {
    * @throws IllegalStateException if the state is invalid such that
    * running a game is not possible given the list of players.
    */
-  GameResults playGame(QGameState state, List<Player> players) throws IllegalStateException;
+  GameResults playGame(IGameState state, List<Player> players) throws IllegalStateException;
 
   
   GameResults playGame(List<Player> players) throws IllegalStateException;

@@ -5,7 +5,7 @@ import java.util.List;
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.state.Placement;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 /**
  * Represents a rule about placements on a QGameBoard.
@@ -21,7 +21,7 @@ public interface PlacementRule {
    * @param gameState The game state to test the rules on.
    * @return True if the given placements satisify the rule.
    */
-  boolean validPlacements(List<Placement> placements, PlayerGameState gameState);
+  boolean validPlacements(List<Placement> placements, IPlayerGameState gameState);
 
   /**
    * Returns a list of all the valid positions a tile can be placed on a given game state.
@@ -29,5 +29,5 @@ public interface PlacementRule {
    * @param gameState the current game state where the tile will be placed
    * @return a list of posns where a tile can be placed on at a given game state
    */
-  List<Posn> validPositionsForTile(Tile t, PlayerGameState gameState);
+  List<Posn> validPositionsForTile(Tile t, IPlayerGameState gameState);
 }

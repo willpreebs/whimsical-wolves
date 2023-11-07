@@ -3,8 +3,8 @@ package qgame.player;
 import qgame.action.TurnAction;
 import qgame.player.strategy.TurnStrategy;
 import qgame.state.Bag;
-import qgame.state.PlayerGameState;
-import qgame.state.map.QGameMap;
+import qgame.state.IPlayerGameState;
+import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 
 public class DummyAIPlayer implements Player{
@@ -43,14 +43,14 @@ public class DummyAIPlayer implements Player{
   }
 
   @Override
-  public TurnAction takeTurn(PlayerGameState ref) throws IllegalStateException {
+  public TurnAction takeTurn(IPlayerGameState ref) throws IllegalStateException {
     failIfStep(FailStep.TAKE_TURN);
     // TODO: implement cheats
     return player.takeTurn(ref);
   }
 
   @Override
-  public void setup(QGameMap map, Bag<Tile> tiles) throws IllegalStateException {
+  public void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException {
     failIfStep(FailStep.SETUP);
     player.setup(map, tiles);
   }

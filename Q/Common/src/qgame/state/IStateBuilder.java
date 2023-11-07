@@ -8,7 +8,7 @@ import qgame.player.PlayerInfo;
  * A utilization of the builder pattern on gameState
  * to facilitate the creation of game states.
  */
-public interface StateBuilder {
+public interface IStateBuilder {
 
   /**
    * Creates a statebuilder with the desired placements
@@ -16,7 +16,7 @@ public interface StateBuilder {
    * @param placement list of positions to place tiles.
    * @return an updated state builder
    */
-  StateBuilder placeTiles(Placement... placement);
+  IStateBuilder placeTiles(Placement... placement);
 
   /**
    * Places the given tile at the desired position on
@@ -26,7 +26,7 @@ public interface StateBuilder {
    * @return an updated StateBuilder with the tile at that
    * location.
    */
-  StateBuilder placeTile(Posn posn, Tile tile);
+  IStateBuilder placeTile(Posn posn, Tile tile);
 
   /**
    * Creates a statebuilder whose ref has the given
@@ -35,7 +35,7 @@ public interface StateBuilder {
    * @return a StateBuilder whose ref's tiles are updated by.
    * this method.
    */
-  StateBuilder addTileBag(Tile... tileBag);
+  IStateBuilder addTileBag(Tile... tileBag);
 
   /**
    * Creates a StateBuilder whose playerInfo has
@@ -44,11 +44,11 @@ public interface StateBuilder {
    * @return a new StateBuilder whose PlayerInfo list
    * is updated to these parameters.
    */
-  StateBuilder addPlayerInfo(PlayerInfo... infos);
+  IStateBuilder addPlayerInfo(PlayerInfo... infos);
 
   /**
    * Finally constructs a game state from the statebuilder.
    * @return QGameMap state from built conditions.
    */
-  QGameState build();
+  IGameState build();
 }

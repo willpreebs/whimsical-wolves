@@ -9,12 +9,12 @@ import java.io.Writer;
 
 import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 
 class XStrategyInputCreator {
 
-  public static boolean createInput(PlayerGameState state, TurnStrategy strategy,
+  public static boolean createInput(IPlayerGameState state, TurnStrategy strategy,
                                  TurnAction expected, String path, int num) throws IOException{
     JsonElement jPub = JsonConverter.playerStateToJPub(state);
     JsonElement strat = JsonConverter.strategyToJson(strategy);

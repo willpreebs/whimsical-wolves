@@ -4,9 +4,9 @@ import java.util.List;
 
 import qgame.action.TurnAction;
 import qgame.state.Bag;
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.state.map.Tile;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 /**
  * An interface that represents all the behavior that any player
@@ -28,7 +28,7 @@ public interface Player {
    * @return a TurnAction that corresponds to the move the player wants to make.
    * @throws IllegalStateException if unable to make a move.
    */
-  TurnAction takeTurn(PlayerGameState ref) throws IllegalStateException;
+  TurnAction takeTurn(IPlayerGameState ref) throws IllegalStateException;
 
   /**
    * Tells a player the starting state of a game and the tiles they have.
@@ -36,7 +36,7 @@ public interface Player {
    * @param tiles The tiles in the players hands
    * @throws IllegalStateException If player is unable to receive the message when.
    */
-  void setup(QGameMap map, Bag<Tile> tiles) throws IllegalStateException;
+  void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException;
   /**
    * Gives the player a new list of tiles.
    * @param tiles The tiles the player now has.

@@ -7,7 +7,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 /**
  * Represents the JPanel that contains factual info
@@ -15,7 +15,8 @@ import qgame.state.PlayerGameState;
  * (eventually) the remaining tiles and the
  */
 public class HUDInfoPanel extends JPanel {
-  public HUDInfoPanel(PlayerGameState state){
+  
+  public HUDInfoPanel(IPlayerGameState state){
     List<Integer> playerInfoList = state.playerScores();
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -36,7 +37,7 @@ public class HUDInfoPanel extends JPanel {
     }
   }
 
-  private void writeRemainingTiles(PlayerGameState state, JPanel panel){
+  private void writeRemainingTiles(IPlayerGameState state, JPanel panel){
     JLabel remainingTiles = new JLabel("Remaining Tiles: " + state.remainingTiles());
     panel.add(remainingTiles);
   }

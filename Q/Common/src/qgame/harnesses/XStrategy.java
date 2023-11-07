@@ -9,7 +9,7 @@ import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
 import qgame.player.strategy.TurnStrategy;
 import qgame.rule.placement.PlacementRule;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 public class XStrategy {
   public static void main(String[] args) {
@@ -17,7 +17,7 @@ public class XStrategy {
     JsonElement strat = parser.next();
     JsonElement jPub = parser.next();
     PlacementRule rules = HarnessUtil.createPlaceRules();
-    PlayerGameState state = JsonConverter.playerGameStateFromJPub(jPub);
+    IPlayerGameState state = JsonConverter.playerGameStateFromJPub(jPub);
     TurnStrategy strategy = JsonConverter.jStrategyToStrategy(strat, rules);
     TurnAction action = strategy.chooseAction(state);
     System.out.println(JsonConverter.actionToJson(action));

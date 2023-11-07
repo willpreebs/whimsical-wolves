@@ -3,13 +3,13 @@ package qgame.state;
 
 import java.util.List;
 
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 
 /**
  * Represents the information in a QGameState that a player has access to.
  */
-public interface PlayerGameState {
+public interface IPlayerGameState {
 
   /**
    * Gets a list of the scores of all the players in this game. The first player in this list is
@@ -25,7 +25,7 @@ public interface PlayerGameState {
    *
    * @return QGameMapState
    */
-  QGameMap viewBoard();
+  IMap viewBoard();
 
   /**
    * Gets how many tiles the ref has left.
@@ -36,4 +36,6 @@ public interface PlayerGameState {
   Bag<Tile> getCurrentPlayerTiles();
 
   void makePlacement(Placement placement);
+
+  String playerName();
 }

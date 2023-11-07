@@ -6,9 +6,9 @@ import java.util.List;
 import qgame.action.ExchangeAction;
 import qgame.action.TurnAction;
 import qgame.state.Bag;
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.state.map.Tile;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 /**
  * A player's whose only action is to always tell the ref
@@ -25,11 +25,11 @@ public class AlwaysExchangePlayer implements MockPlayer{
     return "Exchanger";
   };
 
-  public TurnAction takeTurn(PlayerGameState ref){
+  public TurnAction takeTurn(IPlayerGameState ref){
     return new ExchangeAction();
   }
 
-  public void setup(QGameMap map, Bag<Tile> tiles){
+  public void setup(IMap map, Bag<Tile> tiles){
 
   }
 

@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import qgame.json.JsonConverter;
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.Placement;
 
@@ -17,7 +17,7 @@ public class XScore {
     JsonElement jMap = parser.next();
     JsonElement jPlacements = parser.next();
 
-    QGameMap boardState = JsonConverter.qGameMapFromJMap(jMap);
+    IMap boardState = JsonConverter.qGameMapFromJMap(jMap);
     List<Placement> placements = JsonConverter.placementsFromJPlacements(jPlacements);
     ScoringRule rules = HarnessUtil.createScoreRules();
     System.out.println(rules.pointsFor(placements, boardState));

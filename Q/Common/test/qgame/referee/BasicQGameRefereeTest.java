@@ -13,10 +13,10 @@ import java.util.Map;
 import qgame.player.strategy.AlwaysPassStrategy;
 import qgame.state.Bag;
 import qgame.state.map.Posn;
-import qgame.state.map.QGameMap;
-import qgame.state.map.QGameMapImpl;
+import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Tile;
-import qgame.state.map.TileImpl;
+import qgame.state.map.QTile;
 import qgame.player.AlwaysExchangePlayer;
 import qgame.player.AlwaysPassPlayer;
 import qgame.player.MockPlayer;
@@ -36,9 +36,9 @@ import qgame.rule.scoring.PointPerContiguousSequenceRule;
 import qgame.rule.scoring.PointPerTileRule;
 import qgame.rule.scoring.QRule;
 import qgame.rule.scoring.ScoringRule;
-import qgame.state.BasicQGameState;
-import qgame.state.BasicQGameStateBuilder;
 import qgame.state.QGameState;
+import qgame.state.QStateBuilder;
+import qgame.state.IGameState;
 import qgame.player.DummyAIPlayer.FailStep;
 
 import static org.junit.Assert.*;
@@ -66,13 +66,13 @@ public class BasicQGameRefereeTest {
   Player disconnectPlayer;
   Player timeOutPlayer;
 
-  QGameState stateForceFirstPass;
-  QGameState allPass;
-  QGameReferee ref;
+  IGameState stateForceFirstPass;
+  IGameState allPass;
+  IReferee ref;
 
-  QGameState onePassOneExchange1;
-  QGameState onePassOneExchange2;
-  QGameState placeAll;
+  IGameState onePassOneExchange1;
+  IGameState onePassOneExchange2;
+  IGameState placeAll;
 
   @Before
   public void init() {
@@ -87,30 +87,30 @@ public class BasicQGameRefereeTest {
     badMove = new DummyAIPlayer("Bad player", new BadTurnStrategy());
     disconnectPlayer = new DisconnectPlayer("Disconnect");
     timeOutPlayer = new TimeOutPlayer("Bobby", 1000);
-    ref = new BasicQGameReferee(placementRules, scoringRules, 900, 6);
+    ref = new QReferee(placementRules, scoringRules, 900, 6);
   }
 
   private void init1() {
     Map<Posn, Tile> tileMap = new HashMap<>();
-    tileMap.put(new Posn(0, 1), new TileImpl(red, square));
-    QGameMap map = new QGameMapImpl(tileMap);
+    tileMap.put(new Posn(0, 1), new QTile(red, square));
+    IMap map = new QMap(tileMap);
 
 
     List<PlayerInfo> info = new ArrayList<>();
-    info.add(new PlayerInfo(0, List.of(new TileImpl(orange, star))));
-    info.add(new PlayerInfo(0, List.of(new TileImpl(orange, square))));
-    stateForceFirstPass = new BasicQGameState(map, new Bag<>(), info);
+    info.add(new PlayerInfo(0, List.of(new QTile(orange, star)), ""));
+    info.add(new PlayerInfo(0, List.of(new QTile(orange, square)), ""));
+    stateForceFirstPass = new QGameState(map, new Bag<>(), info);
   }
 
   @Before
   public void initAllPass(){
     Map<Posn, Tile> tileMap = new HashMap<>();
-    tileMap.put(new Posn(0, 1), new TileImpl(red, square));
-    QGameMap map = new QGameMapImpl(tileMap);
+    tileMap.put(new Posn(0, 1), new QTile(red, square));
+    IMap map = new QMap(tileMap);
     List<PlayerInfo> info = new ArrayList<>();
-    info.add(new PlayerInfo(0, List.of(new TileImpl(orange, star))));
-    info.add(new PlayerInfo(0, List.of(new TileImpl(orange, circle))));
-    allPass = new BasicQGameState(map, new Bag<>(), info);
+    info.add(new PlayerInfo(0, List.of(new QTile(orange, star)), ""));
+    info.add(new PlayerInfo(0, List.of(new QTile(orange, circle)), ""));
+    allPass = new QGameState(map, new Bag<>(), info);
   }
 
   @Test
@@ -169,28 +169,28 @@ public class BasicQGameRefereeTest {
   @Before
   public void initOnePassOneExchange1() {
     onePassOneExchange1 =
-      new BasicQGameStateBuilder()
-        .addTileBag(new TileImpl(blue, eightStar))
-        .placeTile(new Posn(0, 0), new TileImpl(red, clover))
-        .addPlayerInfo(new PlayerInfo(1, List.of(new TileImpl(green, square))))
-        .addPlayerInfo(new PlayerInfo(5, List.of(new TileImpl(yellow, star))))
+      new QStateBuilder()
+        .addTileBag(new QTile(blue, eightStar))
+        .placeTile(new Posn(0, 0), new QTile(red, clover))
+        .addPlayerInfo(new PlayerInfo(1, List.of(new QTile(green, square)), ""))
+        .addPlayerInfo(new PlayerInfo(5, List.of(new QTile(yellow, star)), ""))
         .build();
   }
 
   @Before
   public void initOnePassOneExchange2() {
     onePassOneExchange2 =
-      new BasicQGameStateBuilder()
-        .addTileBag(new TileImpl(blue, eightStar))
-        .placeTile(new Posn(0, 0), new TileImpl(red, clover))
-        .addPlayerInfo(new PlayerInfo(5, List.of(new TileImpl(red, star))))
-        .addPlayerInfo(new PlayerInfo(1, List.of(new TileImpl(green, square))))
+      new QStateBuilder()
+        .addTileBag(new QTile(blue, eightStar))
+        .placeTile(new Posn(0, 0), new QTile(red, clover))
+        .addPlayerInfo(new PlayerInfo(5, List.of(new QTile(red, star)), ""))
+        .addPlayerInfo(new PlayerInfo(1, List.of(new QTile(green, square)), ""))
         .build();
   }
 
   @Test
   public void testGameEndsWithOnePassOneExchange1() {
-    MockPlayer passer = new AlwaysPassPlayer(List.of(new TileImpl(blue,square)));
+    MockPlayer passer = new AlwaysPassPlayer(List.of(new QTile(blue,square)));
     List<Player> players = new ArrayList<>(List.of(passer, player1));
     GameResults results = ref.playGame(onePassOneExchange1, players);
     assertEquals(1, results.winners().size());
@@ -200,8 +200,8 @@ public class BasicQGameRefereeTest {
 
   @Test
   public void testGameEndsWithOnePassOneExchange2() {
-    MockPlayer passer = new AlwaysPassPlayer(List.of(new TileImpl(blue,square)));
-    MockPlayer exchanger = new AlwaysExchangePlayer(new Bag<>(List.of(new TileImpl(blue,square))));
+    MockPlayer passer = new AlwaysPassPlayer(List.of(new QTile(blue,square)));
+    MockPlayer exchanger = new AlwaysExchangePlayer(new Bag<>(List.of(new QTile(blue,square))));
     List<Player> players = new ArrayList<>(List.of(exchanger, passer));
     GameResults results = ref.playGame(onePassOneExchange2, players);
     assertEquals(1, results.winners().size());
@@ -212,15 +212,15 @@ public class BasicQGameRefereeTest {
 
   @Before
   public void initEndAfterPlaceAll(){
-    placeAll = new BasicQGameStateBuilder()
-      .addTileBag(new TileImpl(blue, eightStar))
-      .placeTile(new Posn(0, 0), new TileImpl(red, clover))
-      .addPlayerInfo(new PlayerInfo(0, List.of(new TileImpl(red, eightStar),
-        new TileImpl(green, eightStar))))
-      .addPlayerInfo(new PlayerInfo(0, List.of(new TileImpl(green, square),
-        new TileImpl(green, eightStar), new TileImpl(green, eightStar),
-        new TileImpl(green, eightStar), new TileImpl(green, eightStar),
-        new TileImpl(green, eightStar), new TileImpl(green, eightStar))))
+    placeAll = new QStateBuilder()
+      .addTileBag(new QTile(blue, eightStar))
+      .placeTile(new Posn(0, 0), new QTile(red, clover))
+      .addPlayerInfo(new PlayerInfo(0, List.of(new QTile(red, eightStar),
+        new QTile(green, eightStar)), ""))
+      .addPlayerInfo(new PlayerInfo(0, List.of(new QTile(green, square),
+        new QTile(green, eightStar), new QTile(green, eightStar),
+        new QTile(green, eightStar), new QTile(green, eightStar),
+        new QTile(green, eightStar), new QTile(green, eightStar)), ""))
       .build();
   }
 
@@ -239,18 +239,18 @@ public class BasicQGameRefereeTest {
 
   @Test
   public void testPlayersFailToSetup() throws IOException {
-    QGameState state = new BasicQGameStateBuilder()
-      .placeTile(new Posn(0, 0), new TileImpl(red, diamond))
-      .addTileBag(new TileImpl(orange, square), new TileImpl(green, star), new TileImpl(red,
+    IGameState state = new QStateBuilder()
+      .placeTile(new Posn(0, 0), new QTile(red, diamond))
+      .addTileBag(new QTile(orange, square), new QTile(green, star), new QTile(red,
         square))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(purple, eightStar), new TileImpl(green, circle))))
+        List.of(new QTile(purple, eightStar), new QTile(green, circle)), ""))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(orange, clover), new TileImpl(green, star))))
+        List.of(new QTile(orange, clover), new QTile(green, star)), ""))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(yellow, diamond), new TileImpl(green, circle))))
+        List.of(new QTile(yellow, diamond), new QTile(green, circle)), ""))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(red, clover), new TileImpl(green, circle))))
+        List.of(new QTile(red, clover), new QTile(green, circle)), ""))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("bobby", new DagStrategy(placementRules)),
@@ -267,18 +267,18 @@ public class BasicQGameRefereeTest {
 
   @Test
   public void testAllPlayersFailToSetup() throws IOException {
-    QGameState state = new BasicQGameStateBuilder()
-      .placeTile(new Posn(0, 0), new TileImpl(red, diamond))
-      .addTileBag(new TileImpl(orange, square), new TileImpl(green, star), new TileImpl(red,
+    IGameState state = new QStateBuilder()
+      .placeTile(new Posn(0, 0), new QTile(red, diamond))
+      .addTileBag(new QTile(orange, square), new QTile(green, star), new QTile(red,
         square))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(purple, eightStar), new TileImpl(green, circle))))
+        List.of(new QTile(purple, eightStar), new QTile(green, circle)), ""))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(orange, clover), new TileImpl(green, star))))
+        List.of(new QTile(orange, clover), new QTile(green, star)), ""))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(yellow, diamond), new TileImpl(green, circle))))
+        List.of(new QTile(yellow, diamond), new QTile(green, circle)), ""))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(red, clover), new TileImpl(green, circle))))
+        List.of(new QTile(red, clover), new QTile(green, circle)), ""))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("bobby", new DagStrategy(placementRules), FailStep.SETUP),
@@ -296,17 +296,17 @@ public class BasicQGameRefereeTest {
 
   @Test
   public void test3WinnersSortedProperly() throws IOException {
-    QGameState state = new BasicQGameStateBuilder()
-      .placeTile(new Posn(1, 0), new TileImpl(red, diamond))
-      .addTileBag(new TileImpl(green, square))
+    IGameState state = new QStateBuilder()
+      .placeTile(new Posn(1, 0), new QTile(red, diamond))
+      .addTileBag(new QTile(green, square))
       .addPlayerInfo(new PlayerInfo(2,
-        List.of(new TileImpl(purple, eightStar), new TileImpl(green, circle))))
+        List.of(new QTile(purple, eightStar), new QTile(green, circle)), ""))
       .addPlayerInfo(new PlayerInfo(2,
-        List.of(new TileImpl(orange, clover), new TileImpl(green, star))))
+        List.of(new QTile(orange, clover), new QTile(green, star)), ""))
       .addPlayerInfo(new PlayerInfo(2,
-        List.of(new TileImpl(yellow, eightStar), new TileImpl(green, circle))))
+        List.of(new QTile(yellow, eightStar), new QTile(green, circle)), ""))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(blue, clover), new TileImpl(green, circle))))
+        List.of(new QTile(blue, clover), new QTile(green, circle)), ""))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("ben3", new DagStrategy(placementRules)),
@@ -323,15 +323,15 @@ public class BasicQGameRefereeTest {
 
   @Test
   public void testTakeTurnRemovesProperly() throws IOException {
-    QGameState state = new BasicQGameStateBuilder()
-      .placeTile(new Posn(1, 0), new TileImpl(red, diamond))
-      .addTileBag(new TileImpl(green, square))
+    IGameState state = new QStateBuilder()
+      .placeTile(new Posn(1, 0), new QTile(red, diamond))
+      .addTileBag(new QTile(green, square))
       .addPlayerInfo(new PlayerInfo(2,
-        List.of(new TileImpl(purple, eightStar), new TileImpl(green, circle))))
+        List.of(new QTile(purple, eightStar), new QTile(green, circle)), ""))
       .addPlayerInfo(new PlayerInfo(2,
-        List.of(new TileImpl(orange, star), new TileImpl(green, star))))
+        List.of(new QTile(orange, star), new QTile(green, star)), ""))
       .addPlayerInfo(new PlayerInfo(3,
-        List.of(new TileImpl(blue, clover), new TileImpl(green, circle))))
+        List.of(new QTile(blue, clover), new QTile(green, circle)), ""))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("appleeeee", new DagStrategy(placementRules)),
@@ -347,15 +347,15 @@ public class BasicQGameRefereeTest {
 
   @Test
   public void testWinnerStillInResults() throws IOException {
-    QGameState state = new BasicQGameStateBuilder()
-      .placeTile(new Posn(1, 0), new TileImpl(red, diamond))
-      .addTileBag(new TileImpl(green, square))
+    IGameState state = new QStateBuilder()
+      .placeTile(new Posn(1, 0), new QTile(red, diamond))
+      .addTileBag(new QTile(green, square))
       .addPlayerInfo(new PlayerInfo(3,
-        List.of(new TileImpl(red, eightStar), new TileImpl(green, circle))))
+        List.of(new QTile(red, eightStar), new QTile(green, circle)), ""))
       .addPlayerInfo(new PlayerInfo(2,
-        List.of(new TileImpl(orange, eightStar), new TileImpl(green, star))))
+        List.of(new QTile(orange, eightStar), new QTile(green, star)), ""))
       .addPlayerInfo(new PlayerInfo(3,
-        List.of(new TileImpl(blue, clover), new TileImpl(green, circle))))
+        List.of(new QTile(blue, clover), new QTile(green, circle)), ""))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("appleeeee", new DagStrategy(placementRules), FailStep.WIN),
@@ -371,15 +371,15 @@ public class BasicQGameRefereeTest {
 
   @Test
   public void testSameColorPlaceAllTilesInSecondRound() throws IOException {
-    QGameState state = new BasicQGameStateBuilder()
-      .placeTile(new Posn(1, 0), new TileImpl(red, square))
-      .addTileBag(new TileImpl(green, square))
+    IGameState state = new QStateBuilder()
+      .placeTile(new Posn(1, 0), new QTile(red, square))
+      .addTileBag(new QTile(green, square))
       .addPlayerInfo(new PlayerInfo(2,
-        List.of(new TileImpl(red, eightStar), new TileImpl(green, circle))))
+        List.of(new QTile(red, eightStar), new QTile(green, circle)), ""))
       .addPlayerInfo(new PlayerInfo(12,
-        List.of(new TileImpl(orange, eightStar), new TileImpl(green, star))))
+        List.of(new QTile(orange, eightStar), new QTile(green, star)), ""))
       .addPlayerInfo(new PlayerInfo(15,
-        List.of(new TileImpl(blue, clover), new TileImpl(green, circle))))
+        List.of(new QTile(blue, clover), new QTile(green, circle)), ""))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("tess", new DagStrategy(placementRules)),
@@ -396,15 +396,15 @@ public class BasicQGameRefereeTest {
 
   @Test
   public void testAllRemovedVarious() throws IOException {
-    QGameState state = new BasicQGameStateBuilder()
-      .placeTile(new Posn(1, 0), new TileImpl(red, square))
-      .addTileBag(new TileImpl(green, square))
+    IGameState state = new QStateBuilder()
+      .placeTile(new Posn(1, 0), new QTile(red, square))
+      .addTileBag(new QTile(green, square))
       .addPlayerInfo(new PlayerInfo(2,
-        List.of(new TileImpl(red, eightStar), new TileImpl(green, circle))))
+        List.of(new QTile(red, eightStar), new QTile(green, circle)), ""))
       .addPlayerInfo(new PlayerInfo(12,
-        List.of(new TileImpl(orange, eightStar), new TileImpl(green, star))))
+        List.of(new QTile(orange, eightStar), new QTile(green, star)), ""))
       .addPlayerInfo(new PlayerInfo(15,
-        List.of(new TileImpl(blue, square), new TileImpl(green, circle))))
+        List.of(new QTile(blue, square), new QTile(green, circle)), ""))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("tess", new DagStrategy(placementRules), FailStep.SETUP),
@@ -421,16 +421,16 @@ public class BasicQGameRefereeTest {
 
   @Test
   public void testLockoutGame() throws IOException {
-    QGameState state = new BasicQGameStateBuilder()
-      .placeTile(new Posn(-3, 0), new TileImpl(green, eightStar))
-      .addTileBag(new TileImpl(purple, eightStar))
-      .addTileBag(new TileImpl(red, clover))
+    IGameState state = new QStateBuilder()
+      .placeTile(new Posn(-3, 0), new QTile(green, eightStar))
+      .addTileBag(new QTile(purple, eightStar))
+      .addTileBag(new QTile(red, clover))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(red, eightStar), new TileImpl(green, circle))))
+        List.of(new QTile(red, eightStar), new QTile(green, circle)), ""))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(orange, eightStar), new TileImpl(green, star))))
+        List.of(new QTile(orange, eightStar), new QTile(green, star)), ""))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(blue, square), new TileImpl(green, circle))))
+        List.of(new QTile(blue, square), new QTile(green, circle)), ""))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("383bob", new DagStrategy(placementRules)),
@@ -446,15 +446,15 @@ public class BasicQGameRefereeTest {
 
   @Test
   public void testLockoutGame2() throws IOException {
-    QGameState state = new BasicQGameStateBuilder()
-      .placeTile(new Posn(-3, 0), new TileImpl(green, eightStar))
-      .addTileBag(new TileImpl(purple, eightStar))
+    IGameState state = new QStateBuilder()
+      .placeTile(new Posn(-3, 0), new QTile(green, eightStar))
+      .addTileBag(new QTile(purple, eightStar))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(red, eightStar), new TileImpl(green, circle))))
+        List.of(new QTile(red, eightStar), new QTile(green, circle)), ""))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new TileImpl(orange, eightStar), new TileImpl(green, clover))))
+        List.of(new QTile(orange, eightStar), new QTile(green, clover)), ""))
       .addPlayerInfo(new PlayerInfo(11,
-        List.of(new TileImpl(blue, square), new TileImpl(green, circle))))
+        List.of(new QTile(blue, square), new QTile(green, circle)), ""))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("383bob", new DagStrategy(placementRules)),

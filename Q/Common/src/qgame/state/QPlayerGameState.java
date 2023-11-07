@@ -4,32 +4,34 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import qgame.state.map.QGameMap;
-import qgame.state.map.QGameMapImpl;
+import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 
 /**
  * Contains all the information about the game that should be known
  * by the current player.
  */
-public class BasicPlayerGameState implements PlayerGameState {
+public class QPlayerGameState implements IPlayerGameState {
 
   private final List<Integer> scores;
-  private final QGameMap board;
+  private final IMap board;
   private final int refTileCount;
   private final Bag<Tile> playerTiles;
+  private final String playerName;
 
-  public BasicPlayerGameState(List<Integer> scores, QGameMap board, int refTileCount,
-                              Collection<Tile> playerTiles) {
-    this(scores, board, refTileCount, new Bag<>(playerTiles));
+  public QPlayerGameState(List<Integer> scores, IMap board, int refTileCount,
+                              Collection<Tile> playerTiles, String playerName) {
+    this(scores, board, refTileCount, new Bag<>(playerTiles), playerName);
   }
 
-  public BasicPlayerGameState(List<Integer> scores, QGameMap board, int refTileCount,
-                              Bag<Tile> playerTiles) {
+  public QPlayerGameState(List<Integer> scores, IMap board, int refTileCount,
+                              Bag<Tile> playerTiles, String playerName) {
     this.scores = new ArrayList<>(scores);
-    this.board = new QGameMapImpl(board.getBoardState());
+    this.board = new QMap(board.getBoardState());
     this.refTileCount = refTileCount;
     this.playerTiles = new Bag<>(playerTiles);
+    this.playerName = playerName;
   }
 
   @Override
@@ -38,8 +40,8 @@ public class BasicPlayerGameState implements PlayerGameState {
   }
 
   @Override
-  public QGameMap viewBoard() {
-    return new QGameMapImpl(this.board.getBoardState());
+  public IMap viewBoard() {
+    return new QMap(this.board.getBoardState());
   }
 
   @Override
@@ -56,6 +58,11 @@ public class BasicPlayerGameState implements PlayerGameState {
   public void makePlacement(Placement placement) {
     this.playerTiles.remove(new ArrayList<>(List.of(placement.tile())));
     this.board.placeTile(placement);
+  }
+
+  @Override
+  public String playerName() {
+    return this.playerName;
   }
 
 }

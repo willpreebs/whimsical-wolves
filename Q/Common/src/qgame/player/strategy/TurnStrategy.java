@@ -1,7 +1,7 @@
 package qgame.player.strategy;
 
 import qgame.action.TurnAction;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 
 /**
  * Represents a player's decision process for when they make a turn.
@@ -14,5 +14,5 @@ public interface TurnStrategy {
    * @param state The game state to determine an action for
    * @return The action the strategy decides to take for this state.
    */
-  TurnAction chooseAction(PlayerGameState state);
+  TurnAction chooseAction(IPlayerGameState state);
 }

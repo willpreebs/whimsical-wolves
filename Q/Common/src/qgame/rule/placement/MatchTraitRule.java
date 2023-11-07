@@ -3,7 +3,7 @@ package qgame.rule.placement;
 import java.util.List;
 
 import qgame.state.map.Posn;
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 import qgame.state.Placement;
 import qgame.util.TileUtil;
@@ -25,7 +25,7 @@ public class MatchTraitRule extends BoardRule {
                                        List<Tile> horizontalNeighbors) {
     return sameTraitSubset(tile, verticalNeighbors) && sameTraitSubset(tile, horizontalNeighbors);
   }
-  protected boolean legalPlacement(Placement move, QGameMap qGameBoard) {
+  protected boolean legalPlacement(Placement move, IMap qGameBoard) {
     Posn posn = move.posn();
     Tile tile = move.tile();
     if (qGameBoard.posnHasTile(posn)) {

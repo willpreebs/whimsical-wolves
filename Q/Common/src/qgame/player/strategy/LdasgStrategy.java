@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import qgame.state.map.Posn;
-import qgame.state.map.QGameMap;
+import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 import qgame.rule.placement.PlacementRule;
 import qgame.state.Placement;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 import qgame.util.PosnUtil;
 
 /**
@@ -23,24 +23,24 @@ public class LdasgStrategy extends SmallestRowColumnTileStrategy {
     super(rules);
   }
 
-  private List<Posn> neighborsWithTiles(Posn posn, QGameMap state) {
+  private List<Posn> neighborsWithTiles(Posn posn, IMap state) {
     return PosnUtil.neighbors(posn)
       .stream()
       .filter(state::posnHasTile)
       .toList();
   }
 
-  private int neighborsWithTilesSize(Posn posn, QGameMap state) {
+  private int neighborsWithTilesSize(Posn posn, IMap state) {
     return neighborsWithTiles(posn, state).size();
   }
-  private int maxConstrained(List<Posn> posns, QGameMap board) {
+  private int maxConstrained(List<Posn> posns, IMap board) {
     return posns
       .stream()
       .map(posn -> this.neighborsWithTiles(posn, board))
       .map(List::size)
       .reduce(0, Math::max);
   }
-  private List<Posn> maxConstrainedNeighbors(List<Posn> posns, QGameMap board) {
+  private List<Posn> maxConstrainedNeighbors(List<Posn> posns, IMap board) {
     int maxConstrainSize = maxConstrained(posns, board);
     return new ArrayList<>(posns
         .stream()
@@ -48,13 +48,13 @@ public class LdasgStrategy extends SmallestRowColumnTileStrategy {
         .toList());
   }
 
-  private Posn bestPosition(List<Posn> posns, QGameMap board) {
+  private Posn bestPosition(List<Posn> posns, IMap board) {
     List<Posn> maxConstrainedPositions = maxConstrainedNeighbors(posns, board);
     maxConstrainedPositions.sort(PosnUtil::rowColumnCompare);
     return maxConstrainedPositions.get(0);
   }
 
-  protected Placement makePlacementGivenPositions(PlayerGameState state, List<Posn> legalPlaces) {
+  protected Placement makePlacementGivenPositions(IPlayerGameState state, List<Posn> legalPlaces) {
     Tile bestTile = bestTile(state);
     Posn best = bestPosition(legalPlaces, state.viewBoard());
     return new Placement(best, bestTile);

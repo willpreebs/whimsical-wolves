@@ -6,7 +6,7 @@ import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.rule.placement.PlacementRule;
 import qgame.state.Placement;
-import qgame.state.PlayerGameState;
+import qgame.state.IPlayerGameState;
 import qgame.util.PosnUtil;
 
 /**
@@ -20,7 +20,7 @@ public class DagStrategy extends SmallestRowColumnTileStrategy {
     super(ruleBook);
   }
 
-  protected Placement makePlacementGivenPositions(PlayerGameState currentState,
+  protected Placement makePlacementGivenPositions(IPlayerGameState currentState,
                                     List<Posn> legalPlaces) {
     Tile bestTile = bestTile(currentState);
     legalPlaces.sort(PosnUtil::rowColumnCompare);

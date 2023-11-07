@@ -9,7 +9,7 @@ import qgame.state.Placement;
  * A representation of the mutable state of the Observable Q Game board. Supports placing a
  * tile on the game map.
  */
-public interface QGameMap {
+public interface IMap {
   /**
    * Returns the tile in the board at the given position if it exists.
    *

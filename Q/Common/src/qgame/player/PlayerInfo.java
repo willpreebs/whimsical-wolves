@@ -13,8 +13,9 @@ public class PlayerInfo {
 
   private int score;
   private Bag<Tile> tiles;
+  private String name;
 
-  public PlayerInfo(int score, Collection<Tile> tiles) {
+  public PlayerInfo(int score, Collection<Tile> tiles, String name) {
     if (score < 0) {
       throw new IllegalArgumentException("Score must be a natural number.");
     }
@@ -25,6 +26,10 @@ public class PlayerInfo {
 
   public int score() {
     return this.score;
+  }
+
+  public String name() {
+    return this.name;
   }
 
   public void incrementScore(int amount) {
