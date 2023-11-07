@@ -82,4 +82,6 @@ public interface IGameState {
   Collection<Tile> takeOutRefTiles(int count) throws IllegalArgumentException;
 
   void giveRefereeTiles(Bag<Tile> tiles) throws IllegalArgumentException;
+
+  PlayerInfo currentPlayer();
 }

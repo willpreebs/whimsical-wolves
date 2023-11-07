@@ -24,7 +24,7 @@ public class XGames {
     ScoringRule scoringRules = HarnessUtil.createScoreRules();
     IGameState state = JsonConverter.JStateToQGameState(jState);
     List<Player> players = JsonConverter.playersFromJActors(jActors, placementRules);
-    IReferee ref = new QReferee(placementRules, scoringRules, 10000, 6);
+    IReferee ref = new QReferee(placementRules, scoringRules, 10000);
     GameResults results = ref.playGame(state, players);
     System.out.println(JsonConverter.jResultsFromGameResults(results));
   }

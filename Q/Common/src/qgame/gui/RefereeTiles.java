@@ -15,17 +15,15 @@ import qgame.state.map.Tile;
 public class RefereeTiles extends JPanel {
     
     public RefereeTiles(IGameState state, int max) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        generateRefereeTilesPanel(state.refereeTiles(), panel, max);
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        generateRefereeTilesPanel(state.refereeTiles(), max);
         // writeRemainingTiles(state,panel);
-        panel.setPreferredSize(new Dimension(500, 75));
-        this.add(panel);
+        //this.setPreferredSize(new Dimension(500, 75));
     }
 
-  private void generateRefereeTilesPanel(Bag<Tile> refTiles, JPanel panel, int max){
-    JLabel score = new JLabel("Referee Tiles");
-    panel.add(score);
-    panel.add(new TilesPanel(refTiles, max));
+  private void generateRefereeTilesPanel(Bag<Tile> refTiles, int max){
+    JLabel tilesLabel = new JLabel("Referee Tiles");
+    this.add(tilesLabel);
+    this.add(new TilesPanel(refTiles, max));
   }
 }

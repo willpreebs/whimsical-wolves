@@ -136,7 +136,8 @@ public class QGameState implements IGameState {
    * Returns the current player whose turn it is
    * @return PlayerInfo corresponding to current turn's player.
    */
-  private PlayerInfo currentPlayer() {
+  @Override
+  public PlayerInfo currentPlayer() {
     return this.playerInformation.get(0);
   }
 }

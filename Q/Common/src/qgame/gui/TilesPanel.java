@@ -20,15 +20,17 @@ public class TilesPanel extends JPanel {
 
   public TilesPanel(Bag<Tile> tiles, int max) {
     JScrollPane pane = new JScrollPane();
-    int height = 95;
+    int height = 300;
     int width = 75;
     int minWidth = Math.min(tiles.size(), 3) * width;
-    pane.setPreferredSize(new Dimension(minWidth + 10, height));
+    //pane.setPreferredSize(new Dimension(minWidth + 10, height));
     pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
     pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     JLabel tileLabel = new JLabel(new ImageIcon(ImageCreator.drawTiles(tiles, max)));
-    this.setPreferredSize(new Dimension(minWidth, height));
+    //this.setPreferredSize(new Dimension(minWidth, height));
+    this.setMinimumSize(new Dimension(minWidth + 10, height));
     pane.setViewportView(tileLabel);
+    // pane.add(tileLabel);
     this.add(pane);
   }
 }

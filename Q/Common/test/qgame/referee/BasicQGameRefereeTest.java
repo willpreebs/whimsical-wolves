@@ -87,7 +87,7 @@ public class BasicQGameRefereeTest {
     badMove = new DummyAIPlayer("Bad player", new BadTurnStrategy());
     disconnectPlayer = new DisconnectPlayer("Disconnect");
     timeOutPlayer = new TimeOutPlayer("Bobby", 1000);
-    ref = new QReferee(placementRules, scoringRules, 900, 6);
+    ref = new QReferee(placementRules, scoringRules, 900);
   }
 
   private void init1() {

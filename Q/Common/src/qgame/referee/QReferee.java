@@ -18,6 +18,7 @@ import qgame.action.ExchangeAction;
 import qgame.action.PassAction;
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
+import qgame.observer.IGameObserver;
 import qgame.state.Bag;
 import qgame.state.QGameState;
 import qgame.state.QStateBuilder;
@@ -27,7 +28,17 @@ import qgame.state.map.Tile;
 import qgame.util.TileUtil;
 import qgame.player.Player;
 import qgame.player.PlayerInfo;
+import qgame.rule.placement.CorrectPlayerTilesRule;
+import qgame.rule.placement.ExtendSameLineRule;
+import qgame.rule.placement.ExtendsBoardRule;
+import qgame.rule.placement.MatchTraitRule;
+import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.PlacementRule;
+import qgame.rule.scoring.MultiScoringRule;
+import qgame.rule.scoring.PlaceAllOwnedTiles;
+import qgame.rule.scoring.PointPerContiguousSequenceRule;
+import qgame.rule.scoring.PointPerTileRule;
+import qgame.rule.scoring.QRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.Placement;
 import qgame.state.IPlayerGameState;
@@ -44,7 +55,10 @@ public class QReferee implements IReferee {
   private final PlacementRule placementRules;
   private final ScoringRule scoringRules;
   private final int timeOut;
-  private final int ALL_TILE_BONUS;
+
+  private final int DEFAULT_TIMEOUT = 100000;
+  private final int ALL_TILE_BONUS = 4;
+  private final int Q_BONUS = 8;
 
   private final int TOTAL_TILES = 1080;
   private final int NUM_PLAYER_TILES = 6;
@@ -53,23 +67,53 @@ public class QReferee implements IReferee {
   private List<Player> players;
   private List<String> ruleBreakers;
 
-  public QReferee(PlacementRule placementRules, ScoringRule scoringRules, int timeout,
-                           int bonus) {
+  private List<IGameObserver> observers;
+
+  public QReferee() {
+    this.placementRules = new MultiPlacementRule(new MatchTraitRule(),
+      new ExtendSameLineRule(),
+      new ExtendsBoardRule(), new CorrectPlayerTilesRule());
+    
+    this.scoringRules = new MultiScoringRule(new PointPerTileRule(),
+      new QRule(Q_BONUS), new PointPerContiguousSequenceRule(), 
+      new PlaceAllOwnedTiles(NUM_PLAYER_TILES, ALL_TILE_BONUS)); 
+
+    this.timeOut = DEFAULT_TIMEOUT;
+    this.players = new ArrayList<>();
+    this.ruleBreakers = new ArrayList<>();
+    this.observers = new ArrayList<>();
+  }
+
+  public QReferee(PlacementRule placementRules, ScoringRule scoringRules, int timeout) {
     this.placementRules = placementRules;
     this.scoringRules = scoringRules;
     validateArg(num -> num > 0, timeout, "Timeout must be positive.");
     this.timeOut = timeout;
-    this.ALL_TILE_BONUS = bonus;
     this.players = new ArrayList<>();
     this.ruleBreakers = new ArrayList<>();
+    this.observers = new ArrayList<>();
   }
+
+  public QReferee(PlacementRule placementRules, ScoringRule scoringRules, int timeout, List<IGameObserver> observers) {
+    this.placementRules = placementRules;
+    this.scoringRules = scoringRules;
+    validateArg(num -> num > 0, timeout, "Timeout must be positive.");
+    this.timeOut = timeout;
+    this.players = new ArrayList<>();
+    this.ruleBreakers = new ArrayList<>();
+    this.observers = observers;
+  }
+
 
   @Override
   public GameResults playGame(IGameState state, List<Player> players) throws IllegalStateException {
     this.players = new ArrayList<>(players);
     this.currentGameState = state;
+    
     setupPlayers();
     playGameRounds();
+    notifyObserversOfGameOver();
+
     return getResults();
   }
 
@@ -101,18 +145,12 @@ public class QReferee implements IReferee {
     return infos;
   }
 
-  private void handlePlayerException(Player player) {
-      ruleBreakers.add(player.name());
-      this.currentGameState.removeCurrentPlayer();
-  }
-
-
   private void setupPlayer(Player player, Bag<Tile> tiles, IMap board) {
 
     try {
       player.setup(board, tiles);
     } catch (IllegalStateException e) {
-      handlePlayerException(player);
+      removeCurrentPlayer();
     }
   }
   /**
@@ -183,7 +221,6 @@ public class QReferee implements IReferee {
       turnsTakenInRound = new ArrayList<>();
       shouldGameContinue = playRound(turnsTakenInRound);
     }
-
   }
 
   private Optional<TurnAction> getAndValidateAction(IGameState state, Player currentPlayer) {
@@ -199,6 +236,12 @@ public class QReferee implements IReferee {
     }
     return Optional.of(action);
   }
+
+  private void removeCurrentPlayer() {
+    ruleBreakers.add(this.currentGameState.currentPlayer().name());
+    this.currentGameState.removeCurrentPlayer();
+  }
+
   /**
    * Referee attempts to play a single round of the game. It goes through
    * each active player in the round, playing each player's turn.
@@ -212,24 +255,45 @@ public class QReferee implements IReferee {
       Player currentPlayer = players.remove(0);
       Optional<TurnAction> possibleAction = getAndValidateAction(currentGameState, currentPlayer);
       if (possibleAction.isEmpty()) {
-        ruleBreakers.add(currentPlayer.name());
-        this.currentGameState.removeCurrentPlayer();
+        this.removeCurrentPlayer();
         continue;
       }
       TurnAction action = possibleAction.get();
       turnsTaken.add(action);
       gameContinue = handleAction(action);
-      boolean informResult = informPlayerOfActionResult(action, currentPlayer);
-      if (informResult) {
+      
+      boolean successfulNewTiles = givePlayerNewTiles(action, currentPlayer);
+      if (successfulNewTiles) {
         currentGameState.shiftCurrentToBack();
         nextRound.add(currentPlayer);
       }
+
+      giveObserversStateUpdate();
     }
     players.addAll(nextRound);
     return gameContinue;
   }
 
-  private boolean informPlayerOfActionResult(TurnAction action, Player currentPlayer) {
+  private void giveObserversStateUpdate() {
+    for (IGameObserver o : observers) {
+      o.receiveState(currentGameState);
+    }
+  }
+
+  private void notifyObserversOfGameOver() {
+    for (IGameObserver o : observers) {
+      o.gameOver();
+    }
+  }
+
+  /**
+   * Sends the current player a new set of tiles based on their turn action.
+   * In the case of a PlaceAction, their entire set of tiles is given.
+   * @param action
+   * @param currentPlayer
+   * @return
+   */
+  private boolean givePlayerNewTiles(TurnAction action, Player currentPlayer) {
     return switch (action) {
       case PassAction ignored -> true;
       case ExchangeAction ignored -> newTiles(currentPlayer);
@@ -237,6 +301,7 @@ public class QReferee implements IReferee {
       default -> throw new IllegalStateException("Unexpected value: " + action);
     };
   }
+
   private TurnAction getAction(IGameState state, Player player)
     throws ExecutionException, InterruptedException, TimeoutException {
     ThreadFactory factory = Thread.ofVirtual().factory();
@@ -254,8 +319,7 @@ public class QReferee implements IReferee {
       return true;
     }
     catch (IllegalStateException e) {
-      ruleBreakers.add(player.name());
-      currentGameState.removeCurrentPlayer();
+      removeCurrentPlayer();
       return false;
     }
   }
@@ -320,7 +384,7 @@ public class QReferee implements IReferee {
 
   private void updateHand(List<Placement> placements) {
     List<Tile> tilesRemoved = placements.stream().map(Placement::tile).toList();
-    Bag<Tile> playerTiles = getPlayerTiles();
+    Bag<Tile> playerTiles = getCurrentPlayerTiles();
     playerTiles.remove(tilesRemoved);
     int amountToRemove = Math.min(tilesRemoved.size(), currentGameState.refereeTiles().size());
     addCurrentPlayerNTiles(playerTiles, amountToRemove);
@@ -365,7 +429,7 @@ public class QReferee implements IReferee {
 
   //Returrns true when a list of placements has as many elements as the current player's hand.
   private boolean placedAllTiles(List<Placement> placements) {
-    return getPlayerTiles().size() == placements.size();
+    return getCurrentPlayerTiles().size() == placements.size();
   }
 
   // Checks if a game is over, which is when there is only one or less players, or when all turns
@@ -374,7 +438,7 @@ public class QReferee implements IReferee {
     return players.size() <= 1 || noPlacementsMade(actions);
   }
 
-  private Bag<Tile> getPlayerTiles() {
+  private Bag<Tile> getCurrentPlayerTiles() {
     return currentGameState.getCurrentPlayerState().getCurrentPlayerTiles();
   }
 }

@@ -22,6 +22,7 @@ public class PlayerInfo {
     nonNullObj(tiles, "tiles cannot be null.");
     this.score = score;
     this.tiles = new Bag<>(tiles);
+    this.name = name;
   }
 
   public int score() {

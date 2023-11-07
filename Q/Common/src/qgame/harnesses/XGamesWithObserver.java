@@ -7,6 +7,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 
 import qgame.json.JsonConverter;
+import qgame.observer.IGameObserver;
+import qgame.observer.QGameObserver;
 import qgame.player.Player;
 import qgame.referee.QReferee;
 import qgame.referee.GameResults;
@@ -26,8 +28,20 @@ public class XGamesWithObserver {
 
         IGameState state = JsonConverter.JStateToQGameState(jState);
         List<Player> players = JsonConverter.playersFromJActorSpecA(jActorSpecA, rules);
+
+        boolean withObserver = false;
+        if (args.length >= 1) {
+            if (args[0].equals("-show")) {
+                withObserver = true;
+            }
+        }
         
-        IReferee ref = new QReferee(rules, scoreRules, 10000, 6);
+        IReferee ref = new QReferee(rules, scoreRules, 10000);
+        if (withObserver) {
+            IGameObserver observer = new QGameObserver();
+            ref = new QReferee(rules, scoreRules, 10000, List.of(observer));
+        }
+
         GameResults r = ref.playGame(state, players);
         System.out.println(JsonConverter.jResultsFromGameResults(r));
     }

@@ -6,7 +6,7 @@ import qgame.state.map.IMap;
 import qgame.state.Placement;
 
 /**
- * Represents a scoring rule that awards 6 points if a player places all tiles that they own in a
+ * Represents a scoring rule that awards bonus points if a player places all tiles that they own in a
  * game of QGame.
  */
 public class PlaceAllOwnedTiles implements ScoringRule {

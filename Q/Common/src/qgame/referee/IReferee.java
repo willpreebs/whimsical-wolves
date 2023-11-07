@@ -2,6 +2,7 @@ package qgame.referee;
 
 import java.util.List;
 
+import qgame.observer.IGameObserver;
 import qgame.player.Player;
 import qgame.state.IGameState;
 
@@ -25,6 +26,6 @@ public interface IReferee {
    */
   GameResults playGame(IGameState state, List<Player> players) throws IllegalStateException;
 
-  
   GameResults playGame(List<Player> players) throws IllegalStateException;
+  
 }

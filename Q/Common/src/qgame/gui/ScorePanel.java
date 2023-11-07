@@ -1,6 +1,8 @@
 package qgame.gui;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -16,22 +18,32 @@ public class ScorePanel extends JPanel {
     
     public ScorePanel(IGameState state) {
     List<PlayerInfo> playerInfoList = state.playerInformation();
-    JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    generateScorePanel(playerInfoList, panel);
+    
+    this.setLayout(new GridBagLayout());
+    addScorePanel(playerInfoList);
+    //this.setPreferredSize(new Dimension(500, 100));
+    this.setMaximumSize(new Dimension(500, 500));
+    this.setMinimumSize(new Dimension(500, 300));
     // writeRemainingTiles(state,panel);
-    panel.setPreferredSize(new Dimension(500, 75));
-    this.add(panel);
+    //panel.setPreferredSize(new Dimension(1000, 1000));
   }
 
-  private void generateScorePanel(List<PlayerInfo> playerInfoList, JPanel panel){
+  private void addScorePanel(List<PlayerInfo> playerInfoList){
+
+    GridBagConstraints c = new GridBagConstraints();
+    c.gridx = 0;
+    c.gridy = 0;
     JLabel score = new JLabel("Player Scores");
-    panel.add(score);
+    this.add(score, c);
+
     for(int i = 0; i<playerInfoList.size(); i++){
+        c.gridy = i + 1;
+
       int pScore = playerInfoList.get(i).score();
       String name = playerInfoList.get(i).name();
       JLabel pScoreLabel = new JLabel(name + ": " + pScore);
-      panel.add(pScoreLabel);
+
+      this.add(pScoreLabel, c);
     }
   }
 

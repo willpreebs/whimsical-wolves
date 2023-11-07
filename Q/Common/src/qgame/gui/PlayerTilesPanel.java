@@ -17,22 +17,22 @@ public class PlayerTilesPanel extends JPanel {
     
     public PlayerTilesPanel(IGameState state) {
         List<PlayerInfo> playerInfoList = state.playerInformation();
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
-        generatePlayerTilesPanels(playerInfoList, panel);
+        generatePlayerTilesPanels(playerInfoList);
         
-        panel.setPreferredSize(new Dimension(500, 75));
-        this.add(panel);
+        this.setPreferredSize(new Dimension(500, 75));
   }
 
-  private void generatePlayerTilesPanels(List<PlayerInfo> playerInfoList, JPanel panel){
+  private void generatePlayerTilesPanels(List<PlayerInfo> playerInfoList){
     JLabel panelLabel = new JLabel("Player Tiles");
-    panel.add(panelLabel);
+    this.add(panelLabel);
     for(int i = 0; i < playerInfoList.size(); i++){
         Bag<Tile> playerTiles = playerInfoList.get(i).tiles();
         JPanel tilePanel = new TilesPanel(playerTiles, playerTiles.size());
-        panel.add(tilePanel);
+        JLabel playerLabel = new JLabel(playerInfoList.get(i).name() + ":");
+        this.add(playerLabel);
+        this.add(tilePanel);
     }
   }
 }

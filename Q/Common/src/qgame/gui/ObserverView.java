@@ -7,6 +7,8 @@ import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import qgame.player.PlayerInfo;
 import qgame.state.IGameState;
@@ -15,6 +17,7 @@ import qgame.state.map.Tile;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagLayout;
 import java.awt.ScrollPane;
 import java.awt.image.BufferedImage;
 
@@ -23,6 +26,8 @@ public class ObserverView extends JFrame {
     
     public ObserverView(IGameState state, int maxRefTilesToRender) {
         super("Observer view");
+
+
 
     // TODO: test dimensions, make fields for constants
     Dimension fiveByFive = new Dimension(500, 500);
@@ -35,11 +40,14 @@ public class ObserverView extends JFrame {
     box.add(new ScorePanel(state));
     box.add(map);
     box.add(new RefereeTiles(state, maxRefTilesToRender));
-    box.add(new PlayerTilesPanel(state));
-    box.setPreferredSize(fiveByFive);
+    box.add(new JScrollPane(new PlayerTilesPanel(state)));
+
+    // JScrollPane observerPane = new JScrollPane(box);
+
+    //box.setPreferredSize(fiveByFive);
     this.add(box);
     this.pack();
-    this.setVisible(true);
+    //this.setVisible(true);
   }
 
   // TODO: own class ?

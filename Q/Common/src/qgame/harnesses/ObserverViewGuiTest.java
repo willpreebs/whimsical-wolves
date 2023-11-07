@@ -20,6 +20,6 @@ public class ObserverViewGuiTest {
         IGameState state = JsonConverter.JStateToQGameState(jstate);
 
         ObserverView view = new ObserverView(state, 6);
-
+        view.setVisible(true);
     }
 }

@@ -232,7 +232,8 @@ public class JsonConverter {
    JsonObject jPlayer = element.getAsJsonObject();
    int score = getAsInt(jPlayer.get("score"));
    Collection<Tile> tiles = tilesFromJTileArray(jPlayer.get("tile*"));
-   return new PlayerInfo(score, tiles, "");
+   String name = getAsString(jPlayer.get("name"));
+   return new PlayerInfo(score, tiles, name);
   }
 
   public static List<PlayerInfo> playerInfosFromJPlayers(JsonElement element) {
