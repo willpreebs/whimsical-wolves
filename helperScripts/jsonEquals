@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+import sys, json, os
+
+def main():
+    # input_str = sys.stdin.read().split()
+    args = sys.argv
+    if len(args) != 3:
+        print("NOT ENOUGH ARGS")
+        exit(1)
+
+    args = args[1:]
+
+
+    if '-' in args:
+        args.remove('-')
+
+        if '-' in args:
+            print("CANNOT READ BOTH FROM STDIN")
+            exit(1)
+        input_str = sys.stdin.read()
+        file = open(args[0], "r")
+        text = str(file.read())
+        if json.loads(input_str) == json.loads(text):
+            print("SAME JSON")
+            exit(0)
+        else:
+            print("DIFFERENT JSON")
+            exit(0)
+    file1 = open(args[0], "r")
+    file2 = open(args[1], "r")
+    text1 = file1.read()
+    text2 = file2.read()
+    if json.loads(text1) == json.loads(text2):
+        print("SAME JSON")
+        exit(0)
+
+    else:
+        print("DIFFERENT JSON")
+        exit(0)
+if __name__ == "__main__":
+    main()
+
+
+# FILE=$(find ../../ -name "jsonEquals.jar")
+# java -jar "jsonEquals.jar" '$"1"' $2

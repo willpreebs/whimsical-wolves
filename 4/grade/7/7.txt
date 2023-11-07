@@ -1,0 +1,28 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/xlegal)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/4/7/Tests/4-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/4/7/Tests/4-out.json)
+exec failed (Exec format error; errno=8)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((0
+             (0 #hasheq((color . "blue") (shape . "star")))
+             (1 #hasheq((color . "blue") (shape . "clover"))))
+            (1 (1 #hasheq((color . "red") (shape . "clover"))))))
+          (players
+           .
+           (#hasheq((score . 18)
+                    (tile* . (#hasheq((color . "red") (shape . "square")))))))
+          (tile* . 0))
+  (#hasheq((1tile . #hasheq((color . "blue") (shape . "circle")))
+           (coordinate . #hasheq((column . 2) (row . 1))))))
+(*** expected)
+'(#f)
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+

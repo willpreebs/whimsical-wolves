@@ -1,0 +1,20 @@
+{
+  "map": [[-2, [0, {"color": "red", "shape": "8star"}]]], "tile*":  45,
+  "players":
+  [
+    {
+      "score":  5,
+      "tile*": [
+        {"color": "red", "shape": "circle"},
+        {"color": "red", "shape": "diamond"},
+        {"color": "green", "shape": "circle"},
+        {"color": "orange", "shape": "clover"}
+      ]
+    },
+    10,
+    3]
+}
+[
+  {"1tile": {"color": "red", "shape": "diamond"}, "coordinate": {"row": "-1", "column": "0"}},
+  {"1tile": {"color": "red", "shape": "circle"}, "coordinate": {"row": "0", "column": "0"}}
+]

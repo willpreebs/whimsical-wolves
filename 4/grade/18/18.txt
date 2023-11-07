@@ -1,0 +1,197 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/xlegal)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/4/18/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/4/18/Tests/0-out.json)
+exec failed (Exec format error; errno=8)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((-1
+             (0 #hasheq((color . "green") (shape . "circle")))
+             (1 #hasheq((color . "green") (shape . "8star")))
+             (2 #hasheq((color . "green") (shape . "diamond"))))
+            (0
+             (0 #hasheq((color . "red") (shape . "circle")))
+             (2 #hasheq((color . "red") (shape . "diamond"))))))
+          (players
+           .
+           (#hasheq((score . 37)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "8star"))
+                      #hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "green") (shape . "8star"))
+                      #hasheq((color . "purple") (shape . "8star"))
+                      #hasheq((color . "orange") (shape . "8star"))
+                      #hasheq((color . "red") (shape . "clover")))))
+            21
+            89
+            4))
+          (tile* . 9))
+  (#hasheq((1tile . #hasheq((color . "red") (shape . "8star")))
+           (coordinate . #hasheq((column . 1) (row . 0))))))
+(*** expected)
+'(((-1
+    (0 #hasheq((color . "green") (shape . "circle")))
+    (1 #hasheq((color . "green") (shape . "8star")))
+    (2 #hasheq((color . "green") (shape . "diamond"))))
+   (0
+    (0 #hasheq((color . "red") (shape . "circle")))
+    (1 #hasheq((color . "red") (shape . "8star")))
+    (2 #hasheq((color . "red") (shape . "diamond"))))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/4/18/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/4/18/Tests/1-out.json)
+exec failed (Exec format error; errno=8)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((-1
+             (0 #hasheq((color . "green") (shape . "circle")))
+             (1 #hasheq((color . "green") (shape . "8star")))
+             (2 #hasheq((color . "green") (shape . "diamond"))))
+            (0
+             (0 #hasheq((color . "red") (shape . "circle")))
+             (2 #hasheq((color . "red") (shape . "diamond"))))))
+          (players
+           .
+           (#hasheq((score . 37)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "8star"))
+                      #hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "green") (shape . "8star"))
+                      #hasheq((color . "purple") (shape . "8star"))
+                      #hasheq((color . "orange") (shape . "8star"))
+                      #hasheq((color . "red") (shape . "clover")))))
+            21
+            89
+            4))
+          (tile* . 9))
+  (#hasheq((1tile . #hasheq((color . "red") (shape . "8star")))
+           (coordinate . #hasheq((column . 1) (row . 0))))
+   #hasheq((1tile . #hasheq((color . "orange") (shape . "8star")))
+           (coordinate . #hasheq((column . 1) (row . 1))))
+   #hasheq((1tile . #hasheq((color . "purple") (shape . "8star")))
+           (coordinate . #hasheq((column . 1) (row . -2))))))
+(*** expected)
+'(((-2 (1 #hasheq((color . "purple") (shape . "8star"))))
+   (-1
+    (0 #hasheq((color . "green") (shape . "circle")))
+    (1 #hasheq((color . "green") (shape . "8star")))
+    (2 #hasheq((color . "green") (shape . "diamond"))))
+   (0
+    (0 #hasheq((color . "red") (shape . "circle")))
+    (1 #hasheq((color . "red") (shape . "8star")))
+    (2 #hasheq((color . "red") (shape . "diamond"))))
+   (1 (1 #hasheq((color . "orange") (shape . "8star"))))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/4/18/Tests/2-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/4/18/Tests/2-out.json)
+exec failed (Exec format error; errno=8)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((-1
+             (0 #hasheq((color . "green") (shape . "circle")))
+             (1 #hasheq((color . "green") (shape . "8star")))
+             (2 #hasheq((color . "green") (shape . "diamond"))))
+            (0
+             (0 #hasheq((color . "red") (shape . "circle")))
+             (2 #hasheq((color . "red") (shape . "diamond"))))))
+          (players
+           .
+           (#hasheq((score . 37)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "8star"))
+                      #hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "green") (shape . "8star"))
+                      #hasheq((color . "purple") (shape . "8star"))
+                      #hasheq((color . "orange") (shape . "8star"))
+                      #hasheq((color . "red") (shape . "clover")))))
+            21
+            89
+            4))
+          (tile* . 9))
+  (#hasheq((1tile . #hasheq((color . "green") (shape . "8star")))
+           (coordinate . #hasheq((column . 1) (row . 0))))))
+(*** expected)
+'(#f)
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/4/18/Tests/3-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/4/18/Tests/3-out.json)
+exec failed (Exec format error; errno=8)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "purple") (shape . "8star"))))))
+          (players
+           .
+           (#hasheq((score . 37)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "8star"))
+                      #hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "green") (shape . "8star"))
+                      #hasheq((color . "purple") (shape . "8star"))
+                      #hasheq((color . "orange") (shape . "8star"))
+                      #hasheq((color . "red") (shape . "clover")))))
+            21
+            89
+            4))
+          (tile* . 9))
+  (#hasheq((1tile . #hasheq((color . "green") (shape . "8star")))
+           (coordinate . #hasheq((column . 1) (row . 0))))))
+(*** expected)
+'(((0
+    (0 #hasheq((color . "purple") (shape . "8star")))
+    (1 #hasheq((color . "green") (shape . "8star"))))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/4/18/Tests/4-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/4/18/Tests/4-out.json)
+exec failed (Exec format error; errno=8)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "purple") (shape . "8star"))))))
+          (players
+           .
+           (#hasheq((score . 37)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "8star"))
+                      #hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "green") (shape . "8star"))
+                      #hasheq((color . "purple") (shape . "8star"))
+                      #hasheq((color . "orange") (shape . "8star"))
+                      #hasheq((color . "red") (shape . "clover")))))
+            21
+            89
+            4))
+          (tile* . 9))
+  (#hasheq((1tile . #hasheq((color . "orange") (shape . "8star")))
+           (coordinate . #hasheq((column . 2) (row . 0))))
+   #hasheq((1tile . #hasheq((color . "green") (shape . "8star")))
+           (coordinate . #hasheq((column . 1) (row . 0))))))
+(*** expected)
+'(#f)
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+()
+((passed 0) (total 5) (partial-score 0))
+

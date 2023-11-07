@@ -1,0 +1,67 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/xlegal)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/4/42/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/4/42/Tests/0-out.json)
+exec failed (Exec format error; errno=8)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((-1
+             (-1 #hasheq((color . "yellow") (shape . "square")))
+             (0 #hasheq((color . "blue") (shape . "square")))
+             (1 #hasheq((color . "yellow") (shape . "square"))))
+            (0
+             (-1 #hasheq((color . "red") (shape . "square")))
+             (1 #hasheq((color . "green") (shape . "square"))))
+            (1
+             (-1 #hasheq((color . "yellow") (shape . "square")))
+             (0 #hasheq((color . "blue") (shape . "square")))
+             (1 #hasheq((color . "yellow") (shape . "square"))))))
+          (players
+           .
+           (#hasheq((score . 5)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "square"))
+                      #hasheq((color . "orange") (shape . "square"))
+                      #hasheq((color . "orange") (shape . "square"))
+                      #hasheq((color . "orange") (shape . "square"))
+                      #hasheq((color . "orange") (shape . "square")))))
+            10
+            11
+            12))
+          (tile* . 1000))
+  (#hasheq((1tile . #hasheq((color . "orange") (shape . "square")))
+           (coordinate . #hasheq((column . 0) (row . 0))))
+   #hasheq((1tile . #hasheq((color . "orange") (shape . "square")))
+           (coordinate . #hasheq((column . -2) (row . 0))))
+   #hasheq((1tile . #hasheq((color . "orange") (shape . "square")))
+           (coordinate . #hasheq((column . 2) (row . 0))))
+   #hasheq((1tile . #hasheq((color . "orange") (shape . "square")))
+           (coordinate . #hasheq((column . -3) (row . 0))))
+   #hasheq((1tile . #hasheq((color . "orange") (shape . "square")))
+           (coordinate . #hasheq((column . 3) (row . 0))))))
+(*** expected)
+'(((-1
+    (-1 #hasheq((color . "yellow") (shape . "square")))
+    (0 #hasheq((color . "blue") (shape . "square")))
+    (1 #hasheq((color . "yellow") (shape . "square"))))
+   (0
+    (-3 #hasheq((color . "orange") (shape . "square")))
+    (-2 #hasheq((color . "orange") (shape . "square")))
+    (-1 #hasheq((color . "red") (shape . "square")))
+    (0 #hasheq((color . "orange") (shape . "square")))
+    (1 #hasheq((color . "green") (shape . "square")))
+    (2 #hasheq((color . "orange") (shape . "square")))
+    (3 #hasheq((color . "orange") (shape . "square"))))
+   (1
+    (-1 #hasheq((color . "yellow") (shape . "square")))
+    (0 #hasheq((color . "blue") (shape . "square")))
+    (1 #hasheq((color . "yellow") (shape . "square"))))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+

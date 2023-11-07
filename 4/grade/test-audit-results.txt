@@ -1,0 +1,260 @@
+(testing /course/cs4500f23/ta/23SwDev/Code/4/xlegal)
+(testing /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/Tests-0/0-in.json /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/Tests-0/0-out.json)
+name object does not match schema
+ {"column":"0","row":"-1"}
+name object does not match schema
+ {"1tile":{"color":"red","shape":"diamond"},"coordinate":{"column":"0","row":"-1"}}
+jsexpr->placements object does not match schema
+ [{"1tile":{"color":"red","shape":"diamond"},"coordinate":{"column":"0","row":"-1"}},{"1tile":{"color":"red","shape":"circle"},"coordinate":{"column":"0","row":"0"}}]
+'(#hasheq((1tile . #hasheq((color . "red") (shape . "diamond")))
+          (coordinate . #hasheq((column . "0") (row . "-1"))))
+  #hasheq((1tile . #hasheq((color . "red") (shape . "circle")))
+          (coordinate . #hasheq((column . "0") (row . "0")))))
+xlegal: invalid JSON:  JMap: see above
+  context...:
+   body of top-level
+   /course/cs4500f23/ta/23SwDev/Code/get.rkt:18:0: get
+   /course/cs4500f23/ta/23SwDev/Code/4/xlegal:27:0: main
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((-2 (0 #hasheq((color . "red") (shape . "8star"))))))
+          (players
+           .
+           (#hasheq((score . 5)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "diamond"))
+                      #hasheq((color . "green") (shape . "circle"))
+                      #hasheq((color . "orange") (shape . "clover")))))
+            10
+            3))
+          (tile* . 45))
+  (#hasheq((1tile . #hasheq((color . "red") (shape . "diamond")))
+           (coordinate . #hasheq((column . "0") (row . "-1"))))
+   #hasheq((1tile . #hasheq((color . "red") (shape . "circle")))
+           (coordinate . #hasheq((column . "0") (row . "0"))))))
+(*** expected)
+'(((-2 (0 #hasheq((color . "red") (shape . "8star"))))
+   (-1 (0 #hasheq((color . "red") (shape . "diamond"))))
+   (0 (0 #hasheq((color . "red") (shape . "circle"))))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ("xlegal: things went wrong")))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+(testing /course/cs4500f23/ta/23SwDev/Code/4/xlegal)
+(testing /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/Tests-1/1-in.json /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/Tests-1/1-out.json)
+name object does not match schema
+ {"column":"0","row":"0"}
+name object does not match schema
+ {"1tile":{"color":"green","shape":"diamond"},"coordinate":{"column":"0","row":"0"}}
+jsexpr->placements object does not match schema
+ [{"1tile":{"color":"green","shape":"diamond"},"coordinate":{"column":"0","row":"0"}}]
+'(#hasheq((1tile . #hasheq((color . "green") (shape . "diamond")))
+          (coordinate . #hasheq((column . "0") (row . "0")))))
+xlegal: invalid JSON:  JMap: see above
+  context...:
+   body of top-level
+   /course/cs4500f23/ta/23SwDev/Code/get.rkt:18:0: get
+   /course/cs4500f23/ta/23SwDev/Code/4/xlegal:27:0: main
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((-5 (0 #hasheq((color . "green") (shape . "circle"))))
+            (-4 (0 #hasheq((color . "green") (shape . "square"))))
+            (-3 (0 #hasheq((color . "green") (shape . "clover"))))
+            (-2 (0 #hasheq((color . "green") (shape . "star"))))
+            (-1
+             (0 #hasheq((color . "green") (shape . "8star")))
+             (-1 #hasheq((color . "green") (shape . "8star"))))
+            (0
+             (-1 #hasheq((color . "green") (shape . "clover")))
+             (-2 #hasheq((color . "green") (shape . "8star")))
+             (-3 #hasheq((color . "green") (shape . "star")))
+             (-4 #hasheq((color . "green") (shape . "square")))
+             (-5 #hasheq((color . "green") (shape . "circle"))))))
+          (players
+           .
+           (#hasheq((score . 10)
+                    (tile* . (#hasheq((color . "green") (shape . "diamond")))))
+            13
+            9))
+          (tile* . 94))
+  (#hasheq((1tile . #hasheq((color . "green") (shape . "diamond")))
+           (coordinate . #hasheq((column . "0") (row . "0"))))))
+(*** expected)
+'(((-5 (0 #hasheq((color . "green") (shape . "circle"))))
+   (-4 (0 #hasheq((color . "green") (shape . "square"))))
+   (-3 (0 #hasheq((color . "green") (shape . "clover"))))
+   (-2 (0 #hasheq((color . "green") (shape . "star"))))
+   (-1
+    (-1 #hasheq((color . "green") (shape . "8star")))
+    (0 #hasheq((color . "green") (shape . "8star"))))
+   (0
+    (-5 #hasheq((color . "green") (shape . "circle")))
+    (-4 #hasheq((color . "green") (shape . "square")))
+    (-3 #hasheq((color . "green") (shape . "star")))
+    (-2 #hasheq((color . "green") (shape . "8star")))
+    (-1 #hasheq((color . "green") (shape . "clover")))
+    (0 #hasheq((color . "green") (shape . "diamond"))))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ("xlegal: things went wrong")))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+(testing /course/cs4500f23/ta/23SwDev/Code/4/xlegal)
+(testing /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/Tests-2/2-in.json /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/Tests-2/2-out.json)
+name object does not match schema
+ {"column":"0","row":"0"}
+name object does not match schema
+ {"1tile":{"color":"yellow","shape":"clover"},"coordinate":{"column":"0","row":"0"}}
+jsexpr->placements object does not match schema
+ [{"1tile":{"color":"yellow","shape":"clover"},"coordinate":{"column":"0","row":"0"}}]
+'(#hasheq((1tile . #hasheq((color . "yellow") (shape . "clover")))
+          (coordinate . #hasheq((column . "0") (row . "0")))))
+xlegal: invalid JSON:  JMap: see above
+  context...:
+   body of top-level
+   /course/cs4500f23/ta/23SwDev/Code/get.rkt:18:0: get
+   /course/cs4500f23/ta/23SwDev/Code/4/xlegal:27:0: main
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((-1
+             (-1 #hasheq((color . "green") (shape . "8star")))
+             (0 #hasheq((color . "yellow") (shape . "8star")))
+             (1 #hasheq((color . "blue") (shape . "8star"))))
+            (0
+             (-1 #hasheq((color . "green") (shape . "clover")))
+             (1 #hasheq((color . "blue") (shape . "clover"))))
+            (1
+             (-1 #hasheq((color . "orange") (shape . "clover")))
+             (0 #hasheq((color . "yellow") (shape . "clover")))
+             (1 #hasheq((color . "blue") (shape . "clover"))))))
+          (players
+           .
+           (#hasheq((score . 70)
+                    (tile* . (#hasheq((color . "yellow") (shape . "clover")))))
+            13
+            9))
+          (tile* . 33))
+  (#hasheq((1tile . #hasheq((color . "yellow") (shape . "clover")))
+           (coordinate . #hasheq((column . "0") (row . "0"))))))
+(*** expected)
+'(((-1
+    (-1 #hasheq((color . "green") (shape . "8star")))
+    (0 #hasheq((color . "yellow") (shape . "8star")))
+    (1 #hasheq((color . "blue") (shape . "8star"))))
+   (0
+    (-1 #hasheq((color . "green") (shape . "clover")))
+    (0 #hasheq((color . "yellow") (shape . "clover")))
+    (1 #hasheq((color . "blue") (shape . "clover"))))
+   (1
+    (-1 #hasheq((color . "orange") (shape . "clover")))
+    (0 #hasheq((color . "yellow") (shape . "clover")))
+    (1 #hasheq((color . "blue") (shape . "clover"))))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ("xlegal: things went wrong")))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+(testing /course/cs4500f23/ta/23SwDev/Code/4/xlegal)
+(testing /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/Tests-3/3-in.json /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/Tests-3/3-out.json)
+name object does not match schema
+ {"column":"0","row":"0"}
+name object does not match schema
+ {"1tile":{"color":"yellow","shape":"clover"},"coordinate":{"column":"0","row":"0"}}
+jsexpr->placements object does not match schema
+ [{"1tile":{"color":"yellow","shape":"clover"},"coordinate":{"column":"0","row":"0"}}]
+'(#hasheq((1tile . #hasheq((color . "yellow") (shape . "clover")))
+          (coordinate . #hasheq((column . "0") (row . "0")))))
+xlegal: invalid JSON:  JMap: see above
+  context...:
+   body of top-level
+   /course/cs4500f23/ta/23SwDev/Code/get.rkt:18:0: get
+   /course/cs4500f23/ta/23SwDev/Code/4/xlegal:27:0: main
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((-1
+             (-1 #hasheq((color . "green") (shape . "8star")))
+             (0 #hasheq((color . "yellow") (shape . "8star")))
+             (1 #hasheq((color . "blue") (shape . "8star"))))
+            (0
+             (-1 #hasheq((color . "green") (shape . "clover")))
+             (1 #hasheq((color . "blue") (shape . "square"))))
+            (1
+             (-1 #hasheq((color . "orange") (shape . "clover")))
+             (0 #hasheq((color . "yellow") (shape . "clover")))
+             (1 #hasheq((color . "blue") (shape . "clover"))))))
+          (players
+           .
+           (#hasheq((score . 70)
+                    (tile* . (#hasheq((color . "yellow") (shape . "clover")))))
+            13
+            9))
+          (tile* . 33))
+  (#hasheq((1tile . #hasheq((color . "yellow") (shape . "clover")))
+           (coordinate . #hasheq((column . "0") (row . "0"))))))
+(*** expected)
+'(#f)
+(*** but received)
+'(((plain fast with-newline plain-unicode) ("xlegal: things went wrong")))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+(testing /course/cs4500f23/ta/23SwDev/Code/4/xlegal)
+(testing /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/Tests-4/4-in.json /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/Tests-4/4-out.json)
+name object does not match schema
+ {"column":"100","row":"100"}
+name object does not match schema
+ {"1tile":{"color":"yellow","shape":"clover"},"coordinate":{"column":"100","row":"100"}}
+jsexpr->placements object does not match schema
+ [{"1tile":{"color":"yellow","shape":"clover"},"coordinate":{"column":"100","row":"100"}}]
+'(#hasheq((1tile . #hasheq((color . "yellow") (shape . "clover")))
+          (coordinate . #hasheq((column . "100") (row . "100")))))
+xlegal: invalid JSON:  JMap: see above
+  context...:
+   body of top-level
+   /course/cs4500f23/ta/23SwDev/Code/get.rkt:18:0: get
+   /course/cs4500f23/ta/23SwDev/Code/4/xlegal:27:0: main
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((0 (6 #hasheq((color . "green") (shape . "clover"))))
+            (1
+             (5 #hasheq((color . "yellow") (shape . "square")))
+             (6 #hasheq((color . "yellow") (shape . "clover")))
+             (7 #hasheq((color . "yellow") (shape . "clover"))))
+            (2 (6 #hasheq((color . "yellow") (shape . "star"))))))
+          (players
+           .
+           (#hasheq((score . 70)
+                    (tile* . (#hasheq((color . "yellow") (shape . "clover")))))
+            13
+            9))
+          (tile* . 33))
+  (#hasheq((1tile . #hasheq((color . "yellow") (shape . "clover")))
+           (coordinate . #hasheq((column . "100") (row . "100"))))))
+(*** expected)
+'(#f)
+(*** but received)
+'(((plain fast with-newline plain-unicode) ("xlegal: things went wrong")))
+
+
+()
+((passed 0) (total 1) (partial-score 0))

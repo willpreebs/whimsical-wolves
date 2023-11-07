@@ -1,0 +1,28 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/5/xscore)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/0-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(((0 (0 #hasheq((color . "red") (shape . "square"))))
+   (1
+    (0 #hasheq((color . "red") (shape . "8star")))
+    (1 #hasheq((color . "red") (shape . "circle"))))
+   (2
+    (0 #hasheq((color . "blue") (shape . "8star")))
+    (1 #hasheq((color . "blue") (shape . "diamond")))))
+  (#hasheq((1tile . #hasheq((color . "red") (shape . "circle")))
+           (coordinate . #hasheq((column . 1) (row . 1))))
+   #hasheq((1tile . #hasheq((color . "blue") (shape . "diamond")))
+           (coordinate . #hasheq((column . 1) (row . 1))))))
+(*** expected)
+'(8)
+(*** but received)
+'(((plain fast with-newline plain-unicode) (6)))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/1-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/3-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/3-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/4-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/4-out.json)
+((/course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/1-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/3-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/3-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/4-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/5/1/Tests/4-out.json))
+((passed 3) (total 4) (partial-score 3))
+

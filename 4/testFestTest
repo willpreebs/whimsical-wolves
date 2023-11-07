@@ -1,0 +1,12 @@
+#!/bin/bash
+for folder in `ls -l grade | grep drwxr-xr-x | awk '{ print $9}'`; do
+  for file in "grade/$folder"/*-in.json ; do
+    n=$(basename "$file" | sed 's/-in.json$//')
+    echo "Group: $folder"
+    echo "n: $n"
+    rm  grade/$folder/$n-out-us.json
+#    ./xlegal < "grade/$folder/$n-in.json" | ../helperScripts/jsonEquals - grade/$folder/$n-out.json
+#    ./xlegal < "grade/$folder/$n-in.json" >> grade/$folder/$n-out-us.json
+
+  done
+done

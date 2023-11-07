@@ -1,0 +1,49 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/4/xlegal)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/4/3/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/4/3/Tests/0-out.json)
+exec failed (Exec format error; errno=8)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((0
+             (0 #hasheq((color . "green") (shape . "circle")))
+             (1 #hasheq((color . "green") (shape . "8star"))))
+            (1 (0 #hasheq((color . "blue") (shape . "circle"))))))
+          (players
+           .
+           (#hasheq((score . 3)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "purple") (shape . "circle"))
+                      #hasheq((color . "yellow") (shape . "circle"))
+                      #hasheq((color . "orange") (shape . "circle")))))
+            1
+            2
+            0))
+          (tile* . 0))
+  (#hasheq((1tile . #hasheq((color . "red") (shape . "circle")))
+           (coordinate . #hasheq((column . 0) (row . 2))))
+   #hasheq((1tile . #hasheq((color . "purple") (shape . "circle")))
+           (coordinate . #hasheq((column . 0) (row . 3))))
+   #hasheq((1tile . #hasheq((color . "yellow") (shape . "circle")))
+           (coordinate . #hasheq((column . 0) (row . 4))))
+   #hasheq((1tile . #hasheq((color . "orange") (shape . "circle")))
+           (coordinate . #hasheq((column . 0) (row . 5))))))
+(*** expected)
+'(((0
+    (0 #hasheq((color . "green") (shape . "circle")))
+    (1 #hasheq((color . "green") (shape . "8star"))))
+   (1 (0 #hasheq((color . "blue") (shape . "circle"))))
+   (2 (0 #hasheq((color . "red") (shape . "circle"))))
+   (3 (0 #hasheq((color . "purple") (shape . "circle"))))
+   (4 (0 #hasheq((color . "yellow") (shape . "circle"))))
+   (5 (0 #hasheq((color . "orange") (shape . "circle"))))))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+

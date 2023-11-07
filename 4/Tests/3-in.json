@@ -1,0 +1,32 @@
+{
+  "map":
+  [
+    [-1,
+      [-1, {"color": "green", "shape": "8star"}],
+      [0, {"color": "yellow", "shape": "8star"}],
+      [1, {"color": "blue", "shape": "8star"}]
+    ],
+    [0,
+      [-1, {"color": "green", "shape": "clover"}],
+      [1, {"color": "blue", "shape": "square"}]
+    ],
+    [1,
+      [-1, {"color": "orange", "shape": "clover"}],
+      [0, {"color": "yellow", "shape": "clover"}],
+      [1, {"color": "blue", "shape": "clover"}]
+    ]
+  ],
+  "tile*": 33,
+  "players": [
+    {
+      "score": 70,
+      "tile*": [{"color": "yellow", "shape": "clover"}]
+    },
+    13,
+    9
+  ]
+}
+[{
+  "1tile": {"color": "yellow", "shape": "clover"},
+  "coordinate": {"row": "0", "column": "0"}
+}]

@@ -1,0 +1,17 @@
+[
+  [-1,
+    [-1, {"color": "green", "shape": "8star"}],
+    [0, {"color": "yellow", "shape": "8star"}],
+    [1, {"color": "blue", "shape": "8star"}]
+  ],
+  [0,
+    [-1, {"color": "green", "shape": "clover"}],
+    [0, {"color": "yellow", "shape": "clover"}],
+    [1, {"color": "blue", "shape": "clover"}]
+  ],
+  [1,
+    [-1, {"color": "orange", "shape": "clover"}],
+    [0, {"color": "yellow", "shape": "clover"}],
+    [1, {"color": "blue", "shape": "clover"}]
+  ]
+]

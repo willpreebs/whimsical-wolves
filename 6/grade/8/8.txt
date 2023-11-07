@@ -1,0 +1,47 @@
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/0-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/1-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/2-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/2-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/3-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/3-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/4-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/4-out.json)
+
+(testing /course/cs4500f23/ta/tedium-workdir/github/salty-wolves/6/xstrategy)
+---------------------------------
+(*** score 0)
+(*** on)
+'("ldasg"
+  #hasheq((map
+           .
+           ((-1
+             (-4 #hasheq((color . "orange") (shape . "8star")))
+             (-3 #hasheq((color . "orange") (shape . "8star")))
+             (-2 #hasheq((color . "green") (shape . "8star")))
+             (-1 #hasheq((color . "yellow") (shape . "8star")))
+             (0 #hasheq((color . "green") (shape . "8star")))
+             (1 #hasheq((color . "purple") (shape . "8star"))))
+            (0
+             (0 #hasheq((color . "green") (shape . "8star")))
+             (1 #hasheq((color . "yellow") (shape . "8star")))
+             (2 #hasheq((color . "orange") (shape . "8star"))))
+            (1 (0 #hasheq((color . "green") (shape . "diamond"))))))
+          (players
+           .
+           (#hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "square"))
+                      #hasheq((color . "red") (shape . "star"))
+                      #hasheq((color . "blue") (shape . "square"))
+                      #hasheq((color . "blue") (shape . "square"))
+                      #hasheq((color . "red") (shape . "clover")))))
+            0))
+          (tile* . 1067)))
+(*** expected)
+'("replace")
+(*** but received)
+'(((plain fast with-newline plain-unicode) ("exchange")))
+
+
+((/course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/0-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/1-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/2-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/2-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/4-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/6/8/Tests/4-out.json))
+((passed 4) (total 5) (partial-score 4))
+
