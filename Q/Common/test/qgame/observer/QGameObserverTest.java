@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import qgame.player.PlayerInfo;
 import qgame.state.IGameState;
+import qgame.state.Placement;
+import qgame.state.QGameState;
 import qgame.state.QStateBuilder;
 import qgame.state.map.Posn;
 import qgame.state.map.QTile;
@@ -40,8 +42,12 @@ public class QGameObserverTest {
         .build();
 
         o.receiveState(state);   
-        //o.save("filepath.txt");
-        //o.saveStatesAsPng();
+
+        state.placeTile(new Placement(new Posn(0, 1), new QTile(blue, clover)));
+
+        o.receiveState(state);
+
+
         Thread.sleep(10000);
     }
 }

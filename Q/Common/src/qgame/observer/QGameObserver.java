@@ -38,30 +38,53 @@ public class QGameObserver implements IGameObserver {
 
     // GameStates in order that they occur in the game
     List<IGameState> states;
-    int stateIndex = 0;
+    int stateIndex = -1;
 
     ObserverView stateFrame;
 
     private final int REF_TILES = 6;
+    // states:
+    // [0]
+    // size = 1
+    // index = 0
 
     public QGameObserver() {
         this.states = new ArrayList<>();
+        //this.states.add(new QGameState());
         stateFrame = new ObserverView(this, new QGameState(), REF_TILES);
         stateFrame.setVisible(true);
     }
 
-
+  /**
+   * Gives the observer the game state and saves a GUI representation of the state
+   * in an image. see saveStateAsPng()
+   * @param state
+   */
     @Override
     public void receiveState(IGameState state) {
         nonNullObj(state, "State cannot be null");
-        states.add(state);
-        // render gui?
+        states.add(new QGameState(state));
+        saveStateAsPng(states.size() - 1);
     }
 
+    /**
+     * Render the 
+     */
+    @Override
     public void next() {
-        System.out.println("next");
         if (stateIndex < this.states.size() - 1) {
             stateIndex++;
+            System.out.println("Next pressed; index set to: " + stateIndex);
+        }
+        renderCurrentState();
+    }
+
+    @Override
+    public void previous() {
+        // System.out.println("previous");
+        if (stateIndex > 0) {
+            stateIndex--;
+            System.out.println("Previous pressed; index set to: " + stateIndex);
         }
         renderCurrentState();
     }
@@ -70,20 +93,13 @@ public class QGameObserver implements IGameObserver {
         return this.states.get(this.stateIndex);
     }
 
-    public void previous() {
-        System.out.println("previous");
-        if (stateIndex > 0) {
-            stateIndex--;
-        }
-        renderCurrentState();
-    }
-
-    public void renderCurrentState() {
+    private void renderCurrentState() {
+        System.out.println("Rendering state at index: " + this.stateIndex);
         stateFrame.updateFrame(this, this.getCurrentState());
         this.stateFrame.pack();
-        // this.stateFrame.setVisible(true);
     }
 
+    @Override
     public void save(String filepath) {
         JsonElement jState = JsonConverter.jStateFromQGameState(this.states.get(stateIndex));
         try {
@@ -100,6 +116,26 @@ public class QGameObserver implements IGameObserver {
     @Override
     public void gameOver() {
         // ...
+    }
+
+    /**
+     * Saves the frame at the given index as an image.
+     * @param index
+     */
+    private void saveStateAsPng(int index) {
+        JFrame currentFrame = new ObserverView(this, this.states.get(index), REF_TILES);
+        currentFrame.setVisible(true);
+        BufferedImage img = new BufferedImage(currentFrame.getWidth(), currentFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = img.createGraphics();
+        currentFrame.paintAll(g);
+        File f = new File("8/Tmp/" + index + ".png");
+        try {
+            ImageIO.write(img, "png", f);
+            currentFrame.setVisible(false);
+        }
+        catch (IOException e) {
+            throw new IllegalStateException("Issue writing to file: " + e.getMessage());
+        }
     }
 
     public void saveStatesAsPng() {

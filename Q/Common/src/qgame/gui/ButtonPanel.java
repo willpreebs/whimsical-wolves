@@ -10,11 +10,12 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import qgame.observer.IGameObserver;
 import qgame.observer.QGameObserver;
 
 public class ButtonPanel extends JPanel {
     
-    public ButtonPanel(QGameObserver observer) {
+    public ButtonPanel(IGameObserver observer) {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         JButton previous = new JButton("previous");
         JButton next = new JButton("next");

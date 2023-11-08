@@ -1,30 +1,30 @@
 package qgame.observer;
 
-import java.util.List;
-
-import qgame.state.map.IMap;
-import qgame.referee.GameResults;
 import qgame.state.IGameState;
 
 public interface IGameObserver {
-  // void receiveState(IGameState state);
-
-  // void endGame(GameResults results);
-
-  // List<Integer> viewScores();
-
-  // IMap viewBoard();
-
-  // List<String> turnOrder();
-
-  // List<IGameState> gameStates();
-
-  // boolean isGameOver();
-
-  // GameResults results();
 
   /**
-   * Gives the observer the game state
+   * Render the next state if available.
+   * If there are no later states available, then the GUI is not changed
+   */
+  public void next();
+
+  /**
+   * Render the previous state if available.
+   * If there are no earlier states available, then the GUI is not changed
+   */
+  public void previous();
+
+  /**
+   * Saves the current state formatted as a JState
+   * at the given filepath (root is at the lowest level in the repository's directory)
+   */
+  public void save(String filepath);
+
+  /**
+   * Gives the observer the game state and saves a GUI representation of the state
+   * in an image
    * @param state
    */
   void receiveState(IGameState state);

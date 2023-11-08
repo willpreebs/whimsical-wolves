@@ -39,6 +39,12 @@ public class QGameState implements IGameState {
     this.playerInformation = new ArrayList<>(players);
   }
 
+  public QGameState(IGameState state) {
+    this.board = new QMap(state.viewBoard().getBoardState());
+    this.refereeTiles = new Bag<>(state.refereeTiles());
+    this.playerInformation = new ArrayList<>(state.playerInformation());
+  }
+
   public QGameState() {
     this.board = new QMap(new HashMap<>());
     this.refereeTiles = new Bag<>();

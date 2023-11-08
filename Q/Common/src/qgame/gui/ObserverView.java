@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import qgame.observer.IGameObserver;
 import qgame.observer.QGameObserver;
 import qgame.player.PlayerInfo;
 import qgame.state.IGameState;
@@ -28,7 +29,7 @@ public class ObserverView extends JFrame {
 
   private int maxRefTilesToRender;
     
-  public ObserverView(QGameObserver observer, IGameState state, int maxRefTilesToRender) {
+  public ObserverView(IGameObserver observer, IGameState state, int maxRefTilesToRender) {
     super("Observer view");
     this.maxRefTilesToRender = maxRefTilesToRender;
 
@@ -39,7 +40,7 @@ public class ObserverView extends JFrame {
     updateFrame(observer, state);
   }
 
-  public void updateFrame(QGameObserver observer, IGameState state) {
+  public void updateFrame(IGameObserver observer, IGameState state) {
     this.getContentPane().removeAll();
     Box box = Box.createVerticalBox();
     Component map = createMapComponent(state);
