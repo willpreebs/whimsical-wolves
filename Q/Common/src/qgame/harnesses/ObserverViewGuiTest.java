@@ -7,6 +7,7 @@ import com.google.gson.JsonStreamParser;
 
 import qgame.gui.ObserverView;
 import qgame.json.JsonConverter;
+import qgame.observer.QGameObserver;
 import qgame.state.IGameState;
 import qgame.state.map.IMap;
 
@@ -19,7 +20,7 @@ public class ObserverViewGuiTest {
         JsonElement jstate = parser.next();
         IGameState state = JsonConverter.JStateToQGameState(jstate);
 
-        ObserverView view = new ObserverView(state, 6);
+        ObserverView view = new ObserverView(new QGameObserver(), state, 6);
         view.setVisible(true);
     }
 }

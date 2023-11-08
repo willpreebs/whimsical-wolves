@@ -174,6 +174,11 @@ public class ImageCreator {
   // }
 
   public static BufferedImage drawTiles(Bag<Tile> refTiles, int maxTiles) {
+    
+    if (refTiles.size() == 0) {
+      return new BufferedImage(IMG_SIZE, IMG_SIZE, BufferedImage.TYPE_4BYTE_ABGR);
+    }
+
     int numTiles = Math.min(refTiles.size(), maxTiles);
 
     BufferedImage result =
@@ -191,6 +196,7 @@ public class ImageCreator {
 
   public static BufferedImage drawBoard(IMap map) {
 
+    //map.printMap();
     Set<Posn> posns = map.getBoardState().keySet();
     int topRow = posns.stream().map(Posn::y).reduce(Integer.MAX_VALUE, Integer::min);
     int bottomRow = posns.stream().map(Posn::y).reduce(Integer.MIN_VALUE, Integer::max);

@@ -39,6 +39,12 @@ public class QGameState implements IGameState {
     this.playerInformation = new ArrayList<>(players);
   }
 
+  public QGameState() {
+    this.board = new QMap(new HashMap<>());
+    this.refereeTiles = new Bag<>();
+    this.playerInformation = new ArrayList<>();
+  }
+
   /**
    * Determines whether all constructor parameters are valid before creating
    * a new gameState.

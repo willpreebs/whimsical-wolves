@@ -49,4 +49,6 @@ public interface IMap {
    * @throws IllegalArgumentException If the tile can not be placed in the given position
    */
   void placeTile(Placement placement) throws IllegalArgumentException;
+
+  void printMap();
 }

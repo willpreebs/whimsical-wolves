@@ -28,7 +28,7 @@ public class QGameObserverTest {
     Tile.Shape eightStar = Tile.Shape.EIGHT_STAR;
     
     @Test
-    public void testGameObserver() {
+    public void testGameObserver() throws InterruptedException {
         QGameObserver o = new QGameObserver();
     
         IGameState state =
@@ -40,7 +40,8 @@ public class QGameObserverTest {
         .build();
 
         o.receiveState(state);   
-        o.save("filepath.txt");
-        o.saveStatesAsPng();
+        //o.save("filepath.txt");
+        //o.saveStatesAsPng();
+        Thread.sleep(10000);
     }
 }

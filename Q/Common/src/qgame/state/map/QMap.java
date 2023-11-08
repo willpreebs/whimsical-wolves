@@ -88,4 +88,30 @@ public class QMap implements IMap {
     this.tileMap.put(posn, tile);
   }
 
+  @Override
+  public void printMap() {
+
+    Set<Posn> posns = this.getBoardState().keySet();
+    int topRow = posns.stream().map(Posn::y).reduce(Integer.MAX_VALUE, Integer::min);
+    int bottomRow = posns.stream().map(Posn::y).reduce(Integer.MIN_VALUE, Integer::max);
+    int leftCol = posns.stream().map(Posn::x).reduce(Integer.MAX_VALUE, Integer::min);
+    int rightCol = posns.stream().map(Posn::x).reduce(Integer.MIN_VALUE, Integer::max);
+
+
+      System.out.println("Printing map ----------------");
+
+      for (int row = bottomRow; row <= topRow; row++) {
+          for (int col = leftCol; col <= rightCol; col++) {
+            try {
+              Tile tile = this.getTileAtPosn(new Posn(row, col));
+              String simple = tile.color().toString().substring(0, 2) + 
+              tile.shape().toString().substring(0, 2);
+              System.out.print("[" + simple + "]");
+            } catch (IllegalArgumentException e) {
+              System.out.print("[    ]");
+            }
+          }
+         System.out.println("");
+      }
+  }
 }

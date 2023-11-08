@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -24,7 +25,9 @@ import qgame.state.Bag;
 import qgame.state.IGameState;
 import qgame.state.IPlayerGameState;
 import qgame.state.Placement;
+import qgame.state.QGameState;
 import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 
 public class QGameObserver implements IGameObserver {
@@ -37,23 +40,48 @@ public class QGameObserver implements IGameObserver {
     List<IGameState> states;
     int stateIndex = 0;
 
+    ObserverView stateFrame;
+
     private final int REF_TILES = 6;
+
+    public QGameObserver() {
+        this.states = new ArrayList<>();
+        stateFrame = new ObserverView(this, new QGameState(), REF_TILES);
+        stateFrame.setVisible(true);
+    }
 
 
     @Override
     public void receiveState(IGameState state) {
         nonNullObj(state, "State cannot be null");
-        states = new ArrayList<>();
         states.add(state);
         // render gui?
     }
 
     public void next() {
-        stateIndex++;
+        System.out.println("next");
+        if (stateIndex < this.states.size() - 1) {
+            stateIndex++;
+        }
+        renderCurrentState();
+    }
+
+    private IGameState getCurrentState() {
+        return this.states.get(this.stateIndex);
     }
 
     public void previous() {
-        stateIndex--;
+        System.out.println("previous");
+        if (stateIndex > 0) {
+            stateIndex--;
+        }
+        renderCurrentState();
+    }
+
+    public void renderCurrentState() {
+        stateFrame.updateFrame(this, this.getCurrentState());
+        this.stateFrame.pack();
+        // this.stateFrame.setVisible(true);
     }
 
     public void save(String filepath) {
@@ -77,11 +105,12 @@ public class QGameObserver implements IGameObserver {
     public void saveStatesAsPng() {
 
         for (int i = 0; i < this.states.size(); i++) {
-            JFrame frame = new ObserverView(states.get(i), REF_TILES);
+            JFrame frame = new ObserverView(this, states.get(i), REF_TILES);
             frame.setVisible(true);
             BufferedImage img = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_RGB);
             Graphics2D g = img.createGraphics();
-            frame.paint(g);
+            frame.paintAll(g);
+            //frame.paint(g);
             File f = new File("8/Tmp/" + i + ".png");
             try {
                 ImageIO.write(img, "png", f);
