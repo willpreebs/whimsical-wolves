@@ -2,10 +2,12 @@ package qgame.observer;
 
 import static qgame.util.ValidationUtil.nonNullObj;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,6 +43,7 @@ public class QGameObserver implements IGameObserver {
     @Override
     public void receiveState(IGameState state) {
         nonNullObj(state, "State cannot be null");
+        states = new ArrayList<>();
         states.add(state);
         // render gui?
     }
@@ -75,10 +78,13 @@ public class QGameObserver implements IGameObserver {
 
         for (int i = 0; i < this.states.size(); i++) {
             JFrame frame = new ObserverView(states.get(i), REF_TILES);
+            frame.setVisible(true);
             BufferedImage img = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_RGB);
-            frame.paint(img.createGraphics());
+            Graphics2D g = img.createGraphics();
+            frame.paint(g);
+            File f = new File("8/Tmp/" + i + ".png");
             try {
-                ImageIO.write(img, "png", new File("/Tmp/" + i + ".png"));
+                ImageIO.write(img, "png", f);
             }
             catch (IOException e) {
                 throw new IllegalStateException("Issue writing to file: " + e.getMessage());

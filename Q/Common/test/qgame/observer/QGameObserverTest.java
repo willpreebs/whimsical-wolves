@@ -43,5 +43,4 @@ public class QGameObserverTest {
         o.save("filepath.txt");
         o.saveStatesAsPng();
     }
-
 }
