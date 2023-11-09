@@ -13,11 +13,12 @@ public class CheatingAIPlayer implements Player {
     public enum Cheat {NONE, NOT_ADJACENT, NOT_OWNED, NOT_INLINE, NOT_ENOUGH_TILES, NOT_LEGAL_NEIGHBOR};
 
     private SimpleAIPlayer player;
+    private Cheat cheat;
+
 
     public CheatingAIPlayer(String name, TurnStrategy s, Cheat cheat) {
-        TurnStrategy cheatStrategy = new CheatStrategy(cheat, s);
-        player = new SimpleAIPlayer(name, cheatStrategy);
-        // this.cheat = cheat;
+        player = new SimpleAIPlayer(name, s);
+        this.cheat = cheat;
     }
 
     @Override
@@ -45,6 +46,12 @@ public class CheatingAIPlayer implements Player {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'win'");
     }
-    
 
+
+    public CheatingAIPlayer.Cheat getCheat() {
+        return this.cheat;
+    }
+    public TurnStrategy strategy() {
+        return this.player.strategy();
+    }
 }

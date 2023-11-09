@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import qgame.player.CheatingAIPlayer;
 import qgame.state.Bag;
 import qgame.state.map.Posn;
 import qgame.state.map.IMap;
@@ -28,10 +29,6 @@ import qgame.rule.placement.ExtendsBoardRule;
 import qgame.rule.placement.MatchTraitRule;
 import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.PlacementRule;
-import qgame.rule.scoring.MultiScoringRule;
-import qgame.rule.scoring.PointPerContiguousSequenceRule;
-import qgame.rule.scoring.PointPerTileRule;
-import qgame.rule.scoring.QRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.QGameState;
 import qgame.state.QStateBuilder;
@@ -64,6 +61,10 @@ public class BasicQGameRefereeTest {
   Player badMove;
   Player disconnectPlayer;
   Player timeOutPlayer;
+
+  Player cheatingPlayer1;
+
+  Player cheatingPlayer2;
 
   IGameState stateForceFirstPass;
   IGameState allPass;
@@ -229,7 +230,7 @@ public class BasicQGameRefereeTest {
     assertEquals(1, results.getWinners().size());
     assertEquals("Tester", results.getWinners().get(0));
     try {
-      assertTrue(XGamesInputCreator.createTest(placeAll, players, results, "7/Tests", 0));
+      assertTrue(XGamesInputCreator.createExnTest(placeAll, players, results, "7/Tests", 0));
     }
     catch (IOException e) {
     }
@@ -256,7 +257,7 @@ public class BasicQGameRefereeTest {
       new DummyAIPlayer("ben", new DagStrategy(placementRules)),
     new DummyAIPlayer("alex", new LdasgStrategy(placementRules), FailStep.SETUP));
     GameResults results = new GameResults(List.of("ben"), List.of("alex", "terry"));
-    XGamesInputCreator.createTest(state, players, results, "7/Tests", 1);
+    XGamesInputCreator.createExnTest(state, players, results, "7/Tests", 1);
     GameResults actual = ref.playGame(state, players);
     assertEquals(results.getWinners(), actual.getWinners());
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
@@ -285,7 +286,7 @@ public class BasicQGameRefereeTest {
       new DummyAIPlayer("alex", new LdasgStrategy(placementRules), FailStep.SETUP));
     GameResults results = new GameResults(new ArrayList<>(),
       List.of("bobby", "terry", "ben", "alex"));
-    XGamesInputCreator.createTest(state, players, results, "7/Tests", 2);
+    XGamesInputCreator.createExnTest(state, players, results, "7/Tests", 2);
     GameResults actual = ref.playGame(state, players);
     assertEquals(results.getWinners(), actual.getWinners());
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
@@ -313,7 +314,7 @@ public class BasicQGameRefereeTest {
       new DummyAIPlayer("ben2", new DagStrategy(placementRules)));
     GameResults results = new GameResults(List.of("ben1", "ben3", "ben4"),
       new ArrayList<>());
-    XGamesInputCreator.createTest(state, players, results, "7/Tests", 3);
+    XGamesInputCreator.createExnTest(state, players, results, "7/Tests", 3);
     GameResults actual = ref.playGame(state, players);
     assertEquals(results.getWinners(), actual.getWinners());
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
@@ -337,7 +338,7 @@ public class BasicQGameRefereeTest {
       new DummyAIPlayer("LOSER", new DagStrategy(placementRules), FailStep.TAKE_TURN));
     GameResults results = new GameResults(List.of("Appleeeee", "appleeeee"),
       List.of("LOSER"));
-    XGamesInputCreator.createTest(state, players, results, "7/Tests", 4);
+    XGamesInputCreator.createExnTest(state, players, results, "7/Tests", 4);
     GameResults actual = ref.playGame(state, players);
     assertEquals(results.getWinners(), actual.getWinners());
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
@@ -361,7 +362,7 @@ public class BasicQGameRefereeTest {
       new DummyAIPlayer("NotALoser", new DagStrategy(placementRules)));
     GameResults results = new GameResults(List.of("Appleeeee", "appleeeee"),
       new ArrayList<>());
-    XGamesInputCreator.createTest(state, players, results, "7/Tests", 5);
+    XGamesInputCreator.createExnTest(state, players, results, "7/Tests", 5);
     GameResults actual = ref.playGame(state, players);
     assertEquals(results.getWinners(), actual.getWinners());
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
@@ -373,11 +374,11 @@ public class BasicQGameRefereeTest {
       .placeTile(new Posn(1, 0), new QTile(red, square))
       .addTileBag(new QTile(green, square))
       .addPlayerInfo(new PlayerInfo(2,
-        List.of(new QTile(red, eightStar), new QTile(green, circle)), ""))
+        List.of(new QTile(red, eightStar), new QTile(green, circle)), "tess"))
       .addPlayerInfo(new PlayerInfo(12,
-        List.of(new QTile(orange, eightStar), new QTile(green, star)), ""))
+        List.of(new QTile(orange, eightStar), new QTile(green, star)), "tessy"))
       .addPlayerInfo(new PlayerInfo(15,
-        List.of(new QTile(blue, clover), new QTile(green, circle)), ""))
+        List.of(new QTile(blue, clover), new QTile(green, circle)), "3Peat"))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("tess", new DagStrategy(placementRules)),
@@ -385,7 +386,7 @@ public class BasicQGameRefereeTest {
       new DummyAIPlayer("3Peat", new DagStrategy(placementRules)));
     GameResults results = new GameResults(List.of("tess", "tessy"),
       new ArrayList<>());
-    XGamesInputCreator.createTest(state, players, results, "7/Tests", 6);
+    XGamesInputCreator.createExnTest(state, players, results, "7/Tests", 6);
     GameResults actual = ref.playGame(state, players);
     assertEquals(results.getWinners(), actual.getWinners());
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
@@ -398,11 +399,11 @@ public class BasicQGameRefereeTest {
       .placeTile(new Posn(1, 0), new QTile(red, square))
       .addTileBag(new QTile(green, square))
       .addPlayerInfo(new PlayerInfo(2,
-        List.of(new QTile(red, eightStar), new QTile(green, circle)), ""))
+        List.of(new QTile(red, eightStar), new QTile(green, circle)), "tess"))
       .addPlayerInfo(new PlayerInfo(12,
-        List.of(new QTile(orange, eightStar), new QTile(green, star)), ""))
+        List.of(new QTile(orange, eightStar), new QTile(green, star)), "tessy"))
       .addPlayerInfo(new PlayerInfo(15,
-        List.of(new QTile(blue, square), new QTile(green, circle)), ""))
+        List.of(new QTile(blue, square), new QTile(green, circle)), "3Peat"))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("tess", new DagStrategy(placementRules), FailStep.SETUP),
@@ -410,7 +411,7 @@ public class BasicQGameRefereeTest {
       new DummyAIPlayer("3Peat", new DagStrategy(placementRules), FailStep.NEW_TILES));
     GameResults results = new GameResults(new ArrayList<>(),
       List.of("tess", "tessy", "3Peat"));
-    XGamesInputCreator.createTest(state, players, results, "7/Tests", 7);
+    XGamesInputCreator.createExnTest(state, players, results, "7/Tests", 7);
     GameResults actual = ref.playGame(state, players);
     assertEquals(results.getWinners(), actual.getWinners());
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
@@ -424,11 +425,11 @@ public class BasicQGameRefereeTest {
       .addTileBag(new QTile(purple, eightStar))
       .addTileBag(new QTile(red, clover))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new QTile(red, eightStar), new QTile(green, circle)), ""))
+        List.of(new QTile(red, eightStar), new QTile(green, circle)), "383bob"))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new QTile(orange, eightStar), new QTile(green, star)), ""))
+        List.of(new QTile(orange, eightStar), new QTile(green, star)), "smith"))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new QTile(blue, square), new QTile(green, circle)), ""))
+        List.of(new QTile(blue, square), new QTile(green, circle)), "lee"))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("383bob", new DagStrategy(placementRules)),
@@ -436,7 +437,7 @@ public class BasicQGameRefereeTest {
       new DummyAIPlayer("lee", new DagStrategy(placementRules)));
     GameResults results = new GameResults(List.of("383bob"),
       new ArrayList<>());
-    XGamesInputCreator.createTest(state, players, results, "7/Tests", 8);
+    XGamesInputCreator.createExnTest(state, players, results, "7/Tests", 8);
     GameResults actual = ref.playGame(state, players);
     assertEquals(results.getWinners(), actual.getWinners());
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
@@ -448,11 +449,11 @@ public class BasicQGameRefereeTest {
       .placeTile(new Posn(-3, 0), new QTile(green, eightStar))
       .addTileBag(new QTile(purple, eightStar))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new QTile(red, eightStar), new QTile(green, circle)), ""))
+        List.of(new QTile(red, eightStar), new QTile(green, circle)), "383bob"))
       .addPlayerInfo(new PlayerInfo(0,
-        List.of(new QTile(orange, eightStar), new QTile(green, clover)), ""))
+        List.of(new QTile(orange, eightStar), new QTile(green, clover)), "smith"))
       .addPlayerInfo(new PlayerInfo(11,
-        List.of(new QTile(blue, square), new QTile(green, circle)), ""))
+        List.of(new QTile(blue, square), new QTile(green, circle)), "1hero"))
       .build();
     List<Player> players = List.of(
       new DummyAIPlayer("383bob", new DagStrategy(placementRules)),
@@ -460,9 +461,46 @@ public class BasicQGameRefereeTest {
       new DummyAIPlayer("1hero", new DagStrategy(placementRules)));
     GameResults results = new GameResults(List.of("1hero", "383bob"),
       new ArrayList<>());
-    XGamesInputCreator.createTest(state, players, results, "7/Tests", 9);
+    XGamesInputCreator.createExnTest(state, players, results, "7/Tests", 9);
     GameResults actual = ref.playGame(state, players);
     assertEquals(results.getWinners(), actual.getWinners());
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
   }
+
+  public void initCheat() {
+    placementRules = RuleUtil.createPlaceRules();
+    ScoringRule scoringRules =  RuleUtil.createScoreRules(6);
+
+    player1 = new DummyAIPlayer("Tester", new DagStrategy(placementRules));
+    player2 = new DummyAIPlayer("Second Tester", new LdasgStrategy(placementRules));
+    cheatingPlayer1  = new CheatingAIPlayer("Cheater 1", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_INLINE);
+    ref = new QReferee(placementRules, scoringRules, 900);
+  }
+
+  @Test
+  public void testCheaterIsKicked() throws IOException {
+    initCheat();
+    IGameState state = new QStateBuilder()
+            .placeTile(new Posn(-3, 0), new QTile(green, eightStar))
+            .addTileBag(new QTile(purple, eightStar))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(red, eightStar), new QTile(green, circle)), "Tester"))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(orange, eightStar), new QTile(green, clover)),
+                    "Second Tester"))
+            .addPlayerInfo(new PlayerInfo(11,
+                    List.of(new QTile(blue, square), new QTile(green, circle)),
+                    "Cheating Player"))
+            .build();
+    List<Player> players = List.of(
+            player1, player2, cheatingPlayer1);
+    GameResults results = new GameResults(List.of("Tester", "Second Tester"),
+            List.of("Cheater 1"));
+    XGamesInputCreator.createCheatTest(state, players, results, "8/Tests", 0);
+    GameResults actual = ref.playGame(state, players);
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
+  }
+
 }

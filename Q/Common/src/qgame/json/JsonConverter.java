@@ -336,14 +336,14 @@ public class JsonConverter {
   }
 
     private static CheatingAIPlayer.Cheat cheatFromJCheat(JsonElement element) {
-    String exn = getAsString(element);
-    return switch (exn) {
+    String cheat = getAsString(element);
+    return switch (cheat) {
       case "non-adjacent-coordinate" -> CheatingAIPlayer.Cheat.NOT_ADJACENT;
       case "tile-not-owned" -> CheatingAIPlayer.Cheat.NOT_OWNED;
       case "not-a-line" -> CheatingAIPlayer.Cheat.NOT_INLINE;
       case "bad-ask-for-tiles" -> CheatingAIPlayer.Cheat.NOT_ENOUGH_TILES;
       case "no-fit" -> CheatingAIPlayer.Cheat.NOT_LEGAL_NEIGHBOR;
-      default -> throw new IllegalStateException("Unexpected value: " + exn);
+      default -> throw new IllegalStateException("Unexpected value: " + cheat);
     };
   }
 

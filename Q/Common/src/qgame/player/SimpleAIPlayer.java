@@ -40,5 +40,8 @@ public class SimpleAIPlayer implements Player {
   public void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException {
   }
 
+  public TurnStrategy strategy(){
+    return this.strat;
+  }
 
 }

@@ -22,7 +22,7 @@ import static qgame.util.PosnUtil.sameRow;
  */
 public class MatchTraitRule extends BoardRule {
 
-  private boolean allMatchInTrait(Tile tile, List<Tile> lineOfNeighbors) {
+  private boolean sameTraitSubset(Tile tile, List<Tile> lineOfNeighbors) {
     return lineOfNeighbors.stream().allMatch(neighbor -> TileUtil.sameShape(tile, neighbor))
       || lineOfNeighbors.stream().allMatch(neighbor -> TileUtil.sameColor(tile, neighbor));
   }
@@ -42,8 +42,8 @@ public class MatchTraitRule extends BoardRule {
     List<Tile> horizNeighbors = this.filterTileLocationsByPredicate
             (tiledNeighbors,posn, PosnUtil::sameRow, qGameBoard);
 
-    return allMatchInTrait(tile, vertNeighbors)
-            && allMatchInTrait(tile, horizNeighbors);
+    return sameTraitSubset(tile, vertNeighbors)
+            && sameTraitSubset(tile, horizNeighbors);
   }
   
   private List<Posn> getAllNeighborsWithTile(Posn posn, IMap board){
