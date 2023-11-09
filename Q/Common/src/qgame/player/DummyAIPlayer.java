@@ -11,7 +11,7 @@ public class DummyAIPlayer implements Player{
 
   public enum FailStep {NONE, SETUP, TAKE_TURN, NEW_TILES, WIN}
 
-  private final Player player;
+  private final SimpleAIPlayer player;
   private final TurnStrategy strategy;
   private final FailStep failStep;
 
@@ -38,7 +38,6 @@ public class DummyAIPlayer implements Player{
   @Override
   public TurnAction takeTurn(IPlayerGameState playerState) throws IllegalStateException {
     failIfStep(FailStep.TAKE_TURN);
-    // TODO: implement cheats
     return player.takeTurn(playerState);
   }
 
@@ -64,6 +63,6 @@ public class DummyAIPlayer implements Player{
     return this.failStep;
   }
   public TurnStrategy strategy() {
-    return this.strategy;
+    return this.player.strategy();
   }
 }

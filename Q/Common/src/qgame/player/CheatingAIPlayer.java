@@ -10,15 +10,17 @@ import qgame.state.map.Tile;
 
 public class CheatingAIPlayer implements Player {
 
-    public enum Cheat {NONE, NOT_ADJACENT, NOT_OWNED, NOT_INLINE, NOT_ENOUGH_TILES, NOT_LEGAL_NEIGHBOR};
+    public enum Cheat {NONE, NOT_ADJACENT, NOT_OWNED,
+        NOT_INLINE, NOT_ENOUGH_TILES, NOT_LEGAL_NEIGHBOR};
 
     private SimpleAIPlayer player;
     private Cheat cheat;
 
 
     public CheatingAIPlayer(String name, TurnStrategy s, Cheat cheat) {
-        player = new SimpleAIPlayer(name, s);
         this.cheat = cheat;
+        TurnStrategy cheatingStrat = new CheatStrategy(cheat, s);
+        player = new SimpleAIPlayer(name, cheatingStrat);
     }
 
     @Override
@@ -28,8 +30,9 @@ public class CheatingAIPlayer implements Player {
 
     @Override
     public TurnAction takeTurn(IPlayerGameState state) throws IllegalStateException {
-        return player.takeTurn(state);
+       return player.takeTurn(state);
     }
+
 
     @Override
     public void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException {
@@ -43,8 +46,7 @@ public class CheatingAIPlayer implements Player {
 
     @Override
     public void win(boolean w) throws IllegalStateException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'win'");
+        player.win(w);
     }
 
 

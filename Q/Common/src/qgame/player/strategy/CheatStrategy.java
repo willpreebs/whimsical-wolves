@@ -123,7 +123,8 @@ public class CheatStrategy implements TurnStrategy {
         return PosnUtil.sameCol(a.posn(), b.posn()) || PosnUtil.sameRow(a.posn(), b.posn());
     }
 
-    private Optional<Placement> getValidNotInlinePlacement(Placement existing, Collection<Tile> playerTiles, IPlayerGameState state) {
+    private Optional<Placement> getValidNotInlinePlacement
+            (Placement existing, Collection<Tile> playerTiles, IPlayerGameState state) {
 
         return playerTiles.stream()
         .map(t -> getValidPlacements(t, state))
@@ -173,7 +174,8 @@ public class CheatStrategy implements TurnStrategy {
 
         for (Tile t : playerTiles) {
             List<Posn> validPosns = this.getValidPosns(t, state);        
-            Optional<Posn> op = validBoardExtensions.stream().filter(posn -> !validPosns.contains(posn)).findFirst();
+            Optional<Posn> op = validBoardExtensions.stream().filter
+                    (posn -> !validPosns.contains(posn)).findFirst();
             if (op.isPresent()) {
                 return new PlaceAction(List.of(new Placement(op.get(), t)));
             }
