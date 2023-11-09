@@ -10,6 +10,10 @@ import qgame.state.Placement;
 import qgame.state.map.Tile;
 import qgame.util.TileUtil;
 
+/**
+ * Cheating Rule: satisfied if the proposed placement if of a tile not
+ * in the player's hand.
+ */
 public class TileNotOwnedRule extends ARule {
     private Map<Tile, Integer> generateMapFromTiles(Collection<Tile> list) {
         Map<Tile, Integer> tileCount = new HashMap<>();

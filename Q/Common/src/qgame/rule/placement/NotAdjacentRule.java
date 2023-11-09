@@ -5,6 +5,10 @@ import qgame.state.map.IMap;
 import qgame.state.map.Posn;
 import static qgame.util.PosnUtil.neighbors;
 
+/**
+ * Cheating Rule: rule satisfied if the placement
+ * location lacks a neighbor.
+ */
 public class NotAdjacentRule extends BoardRule {
     
 

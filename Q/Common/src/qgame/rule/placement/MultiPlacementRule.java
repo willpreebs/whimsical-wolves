@@ -6,6 +6,10 @@ import java.util.List;
 import qgame.state.Placement;
 import qgame.state.IPlayerGameState;
 
+/**
+ * An and predicate of ARule, is satisfied if all sub-rules
+ * are also satisfied.
+ */
 public class MultiPlacementRule extends ARule {
 
   private final List<PlacementRule> rules;

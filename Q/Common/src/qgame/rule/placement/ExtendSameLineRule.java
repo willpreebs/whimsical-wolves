@@ -12,7 +12,8 @@ import qgame.util.PosnUtil;
 import static qgame.util.ValidationUtil.validateArg;
 
 /**
- * Represents a placement rule that checks if all placements extend the same row or column.
+ * Rule that checks if all placements extend the same row or column and
+ * that there are no duplicate placements.
  */
 public class ExtendSameLineRule extends ARule {
 

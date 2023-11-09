@@ -8,6 +8,11 @@ import qgame.state.map.Tile;
 import qgame.state.Placement;
 import qgame.state.IPlayerGameState;
 
+/**
+ * Abstract class for Placement Rule that abstracts the functionality
+ * of filtering out from the total open neighbors Posn list all
+ * the placements that don't satisfy ARule.
+ */
 public abstract class ARule implements PlacementRule {
 
   @Override
