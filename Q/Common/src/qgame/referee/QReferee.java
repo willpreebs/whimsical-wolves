@@ -32,11 +32,6 @@ import qgame.rule.placement.ExtendsBoardRule;
 import qgame.rule.placement.MatchTraitRule;
 import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.PlacementRule;
-import qgame.rule.scoring.MultiScoringRule;
-import qgame.rule.scoring.PlaceAllOwnedTiles;
-import qgame.rule.scoring.PointPerContiguousSequenceRule;
-import qgame.rule.scoring.PointPerTileRule;
-import qgame.rule.scoring.QRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.Placement;
 import qgame.state.IPlayerGameState;
@@ -197,7 +192,7 @@ public class QReferee implements IReferee {
     }
   }
 
-  //Determines the winners is a game state
+  //Returns the winners and rulebreakers of the game
   private GameResults getResults() {
     List<PlayerInfo> playerInfo = currentGameState.getPlayerInformation();
     int highestScore = maxScore(playerInfo);
@@ -307,9 +302,15 @@ public class QReferee implements IReferee {
   }
 
 
+  /**
+   * Updates the PLAYER about what their hand should look like now.
+   * @param player player to update
+   * @return true if successfully informed player
+   */
   private boolean newTiles(Player player) {
     try {
-      player.newTiles(currentGameState.getCurrentPlayerState().getCurrentPlayerTiles());
+      player.newTiles(
+              currentGameState.getCurrentPlayerState().getCurrentPlayerTiles());
       return true;
     }
     catch (IllegalStateException e) {
@@ -317,6 +318,8 @@ public class QReferee implements IReferee {
       return false;
     }
   }
+
+
   /**
    * Performs action on a game state. Returns false if the game should not continue after the action
    * Does NOT move the current player to the end of the turn rotation.
@@ -351,11 +354,7 @@ public class QReferee implements IReferee {
     state.setCurrentPlayerHand(newTiles);
   }
 
-  private void addCurrentPlayerNTiles(Bag<Tile> existing, int n) {
-    Collection<Tile> newTiles = currentGameState.takeOutRefTiles(n);
-    existing.addAll(newTiles);
-    currentGameState.setCurrentPlayerHand(existing);
-  }
+
 
   /**
    * places tiles, updates the score of the player who placed them, updates the hand
@@ -367,7 +366,7 @@ public class QReferee implements IReferee {
     placeTiles(placements);
     scorePlacements(placements);
     if (gameContinue) {
-      updateHand(placements);
+      updateHandInState(placements);
     }
     return gameContinue;
   }
@@ -376,7 +375,11 @@ public class QReferee implements IReferee {
     placements.forEach(currentGameState::placeTile);
   }
 
-  private void updateHand(List<Placement> placements) {
+  /**
+   * updates the internal game state's record of what the player's hand should be, removing
+   * tiles they used in the turn and replenishing the hand from the referee's bag.
+   */
+  private void updateHandInState(List<Placement> placements) {
     List<Tile> tilesRemoved = placements.stream().map(Placement::tile).toList();
     Bag<Tile> playerTiles = getCurrentPlayerTiles();
     playerTiles.remove(tilesRemoved);
@@ -384,6 +387,11 @@ public class QReferee implements IReferee {
     addCurrentPlayerNTiles(playerTiles, amountToRemove);
   }
 
+  private void addCurrentPlayerNTiles(Bag<Tile> existing, int n) {
+    Collection<Tile> newTiles = currentGameState.takeOutRefTiles(n);
+    existing.addAll(newTiles);
+    currentGameState.setCurrentPlayerHand(existing);
+  }
 
   private boolean canExchange(IGameState state) {
     Bag<Tile> playerTiles = state.getCurrentPlayerState().getCurrentPlayerTiles();
@@ -391,7 +399,8 @@ public class QReferee implements IReferee {
   }
 
   private boolean canPlace(PlaceAction place, IGameState state) {
-    return this.placementRules.isPlacementListLegal(place.placements(), state.getCurrentPlayerState());
+    return this.placementRules.isPlacementListLegal(
+            place.placements(), state.getCurrentPlayerState());
   }
 
   private boolean validTurn(TurnAction turnAction, IGameState state) {
@@ -416,13 +425,7 @@ public class QReferee implements IReferee {
     currentGameState.addScoreToCurrentPlayer(score);
   }
 
-  private boolean noPlacementsMade(List<TurnAction> turns) {
-    return !turns.isEmpty() && turns
-      .stream()
-      .noneMatch(turn -> turn instanceof PlaceAction);
-  }
-
-  //Returrns true when a list of placements has as many elements as the current player's hand.
+  //Returns true when a list of placements has as many elements as the current player's hand.
   private boolean placedAllTiles(List<Placement> placements) {
     return getCurrentPlayerTiles().size() == placements.size();
   }
@@ -431,6 +434,12 @@ public class QReferee implements IReferee {
   // played in a round are not placement actions.
   private boolean isGameOver(List<TurnAction> actions, List<Player> players) {
     return players.size() <= 1 || noPlacementsMade(actions);
+  }
+
+  private boolean noPlacementsMade(List<TurnAction> turns) {
+    return !turns.isEmpty() && turns
+            .stream()
+            .noneMatch(turn -> turn instanceof PlaceAction);
   }
 
   private Bag<Tile> getCurrentPlayerTiles() {
