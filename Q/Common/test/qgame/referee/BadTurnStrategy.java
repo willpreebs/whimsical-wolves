@@ -5,6 +5,7 @@ import java.util.List;
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
 import qgame.player.strategy.TurnStrategy;
+import qgame.rule.placement.PlacementRule;
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.state.map.QTile;
@@ -18,5 +19,11 @@ public class BadTurnStrategy implements TurnStrategy {
     Placement placement = new Placement(new Posn(1000, -1000),
       new QTile(Tile.Color.ORANGE, Tile.Shape.CIRCLE));
     return new PlaceAction(List.of(placement));
+  }
+
+  @Override
+  public PlacementRule getPlacementRule() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getPlacementRule'");
   }
 }

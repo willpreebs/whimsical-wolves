@@ -11,8 +11,6 @@ import java.util.Map;
 
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
-import qgame.player.strategy.LdasgStrategy;
-import qgame.player.strategy.TurnStrategy;
 import qgame.state.map.Posn;
 import qgame.state.map.IMap;
 import qgame.state.map.QMap;

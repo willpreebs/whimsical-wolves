@@ -31,6 +31,10 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
     this.placeRules = placeRules;
   }
 
+  public PlacementRule getPlacementRule() {
+    return this.placeRules;
+  }
+
   /**
    * Makes a copy of the gameState and returns the copy
    * @param state

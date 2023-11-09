@@ -28,9 +28,9 @@ public interface IMap {
   boolean posnHasTile(Posn posn);
 
   /**
-   * Gets the current state of the board as a nested map. The first key represents the row of a
-   * tile, and the second key represents the column of a tile.
-   *
+   * Gets the current state of the board as a map. The key represents the Posn of a
+   * tile, and value represents a tile placed there.
+   * 
    * @return map the nested map representation of the board state
    */
   Map<Posn, Tile> getBoardState();

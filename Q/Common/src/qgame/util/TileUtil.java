@@ -19,6 +19,9 @@ import static qgame.util.ValidationUtil.validateArg;
  */
 public class TileUtil {
 
+  private static Tile.Shape[] shapes = Tile.Shape.values();
+  private static Tile.Color[] colors = Tile.Color.values();
+
 
   private static Map<Tile.Shape, Integer> createLexShapeOrdering() {
     Map<Tile.Shape, Integer> shapeMap = new HashMap<>();
@@ -95,10 +98,12 @@ public class TileUtil {
     return tile1.shape() == tile2.shape();
   }
 
-  public static Bag<Tile> getTileBag(int numTiles) {
-    Tile.Shape[] shapes = Tile.Shape.values();
-    Tile.Color[] colors = Tile.Color.values();
+  public static int getNumberUniqueTiles() {
+    return colors.length * shapes.length;
+  }
 
+  public static Bag<Tile> getTileBag(int numTiles) {
+  
     List<Tile> bag = new ArrayList<>();
     for (int i = 0; i < numTiles; i++) {
       i %= colors.length * shapes.length;

@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import qgame.player.PlayerInfo;
 import qgame.rule.placement.CorrectPlayerTilesRule;
 import qgame.rule.placement.ExtendSameLineRule;
 import qgame.rule.placement.ExtendsBoardRule;

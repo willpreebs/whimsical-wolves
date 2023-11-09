@@ -49,6 +49,10 @@ public class Bag<T>{
     return counts;
   }
 
+  public boolean contains(T item) {
+    return items.contains(item);
+  }
+
   /**
    * Returns whether all the items in the collection of itemsToRemove are
    * in this bag.

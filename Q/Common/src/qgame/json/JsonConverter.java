@@ -16,7 +16,6 @@ import qgame.player.strategy.TurnStrategy;
 import qgame.player.CheatingAIPlayer;
 import qgame.player.DummyAIPlayer;
 import qgame.referee.GameResults;
-import qgame.rule.placement.NotAdjacentRule;
 import qgame.rule.placement.PlacementRule;
 import qgame.state.Bag;
 import qgame.state.QPlayerGameState;
@@ -343,7 +342,7 @@ public class JsonConverter {
       case "tile-not-owned" -> CheatingAIPlayer.Cheat.NOT_OWNED;
       case "not-a-line" -> CheatingAIPlayer.Cheat.NOT_INLINE;
       case "bad-ask-for-tiles" -> CheatingAIPlayer.Cheat.NOT_ENOUGH_TILES;
-      case "no-fit" -> CheatingAIPlayer.Cheat.NOT_LEGAL_PLACEMENT;
+      case "no-fit" -> CheatingAIPlayer.Cheat.NOT_LEGAL_NEIGHBOR;
       default -> throw new IllegalStateException("Unexpected value: " + exn);
     };
   }
@@ -387,22 +386,6 @@ public class JsonConverter {
       return new DummyAIPlayer(name, strat);
     }
   }
-
-  // private PlacementRule getCheatingRules(CheatingAIPlayer.Cheat cheat) {
-  //   List<PlacementRule> rules = new ArrayList<>();
-  //   switch (cheat) {
-  //     case NOT_ADJACENT:
-  //       return new NotAdjacentRule();
-  //     case NOT_OWNED:
-  //       return new TileNotOwnedRule();
-  //     case NOT_INLINE:
-  //       return new NotInLineRule();
-  //     case NOT_ENOUGH_TILES:
-  //       return new NotEnoughTilesRule();
-  //     case NOT_LEGAL_PLACEMENT:
-  //       return new NotLegalPlacementRule();
-  //   }
-  // }
 
   public static List<Player> playersFromJActors(JsonElement element, PlacementRule rule) {
     JsonElement[] players = getAsArray(element);
