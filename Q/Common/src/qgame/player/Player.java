@@ -23,12 +23,12 @@ public interface Player {
   /**
    * The player determines what move to make [PASS, EXCHANGE, PLACEMENT] given
    * the current state of the game.
-   * @param ref the current state of the game that is publicly available to this
+   * @param state the current state of the game that is publicly available to this
    *            player.
    * @return a TurnAction that corresponds to the move the player wants to make.
    * @throws IllegalStateException if unable to make a move.
    */
-  TurnAction takeTurn(IPlayerGameState ref) throws IllegalStateException;
+  TurnAction takeTurn(IPlayerGameState state) throws IllegalStateException;
 
   /**
    * Tells a player the starting state of a game and the tiles they have.
