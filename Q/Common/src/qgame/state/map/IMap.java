@@ -51,4 +51,6 @@ public interface IMap {
   void placeTile(Placement placement) throws IllegalArgumentException;
 
   void printMap();
+
+  boolean equals(Object o);
 }

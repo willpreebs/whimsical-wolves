@@ -13,7 +13,6 @@ import qgame.state.Bag;
 import qgame.state.map.Posn;
 import qgame.state.map.IMap;
 import qgame.state.map.Tile;
-import qgame.player.PlayerInfo;
 import qgame.state.Placement;
 
 /**

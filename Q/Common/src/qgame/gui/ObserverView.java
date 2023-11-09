@@ -1,8 +1,5 @@
 package qgame.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -12,16 +9,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import qgame.observer.IGameObserver;
-import qgame.observer.QGameObserver;
-import qgame.player.PlayerInfo;
 import qgame.state.IGameState;
-import qgame.state.IPlayerGameState;
-import qgame.state.map.Tile;
 
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.GridBagLayout;
 import java.awt.ScrollPane;
 import java.awt.image.BufferedImage;
 

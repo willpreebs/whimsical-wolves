@@ -114,4 +114,15 @@ public class QMap implements IMap {
          System.out.println("");
       }
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof IMap) {
+      IMap other = (IMap) o;
+      return this.tileMap.equals(other.getBoardState());
+    }
+    else {
+      return false;
+    }
+  }
 }

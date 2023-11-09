@@ -38,7 +38,7 @@ class XGamesInputCreator {
       case NOT_OWNED -> "tile-not-owned";
       case NOT_INLINE -> "not-a-line";
       case NOT_ENOUGH_TILES -> "bad-ask-for-tiles";
-      case NOT_LEGAL_PLACEMENT -> "no-fit";
+      case NOT_LEGAL_NEIGHBOR-> "no-fit";
     };
   }
   private static JsonElement dummyPlayerToJActorSpec(DummyAIPlayer player) {

@@ -8,27 +8,18 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import qgame.gui.ObserverView;
 import qgame.json.JsonConverter;
-import qgame.player.PlayerInfo;
-import qgame.state.Bag;
 import qgame.state.IGameState;
 import qgame.state.IPlayerGameState;
-import qgame.state.Placement;
 import qgame.state.QGameState;
-import qgame.state.map.IMap;
-import qgame.state.map.QMap;
-import qgame.state.map.Tile;
 
 public class QGameObserver implements IGameObserver {
 
@@ -43,6 +34,8 @@ public class QGameObserver implements IGameObserver {
     ObserverView stateFrame;
 
     private final int REF_TILES = 6;
+    private final String FILE_DIRECTORY = "/8/Tmp";
+    private final String FILE_EXTENSION = "png";
 
     public QGameObserver() {
         this.states = new ArrayList<>();
@@ -64,7 +57,9 @@ public class QGameObserver implements IGameObserver {
     }
 
     /**
-     * Render the 
+     * Render the next state if available.
+     * If there are no later states available, then the GUI is not changed.
+     * When this is called for the first time, the state at index 0 is rendered.
      */
     @Override
     public void next() {
@@ -75,6 +70,10 @@ public class QGameObserver implements IGameObserver {
         renderCurrentState();
     }
 
+    /**
+     * Render the previous state if available.
+     * If there are no earlier states available, then the GUI is not changed
+     */
     @Override
     public void previous() {
         // System.out.println("previous");
@@ -85,9 +84,17 @@ public class QGameObserver implements IGameObserver {
         renderCurrentState();
     }
 
-    private IGameState getCurrentState() {
+    protected IGameState getCurrentState() {
         return this.states.get(this.stateIndex);
     }
+
+    protected List<IGameState> getStates() {
+        return this.states;
+    }
+
+    protected String getFilePath(int index) {
+        return FILE_DIRECTORY + index + FILE_EXTENSION;
+    } 
 
     private void renderCurrentState() {
         System.out.println("Rendering state at index: " + this.stateIndex);
@@ -127,9 +134,9 @@ public class QGameObserver implements IGameObserver {
         BufferedImage img = new BufferedImage(currentFrame.getWidth(), currentFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
         currentFrame.paintAll(g);
-        File f = new File("8/Tmp/" + index + ".png");
+        File f = new File(FILE_DIRECTORY + index + "." + FILE_EXTENSION);
         try {
-            ImageIO.write(img, "png", f);
+            ImageIO.write(img, FILE_EXTENSION, f);
             currentFrame.setVisible(false);
         }
         catch (IOException e) {
