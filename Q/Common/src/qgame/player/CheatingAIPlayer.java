@@ -14,9 +14,11 @@ public class CheatingAIPlayer implements Player {
     private SimpleAIPlayer player;
     private Cheat cheat;
 
+
     public CheatingAIPlayer(String name, TurnStrategy s, Cheat cheat) {
         player = new SimpleAIPlayer(name, s);
         this.cheat = cheat;
+
     }
 
     @Override
@@ -50,6 +52,12 @@ public class CheatingAIPlayer implements Player {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'win'");
     }
-    
 
+
+    public CheatingAIPlayer.Cheat getCheat() {
+        return this.cheat;
+    }
+    public TurnStrategy strategy() {
+        return this.player.strategy();
+    }
 }
