@@ -10,13 +10,13 @@ import java.util.Map;
 
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
+import qgame.player.strategy.DagStrategy;
+import qgame.player.strategy.LdasgStrategy;
 import qgame.state.map.Posn;
 import qgame.state.map.IMap;
 import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.state.map.QTile;
-import qgame.player.strategy.DagStrategy;
-import qgame.player.strategy.LdasgStrategy;
 import qgame.rule.placement.CorrectPlayerTilesRule;
 import qgame.rule.placement.ExtendSameLineRule;
 import qgame.rule.placement.ExtendsBoardRule;

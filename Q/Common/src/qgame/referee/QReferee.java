@@ -1,7 +1,6 @@
 package qgame.referee;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -20,7 +19,6 @@ import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
 import qgame.observer.IGameObserver;
 import qgame.state.Bag;
-import qgame.state.QGameState;
 import qgame.state.QStateBuilder;
 import qgame.state.map.Posn;
 import qgame.state.map.IMap;
@@ -44,8 +42,9 @@ import qgame.state.Placement;
 import qgame.state.IPlayerGameState;
 import qgame.state.IGameState;
 
+import qgame.util.RuleUtil;
+
 import static qgame.util.ValidationUtil.validateArg;
-import static qgame.util.ValidationUtil.validateState;
 /**
  * Represents the referee of the Q-Game, which acts as a turn-by-turn executor of the game
  * by prompting players for actions, updating the gameState to reflect said actions, and making
@@ -57,8 +56,6 @@ public class QReferee implements IReferee {
   private final int timeOut;
 
   private final int DEFAULT_TIMEOUT = 100000;
-  private final int ALL_TILE_BONUS = 4;
-  private final int Q_BONUS = 8;
 
   private final int TOTAL_TILES = 1080;
   private final int NUM_PLAYER_TILES = 6;
@@ -74,9 +71,7 @@ public class QReferee implements IReferee {
       new ExtendSameLineRule(),
       new ExtendsBoardRule(), new CorrectPlayerTilesRule());
     
-    this.scoringRules = new MultiScoringRule(new PointPerTileRule(),
-      new QRule(Q_BONUS), new PointPerContiguousSequenceRule(), 
-      new PlaceAllOwnedTiles(NUM_PLAYER_TILES, ALL_TILE_BONUS)); 
+    this.scoringRules = RuleUtil.createScoreRules(NUM_PLAYER_TILES);
 
     this.timeOut = DEFAULT_TIMEOUT;
     this.players = new ArrayList<>();
@@ -125,7 +120,7 @@ public class QReferee implements IReferee {
     List<PlayerInfo> playerInfos = getDefaultPlayerInfos(players, tileBag);
 
     IGameState state = new QStateBuilder()
-    .addTileBag(tileBag.viewItems().toArray(new Tile[0]))
+    .addTileBag(tileBag.getItems().toArray(new Tile[0]))
     .placeTile(new Posn(0, 0), tileBag.removeRandomItem())
     .addPlayerInfo(playerInfos.toArray(new PlayerInfo[0]))
     .build();
@@ -159,12 +154,12 @@ public class QReferee implements IReferee {
    * @throws IllegalStateException if the list of players or game state is invalid.
    */
   private void setupPlayers() {
-    List<PlayerInfo> info = currentGameState.playerInformation();
+    List<PlayerInfo> info = currentGameState.getPlayerInformation();
     // validateState(l -> l.size() == info.size(),
     //   players, "Players does not match playerInfo");
 
     for (int i = 0; i < players.size(); i++) {
-      setupPlayer(players.get(i), info.get(i).tiles(), currentGameState.viewBoard());
+      setupPlayer(players.get(i), info.get(i).tiles(), currentGameState.getBoard());
     }
   }
 
@@ -204,7 +199,7 @@ public class QReferee implements IReferee {
 
   //Determines the winners is a game state
   private GameResults getResults() {
-    List<PlayerInfo> playerInfo = currentGameState.playerInformation();
+    List<PlayerInfo> playerInfo = currentGameState.getPlayerInformation();
     int highestScore = maxScore(playerInfo);
     List<String> winners = findWinners(players, playerInfo, highestScore);
     return new GameResults(winners, ruleBreakers);
@@ -238,7 +233,7 @@ public class QReferee implements IReferee {
   }
 
   private void removeCurrentPlayer() {
-    ruleBreakers.add(this.currentGameState.currentPlayer().name());
+    ruleBreakers.add(this.currentGameState.getCurrentPlayer().name());
     this.currentGameState.removeCurrentPlayer();
   }
 
@@ -252,6 +247,7 @@ public class QReferee implements IReferee {
     List<Player> nextRound = new ArrayList<>();
     boolean gameContinue = true;
     while (!players.isEmpty() && gameContinue) {
+      giveObserversStateUpdate();
       Player currentPlayer = players.remove(0);
       Optional<TurnAction> possibleAction = getAndValidateAction(currentGameState, currentPlayer);
       if (possibleAction.isEmpty()) {
@@ -267,8 +263,6 @@ public class QReferee implements IReferee {
         currentGameState.shiftCurrentToBack();
         nextRound.add(currentPlayer);
       }
-
-      giveObserversStateUpdate();
     }
     players.addAll(nextRound);
     return gameContinue;
@@ -386,18 +380,18 @@ public class QReferee implements IReferee {
     List<Tile> tilesRemoved = placements.stream().map(Placement::tile).toList();
     Bag<Tile> playerTiles = getCurrentPlayerTiles();
     playerTiles.remove(tilesRemoved);
-    int amountToRemove = Math.min(tilesRemoved.size(), currentGameState.refereeTiles().size());
+    int amountToRemove = Math.min(tilesRemoved.size(), currentGameState.getRefereeTiles().size());
     addCurrentPlayerNTiles(playerTiles, amountToRemove);
   }
 
 
   private boolean canExchange(IGameState state) {
     Bag<Tile> playerTiles = state.getCurrentPlayerState().getCurrentPlayerTiles();
-    return playerTiles.size() <= state.refereeTiles().size();
+    return playerTiles.size() <= state.getRefereeTiles().size();
   }
 
   private boolean canPlace(PlaceAction place, IGameState state) {
-    return this.placementRules.validPlacements(place.placements(), state.getCurrentPlayerState());
+    return this.placementRules.isPlacementListLegal(place.placements(), state.getCurrentPlayerState());
   }
 
   private boolean validTurn(TurnAction turnAction, IGameState state) {
@@ -415,10 +409,11 @@ public class QReferee implements IReferee {
    * @param placements list of placements player made on this turn.
    */
   private void scorePlacements(List<Placement> placements) {
-    IMap board = currentGameState.viewBoard();
+    IMap board = currentGameState.getBoard();
     int score = this.scoringRules.pointsFor(placements, board);
-    int bonus = placedAllTiles(placements) ? ALL_TILE_BONUS : 0;
-    currentGameState.addScoreToCurrentPlayer(score + bonus);
+    // int bonus = placedAllTiles(placements) ? ALL_TILE_BONUS : 0;
+    // currentGameState.addScoreToCurrentPlayer(score + bonus);
+    currentGameState.addScoreToCurrentPlayer(score);
   }
 
   private boolean noPlacementsMade(List<TurnAction> turns) {

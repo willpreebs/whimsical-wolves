@@ -9,6 +9,7 @@ import qgame.state.IPlayerGameState;
  * (pass, exchange, or placement) they should do in a turn.
  */
 public interface TurnStrategy {
+  
   /**
    * Decide what to do for a players turn, and return that as a TurnAction.
    * @param state The game state to determine an action for

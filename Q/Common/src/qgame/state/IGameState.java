@@ -17,20 +17,20 @@ public interface IGameState {
    *
    * @return list of players in chronological order of active turns
    */
-  List<PlayerInfo> playerInformation();
+  List<PlayerInfo> getPlayerInformation();
 
   /**
    * Gets an immutable copy of the game map.
    * 
    * @return QGameMapState
    */
-  IMap viewBoard();
+  IMap getBoard();
 
   /**
    * Gets how many tiles the ref has left.
    * @return number of tiles the ref has left
    */
-  Bag<Tile> refereeTiles();
+  Bag<Tile> getRefereeTiles();
 
   /**
    * Constructs a PlayerGameState from the current
@@ -83,5 +83,5 @@ public interface IGameState {
 
   void giveRefereeTiles(Bag<Tile> tiles) throws IllegalArgumentException;
 
-  PlayerInfo currentPlayer();
+  PlayerInfo getCurrentPlayer();
 }

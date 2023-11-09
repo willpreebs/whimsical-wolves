@@ -39,7 +39,7 @@ public class GameStateView extends JFrame {
   }
 
   private Component createScroll(IPlayerGameState state) {
-    BufferedImage image = ImageCreator.drawBoard(state.viewBoard());
+    BufferedImage image = ImageCreator.drawBoard(state.getBoard());
     JLabel mapPanel = new JLabel(new ImageIcon(image));
     ScrollPane scrollImage = new ScrollPane();
     scrollImage.setPreferredSize(new Dimension(300,250));
@@ -48,10 +48,10 @@ public class GameStateView extends JFrame {
   }
 
   private void addPlayerInfo(IPlayerGameState state, Box box) {
-    List<Tile> tiles = new ArrayList<>(state.getCurrentPlayerTiles().viewItems());
+    List<Tile> tiles = new ArrayList<>(state.getCurrentPlayerTiles().getItems());
     if (!tiles.isEmpty()) {
       PlayerInfo info
-        = new PlayerInfo(state.playerScores().get(0), tiles, state.playerName());
+        = new PlayerInfo(state.getPlayerScores().get(0), tiles, state.getPlayerName());
       box.add(new TilesPanel(info.tiles(), info.tiles().size()));
     }
     box.add(new HUDInfoPanel(state));

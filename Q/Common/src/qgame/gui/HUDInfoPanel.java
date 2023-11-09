@@ -17,7 +17,7 @@ import qgame.state.IPlayerGameState;
 public class HUDInfoPanel extends JPanel {
   
   public HUDInfoPanel(IPlayerGameState state){
-    List<Integer> playerInfoList = state.playerScores();
+    List<Integer> playerInfoList = state.getPlayerScores();
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     generatePlayerScores(playerInfoList,panel);
@@ -38,7 +38,7 @@ public class HUDInfoPanel extends JPanel {
   }
 
   private void writeRemainingTiles(IPlayerGameState state, JPanel panel){
-    JLabel remainingTiles = new JLabel("Remaining Tiles: " + state.remainingTiles());
+    JLabel remainingTiles = new JLabel("Remaining Tiles: " + state.getNumberRemainingTiles());
     panel.add(remainingTiles);
   }
 

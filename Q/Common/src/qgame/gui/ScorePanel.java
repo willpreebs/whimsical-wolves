@@ -17,7 +17,7 @@ import qgame.state.IPlayerGameState;
 public class ScorePanel extends JPanel {
     
     public ScorePanel(IGameState state) {
-    List<PlayerInfo> playerInfoList = state.playerInformation();
+    List<PlayerInfo> playerInfoList = state.getPlayerInformation();
     
     this.setLayout(new GridBagLayout());
     addScorePanel(playerInfoList);

@@ -9,6 +9,7 @@ import java.io.Writer;
 
 import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
+import qgame.player.strategy.TurnStrategy;
 import qgame.state.IPlayerGameState;
 
 

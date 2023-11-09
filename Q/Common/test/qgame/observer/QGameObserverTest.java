@@ -7,7 +7,6 @@ import org.junit.Test;
 import qgame.player.PlayerInfo;
 import qgame.state.IGameState;
 import qgame.state.Placement;
-import qgame.state.QGameState;
 import qgame.state.QStateBuilder;
 import qgame.state.map.Posn;
 import qgame.state.map.QTile;

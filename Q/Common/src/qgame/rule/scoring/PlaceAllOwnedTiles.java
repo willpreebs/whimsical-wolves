@@ -11,15 +11,16 @@ import qgame.state.Placement;
  */
 public class PlaceAllOwnedTiles implements ScoringRule {
 
-  private final int BONUS;
+  private final int ALL_TILES_BONUS;
   private final int tileCount;
 
   public PlaceAllOwnedTiles(int tileCount, int bonus) {
-    this.BONUS = bonus;
+    this.ALL_TILES_BONUS = bonus;
     this.tileCount = tileCount;
   }
+  
   @Override
   public int pointsFor(List<Placement> placements, IMap map) {
-    return placements.size() == tileCount ? BONUS : 0;
+    return placements.size() == tileCount ? ALL_TILES_BONUS : 0;
   }
 }

@@ -8,20 +8,20 @@ import qgame.state.Placement;
 import qgame.state.IPlayerGameState;
 
 /**
- * Represents a rule about placements on a QGameBoard.
+ * Represents a rule about placements on a IPlayerGameState.
  */
 public interface PlacementRule {
 
   /**
-   * Tests if a series of placements satisfies the rule this class represenets on the given
-   * QGameMap.
+   * Tests if a series of placements satisfies the rule on the given IPlayerGameState
+   * 
    * @param placements The series of placements. The placements are in order with the first
    *                   element being the first placement the second element being the second
    *                   placement, etc.
    * @param gameState The game state to test the rules on.
    * @return True if the given placements satisify the rule.
    */
-  boolean validPlacements(List<Placement> placements, IPlayerGameState gameState);
+  boolean isPlacementListLegal(List<Placement> placements, IPlayerGameState gameState);
 
   /**
    * Returns a list of all the valid positions a tile can be placed on a given game state.

@@ -11,6 +11,7 @@ import java.util.List;
 import qgame.state.map.Posn;
 import qgame.state.map.IMap;
 import qgame.state.map.Tile;
+import qgame.util.RuleUtil;
 import qgame.rule.placement.PlacementRule;
 import qgame.state.QPlayerGameState;
 import qgame.state.IPlayerGameState;
@@ -29,7 +30,7 @@ public class XMap {
       JsonElement input = parser.next();
       IMap map = qGameMapFromJMap(input);
       Tile t = tileFromJTile(parser.next());
-      PlacementRule rules = HarnessUtil.createPlaceRules();
+      PlacementRule rules = RuleUtil.createPlaceRules();
       IPlayerGameState basicGame = new QPlayerGameState(new ArrayList<>(), map, 10,
         new ArrayList<>(), "");
       List<Posn> positions = rules.validPositionsForTile(t, basicGame);

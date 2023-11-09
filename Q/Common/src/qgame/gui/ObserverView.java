@@ -64,7 +64,7 @@ public class ObserverView extends JFrame {
 
   // TODO: own class ?
   private Component createMapComponent(IGameState state) {
-    BufferedImage image = ImageCreator.drawBoard(state.viewBoard());
+    BufferedImage image = ImageCreator.drawBoard(state.getBoard());
     JLabel mapPanel = new JLabel(new ImageIcon(image));
     ScrollPane scrollImage = new ScrollPane();
     scrollImage.setPreferredSize(new Dimension(300,250));

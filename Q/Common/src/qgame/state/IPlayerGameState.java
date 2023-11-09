@@ -17,7 +17,7 @@ public interface IPlayerGameState {
    *
    * @return list of players in chronological order of active turns
    */
-  List<Integer> playerScores();
+  List<Integer> getPlayerScores();
 
 
   /**
@@ -25,17 +25,21 @@ public interface IPlayerGameState {
    *
    * @return QGameMapState
    */
-  IMap viewBoard();
+  IMap getBoard();
 
   /**
    * Gets how many tiles the ref has left.
    * @return number of tiles the ref has left
    */
-  int remainingTiles();
+  int getNumberRemainingTiles();
 
   Bag<Tile> getCurrentPlayerTiles();
 
+  /**
+   * 
+   * @param placement
+   */
   void makePlacement(Placement placement);
 
-  String playerName();
+  String getPlayerName();
 }

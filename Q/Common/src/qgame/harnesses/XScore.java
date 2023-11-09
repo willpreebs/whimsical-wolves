@@ -8,6 +8,7 @@ import java.util.List;
 
 import qgame.json.JsonConverter;
 import qgame.state.map.IMap;
+import qgame.util.RuleUtil;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.Placement;
 
@@ -19,7 +20,7 @@ public class XScore {
 
     IMap boardState = JsonConverter.qGameMapFromJMap(jMap);
     List<Placement> placements = JsonConverter.placementsFromJPlacements(jPlacements);
-    ScoringRule rules = HarnessUtil.createScoreRules();
+    ScoringRule rules = RuleUtil.createOldScoreRules();
     System.out.println(rules.pointsFor(placements, boardState));
   }
 }

@@ -42,6 +42,6 @@ public class AlwaysExchangePlayer implements MockPlayer{
   }
 
   public List<Tile> returnHand(){
-    return new ArrayList<>(this.tiles.viewItems());
+    return new ArrayList<>(this.tiles.getItems());
   }
 }

@@ -10,13 +10,14 @@ import qgame.json.JsonConverter;
 import qgame.player.strategy.TurnStrategy;
 import qgame.rule.placement.PlacementRule;
 import qgame.state.IPlayerGameState;
+import qgame.util.RuleUtil;
 
 public class XStrategy {
   public static void main(String[] args) {
     JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(System.in));
     JsonElement strat = parser.next();
     JsonElement jPub = parser.next();
-    PlacementRule rules = HarnessUtil.createPlaceRules();
+    PlacementRule rules = RuleUtil.createPlaceRules();
     IPlayerGameState state = JsonConverter.playerGameStateFromJPub(jPub);
     TurnStrategy strategy = JsonConverter.jStrategyToStrategy(strat, rules);
     TurnAction action = strategy.chooseAction(state);

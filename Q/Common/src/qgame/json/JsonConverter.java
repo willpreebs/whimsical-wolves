@@ -10,11 +10,13 @@ import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
 import qgame.player.Player;
 import qgame.player.PlayerInfo;
-import qgame.player.DummyAIPlayer;
 import qgame.player.strategy.DagStrategy;
 import qgame.player.strategy.LdasgStrategy;
 import qgame.player.strategy.TurnStrategy;
+import qgame.player.CheatingAIPlayer;
+import qgame.player.DummyAIPlayer;
 import qgame.referee.GameResults;
+import qgame.rule.placement.NotAdjacentRule;
 import qgame.rule.placement.PlacementRule;
 import qgame.state.Bag;
 import qgame.state.QPlayerGameState;
@@ -28,6 +30,7 @@ import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.state.map.QTile;
 import qgame.util.PosnUtil;
+import qgame.util.RuleUtil;
 
 import static java.util.Arrays.stream;
 import static qgame.util.ValidationUtil.nonNullObj;
@@ -260,19 +263,19 @@ public class JsonConverter {
 
   private static JsonElement jPlayerFromPlayerState(IPlayerGameState state) {
     JsonObject player = new JsonObject();
-    player.add("score", new JsonPrimitive(state.playerScores().get(0)));
-    player.add("tile*", jTilesFromTiles(state.getCurrentPlayerTiles().viewItems()));
+    player.add("score", new JsonPrimitive(state.getPlayerScores().get(0)));
+    player.add("tile*", jTilesFromTiles(state.getCurrentPlayerTiles().getItems()));
     return player;
   }
 
   public static JsonElement playerStateToJPub(IPlayerGameState state) {
     JsonObject jPub = new JsonObject();
-    jPub.add("map", jMapFromQGameMap(state.viewBoard()));
-    jPub.add("tile*", new JsonPrimitive(state.remainingTiles()));
+    jPub.add("map", jMapFromQGameMap(state.getBoard()));
+    jPub.add("tile*", new JsonPrimitive(state.getNumberRemainingTiles()));
     JsonArray arr = new JsonArray();
     arr.add(jPlayerFromPlayerState(state));
     state
-      .playerScores()
+      .getPlayerScores()
       .stream()
       .skip(1)
       .forEach(score -> arr.add(new JsonPrimitive(score)));
@@ -333,14 +336,14 @@ public class JsonConverter {
     };
   }
 
-    private static DummyAIPlayer.Cheat cheatFromJCheat(JsonElement element) {
+    private static CheatingAIPlayer.Cheat cheatFromJCheat(JsonElement element) {
     String exn = getAsString(element);
     return switch (exn) {
-      case "non-adjacent-coordinate" -> DummyAIPlayer.Cheat.NOT_ADJACENT;
-      case "tile-not-owned" -> DummyAIPlayer.Cheat.NOT_OWNED;
-      case "not-a-line" -> DummyAIPlayer.Cheat.NOT_INLINE;
-      case "bad-ask-for-tiles" -> DummyAIPlayer.Cheat.NOT_ENOUGH_TILES;
-      case "no-fit" -> DummyAIPlayer.Cheat.NOT_LEGAL_PLACEMENT;
+      case "non-adjacent-coordinate" -> CheatingAIPlayer.Cheat.NOT_ADJACENT;
+      case "tile-not-owned" -> CheatingAIPlayer.Cheat.NOT_OWNED;
+      case "not-a-line" -> CheatingAIPlayer.Cheat.NOT_INLINE;
+      case "bad-ask-for-tiles" -> CheatingAIPlayer.Cheat.NOT_ENOUGH_TILES;
+      case "no-fit" -> CheatingAIPlayer.Cheat.NOT_LEGAL_PLACEMENT;
       default -> throw new IllegalStateException("Unexpected value: " + exn);
     };
   }
@@ -358,36 +361,62 @@ public class JsonConverter {
     return new DummyAIPlayer(name, strat, step);
   }
 
-  private static Player playerFromJActorSpecA(JsonElement element, PlacementRule rule) {
+  private static Player playerFromJActorSpecA(JsonElement element) {
     JsonElement[] spec = getAsArray(element);
     validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
     String name = getAsString(spec[0]);
     validateArg(size -> size <= 20, name.length(), "Name must be at most 20 characters");
-    TurnStrategy strat = jStrategyToStrategy(spec[1], rule);
+    
     DummyAIPlayer.FailStep step = DummyAIPlayer.FailStep.NONE;
-    DummyAIPlayer.Cheat cheat = DummyAIPlayer.Cheat.NONE;
+    CheatingAIPlayer.Cheat cheat = CheatingAIPlayer.Cheat.NONE;
+    
+    // Assume that the strategy will still play tiles by the rules, even if the player is a cheater
+    PlacementRule rules = RuleUtil.createPlaceRules();
+
+    TurnStrategy strat = jStrategyToStrategy(spec[1], rules);
+    
     if (spec.length == 3) {
       step = failStepFromExn(spec[2]);
+      return new DummyAIPlayer(name, strat, step);
     }
-    if (spec.length == 4) {
+    else if (spec.length == 4) {
       cheat = cheatFromJCheat(spec[3]);
+      return new CheatingAIPlayer(name, strat, cheat);
     }
-    return new DummyAIPlayer(name, strat, step, cheat);
+    else {
+      return new DummyAIPlayer(name, strat);
+    }
   }
+
+  // private PlacementRule getCheatingRules(CheatingAIPlayer.Cheat cheat) {
+  //   List<PlacementRule> rules = new ArrayList<>();
+  //   switch (cheat) {
+  //     case NOT_ADJACENT:
+  //       return new NotAdjacentRule();
+  //     case NOT_OWNED:
+  //       return new TileNotOwnedRule();
+  //     case NOT_INLINE:
+  //       return new NotInLineRule();
+  //     case NOT_ENOUGH_TILES:
+  //       return new NotEnoughTilesRule();
+  //     case NOT_LEGAL_PLACEMENT:
+  //       return new NotLegalPlacementRule();
+  //   }
+  // }
 
   public static List<Player> playersFromJActors(JsonElement element, PlacementRule rule) {
     JsonElement[] players = getAsArray(element);
     return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpec(spec, rule)).toList());
   }
 
-  public static List<Player> playersFromJActorSpecA(JsonElement element, PlacementRule rule) {
+  public static List<Player> playersFromJActorSpecA(JsonElement element) {
     JsonElement[] players = getAsArray(element);
-    return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpecA(spec, rule)).toList());
+    return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpecA(spec)).toList());
   }
 
   public static JsonElement jResultsFromGameResults(GameResults results) {
-    List<String> winners = results.winners();
-    List<String> ruleBreakers = results.ruleBreakers();
+    List<String> winners = results.getWinners();
+    List<String> ruleBreakers = results.getRuleBreakers();
     winners.sort(Comparator.naturalOrder());
     JsonArray winnersArray = new JsonArray();
     JsonArray breakersArray = new JsonArray();
@@ -403,14 +432,14 @@ public class JsonConverter {
   private static JsonElement jPlayerFromPlayerInfo(PlayerInfo info) {
     JsonObject object = new JsonObject();
     object.add("score", new JsonPrimitive(info.score()));
-    object.add("tile*", jTilesFromTiles(info.tiles().viewItems()));
+    object.add("tile*", jTilesFromTiles(info.tiles().getItems()));
     return object;
   }
   public static JsonElement jStateFromQGameState(IGameState state) {
-    JsonElement map = jMapFromQGameMap(state.viewBoard());
-    JsonElement tiles = jTilesFromTiles(state.refereeTiles().viewItems());
+    JsonElement map = jMapFromQGameMap(state.getBoard());
+    JsonElement tiles = jTilesFromTiles(state.getRefereeTiles().getItems());
     JsonArray players = new JsonArray();
-    state.playerInformation()
+    state.getPlayerInformation()
       .stream()
       .map(JsonConverter::jPlayerFromPlayerInfo)
       .forEach(players::add);

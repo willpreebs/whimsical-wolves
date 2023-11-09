@@ -16,6 +16,17 @@ import qgame.util.PosnUtil;
  */
 public class PointPerContiguousSequenceRule extends CrawlingRule {
 
+  private final int POINTS_PER_CONTIGUOUS_TILE;
+
+  // private final int DEFAULT = 1;
+
+  // public PointPerContiguousSequenceRule() {
+  //   POINTS_PER_CONTIGUOUS_TILE = DEFAULT;
+  // }
+
+  public PointPerContiguousSequenceRule(int pointsPerContiguousTile) {
+    POINTS_PER_CONTIGUOUS_TILE = pointsPerContiguousTile;
+  }
 
   private void updateSetsWithConnectedSequences(Placement placement, IMap map,
                                           Set<Posn> horizontalTiles, Set<Posn> verticalTiles) {
@@ -46,6 +57,6 @@ public class PointPerContiguousSequenceRule extends CrawlingRule {
     return connected
       .stream()
       .mapToInt(Set::size)
-      .sum();
+      .sum() * POINTS_PER_CONTIGUOUS_TILE;
   }
 }

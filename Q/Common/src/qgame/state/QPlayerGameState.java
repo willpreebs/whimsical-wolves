@@ -35,17 +35,17 @@ public class QPlayerGameState implements IPlayerGameState {
   }
 
   @Override
-  public List<Integer> playerScores() {
+  public List<Integer> getPlayerScores() {
     return new ArrayList<>(scores);
   }
 
   @Override
-  public IMap viewBoard() {
+  public IMap getBoard() {
     return new QMap(this.board.getBoardState());
   }
 
   @Override
-  public int remainingTiles() {
+  public int getNumberRemainingTiles() {
     return refTileCount;
   }
 
@@ -54,6 +54,9 @@ public class QPlayerGameState implements IPlayerGameState {
     return new Bag<>(this.playerTiles);
   }
 
+  /**
+   * Removes 
+   */
   @Override
   public void makePlacement(Placement placement) {
     this.playerTiles.remove(new ArrayList<>(List.of(placement.tile())));
@@ -61,7 +64,7 @@ public class QPlayerGameState implements IPlayerGameState {
   }
 
   @Override
-  public String playerName() {
+  public String getPlayerName() {
     return this.playerName;
   }
 

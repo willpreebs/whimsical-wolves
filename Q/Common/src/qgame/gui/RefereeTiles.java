@@ -16,7 +16,7 @@ public class RefereeTiles extends JPanel {
     
     public RefereeTiles(IGameState state, int max) {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        generateRefereeTilesPanel(state.refereeTiles(), max);
+        generateRefereeTilesPanel(state.getRefereeTiles(), max);
         // writeRemainingTiles(state,panel);
         //this.setPreferredSize(new Dimension(500, 75));
     }

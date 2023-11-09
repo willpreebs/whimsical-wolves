@@ -19,10 +19,10 @@ import qgame.state.Placement;
  */
 public class QRule extends CrawlingRule {
 
-  private final int BONUS;
+  private final int Q_BONUS;
 
   public QRule(int bonus) {
-    this.BONUS = bonus;
+    this.Q_BONUS = bonus;
   }
 
   // Returns a stream of the tiles at the given positions in the qGameState
@@ -47,7 +47,7 @@ public class QRule extends CrawlingRule {
       tilesFrom(positions, map).map(Tile::shape).collect(Collectors.toSet());
 
     if (colorSet.equals(colorsSeen) || shapeSet.equals(shapesSeen)) {
-      return BONUS;
+      return Q_BONUS;
     }
     return 0;
   }

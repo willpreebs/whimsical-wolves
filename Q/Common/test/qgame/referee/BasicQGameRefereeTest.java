@@ -1,6 +1,5 @@
 package qgame.referee;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,12 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import qgame.player.strategy.AlwaysPassStrategy;
 import qgame.state.Bag;
 import qgame.state.map.Posn;
 import qgame.state.map.IMap;
 import qgame.state.map.QMap;
 import qgame.state.map.Tile;
+import qgame.util.RuleUtil;
 import qgame.state.map.QTile;
 import qgame.player.AlwaysExchangePlayer;
 import qgame.player.AlwaysPassPlayer;
@@ -23,8 +22,6 @@ import qgame.player.MockPlayer;
 import qgame.player.Player;
 import qgame.player.PlayerInfo;
 import qgame.player.DummyAIPlayer;
-import qgame.player.strategy.DagStrategy;
-import qgame.player.strategy.LdasgStrategy;
 import qgame.rule.placement.CorrectPlayerTilesRule;
 import qgame.rule.placement.ExtendSameLineRule;
 import qgame.rule.placement.ExtendsBoardRule;
@@ -40,6 +37,8 @@ import qgame.state.QGameState;
 import qgame.state.QStateBuilder;
 import qgame.state.IGameState;
 import qgame.player.DummyAIPlayer.FailStep;
+import qgame.player.strategy.DagStrategy;
+import qgame.player.strategy.LdasgStrategy;
 
 import static org.junit.Assert.*;
 
@@ -79,8 +78,7 @@ public class BasicQGameRefereeTest {
     placementRules = new MultiPlacementRule(new MatchTraitRule(),
       new ExtendSameLineRule(),
       new ExtendsBoardRule(), new CorrectPlayerTilesRule());
-    ScoringRule scoringRules =  new MultiScoringRule(new PointPerTileRule(),
-      new QRule(6), new PointPerContiguousSequenceRule());
+    ScoringRule scoringRules =  RuleUtil.createOldScoreRules();
 
     player1 = new DummyAIPlayer("Tester", new DagStrategy(placementRules));
     player2 = new DummyAIPlayer("Second Tester", new LdasgStrategy(placementRules));
@@ -119,12 +117,12 @@ public class BasicQGameRefereeTest {
     GameResults results = ref.playGame(stateForceFirstPass, List.of(player1, badMove));
     List<String> winners = new ArrayList<>();
     winners.add(player1.name());
-    assertEquals(winners.size(), results.winners().size());
-    assertEquals(player1.name(), results.winners().get(0));
+    assertEquals(winners.size(), results.getWinners().size());
+    assertEquals(player1.name(), results.getWinners().get(0));
     List<String> breakers = new ArrayList<>();
     breakers.add(badMove.name());
-    assertEquals(breakers.size(), results.ruleBreakers().size());
-    assertEquals(badMove.name(), results.ruleBreakers().get(0));
+    assertEquals(breakers.size(), results.getRuleBreakers().size());
+    assertEquals(badMove.name(), results.getRuleBreakers().get(0));
   }
 
   @Test
@@ -133,12 +131,12 @@ public class BasicQGameRefereeTest {
     GameResults results = ref.playGame(stateForceFirstPass, List.of(player1, disconnectPlayer));
     List<String> winners = new ArrayList<>();
     winners.add(player1.name());
-    assertEquals(winners.size(), results.winners().size());
-    assertEquals(player1.name(), results.winners().get(0));
+    assertEquals(winners.size(), results.getWinners().size());
+    assertEquals(player1.name(), results.getWinners().get(0));
     List<String> breakers = new ArrayList<>();
     breakers.add(disconnectPlayer.name());
-    assertEquals(breakers.size(), results.ruleBreakers().size());
-    assertEquals(disconnectPlayer.name(), results.ruleBreakers().get(0));
+    assertEquals(breakers.size(), results.getRuleBreakers().size());
+    assertEquals(disconnectPlayer.name(), results.getRuleBreakers().get(0));
   }
 
   @Test
@@ -147,12 +145,12 @@ public class BasicQGameRefereeTest {
     GameResults results = ref.playGame(stateForceFirstPass, List.of(player1, timeOutPlayer));
     List<String> winners = new ArrayList<>();
     winners.add(player1.name());
-    assertEquals(winners.size(), results.winners().size());
-    assertEquals(player1.name(), results.winners().get(0));
+    assertEquals(winners.size(), results.getWinners().size());
+    assertEquals(player1.name(), results.getWinners().get(0));
     List<String> breakers = new ArrayList<>();
     breakers.add(timeOutPlayer.name());
-    assertEquals(breakers.size(), results.ruleBreakers().size());
-    assertEquals(timeOutPlayer.name(), results.ruleBreakers().get(0));
+    assertEquals(breakers.size(), results.getRuleBreakers().size());
+    assertEquals(timeOutPlayer.name(), results.getRuleBreakers().get(0));
   }
 
   @Test
@@ -160,9 +158,9 @@ public class BasicQGameRefereeTest {
     initAllPass();
     GameResults result = ref.playGame(allPass,List.of(player1,player2));
     List<String> winners = new ArrayList<>(List.of(player1.name(), player2.name()));
-    assertEquals(winners.size(), result.winners().size());
+    assertEquals(winners.size(), result.getWinners().size());
     List<String> ruleBreakers = new ArrayList<>();
-    assertEquals(ruleBreakers.size(), result.ruleBreakers().size());
+    assertEquals(ruleBreakers.size(), result.getRuleBreakers().size());
   }
 
 
@@ -193,8 +191,8 @@ public class BasicQGameRefereeTest {
     MockPlayer passer = new AlwaysPassPlayer(List.of(new QTile(blue,square)));
     List<Player> players = new ArrayList<>(List.of(passer, player1));
     GameResults results = ref.playGame(onePassOneExchange1, players);
-    assertEquals(1, results.winners().size());
-    assertEquals("Tester", results.winners().get(0));
+    assertEquals(1, results.getWinners().size());
+    assertEquals("Tester", results.getWinners().get(0));
 //    assertEquals(List.of(new TileImpl(blue,square)), passer.returnHand());
   }
 
@@ -204,8 +202,8 @@ public class BasicQGameRefereeTest {
     MockPlayer exchanger = new AlwaysExchangePlayer(new Bag<>(List.of(new QTile(blue,square))));
     List<Player> players = new ArrayList<>(List.of(exchanger, passer));
     GameResults results = ref.playGame(onePassOneExchange2, players);
-    assertEquals(1, results.winners().size());
-    assertEquals("Exchanger", results.winners().get(0));
+    assertEquals(1, results.getWinners().size());
+    assertEquals("Exchanger", results.getWinners().get(0));
 //    assertEquals(List.of(new TileImpl(blue,square)), passer.returnHand());
 //    assertEquals(List.of(new TileImpl(blue,eightStar)), exchanger.returnHand());
   }
@@ -228,8 +226,8 @@ public class BasicQGameRefereeTest {
   public void testGameEndsAfterPlaceHand() {
     List<Player> players = new ArrayList<>(List.of(player1, player2));
     GameResults results = ref.playGame(placeAll, players);
-    assertEquals(1, results.winners().size());
-    assertEquals("Tester", results.winners().get(0));
+    assertEquals(1, results.getWinners().size());
+    assertEquals("Tester", results.getWinners().get(0));
     try {
       assertTrue(XGamesInputCreator.createTest(placeAll, players, results, "7/Tests", 0));
     }
@@ -260,8 +258,8 @@ public class BasicQGameRefereeTest {
     GameResults results = new GameResults(List.of("ben"), List.of("alex", "terry"));
     XGamesInputCreator.createTest(state, players, results, "7/Tests", 1);
     GameResults actual = ref.playGame(state, players);
-    assertEquals(results.winners(), actual.winners());
-    assertEquals(results.ruleBreakers(), actual.ruleBreakers());
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
 
   }
 
@@ -289,8 +287,8 @@ public class BasicQGameRefereeTest {
       List.of("bobby", "terry", "ben", "alex"));
     XGamesInputCreator.createTest(state, players, results, "7/Tests", 2);
     GameResults actual = ref.playGame(state, players);
-    assertEquals(results.winners(), actual.winners());
-    assertEquals(results.ruleBreakers(), actual.ruleBreakers());
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
   }
 
 
@@ -317,8 +315,8 @@ public class BasicQGameRefereeTest {
       new ArrayList<>());
     XGamesInputCreator.createTest(state, players, results, "7/Tests", 3);
     GameResults actual = ref.playGame(state, players);
-    assertEquals(results.winners(), actual.winners());
-    assertEquals(results.ruleBreakers(), actual.ruleBreakers());
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
   }
 
   @Test
@@ -341,8 +339,8 @@ public class BasicQGameRefereeTest {
       List.of("LOSER"));
     XGamesInputCreator.createTest(state, players, results, "7/Tests", 4);
     GameResults actual = ref.playGame(state, players);
-    assertEquals(results.winners(), actual.winners());
-    assertEquals(results.ruleBreakers(), actual.ruleBreakers());
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
   }
 
   @Test
@@ -365,8 +363,8 @@ public class BasicQGameRefereeTest {
       new ArrayList<>());
     XGamesInputCreator.createTest(state, players, results, "7/Tests", 5);
     GameResults actual = ref.playGame(state, players);
-    assertEquals(results.winners(), actual.winners());
-    assertEquals(results.ruleBreakers(), actual.ruleBreakers());
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
   }
 
   @Test
@@ -389,8 +387,8 @@ public class BasicQGameRefereeTest {
       new ArrayList<>());
     XGamesInputCreator.createTest(state, players, results, "7/Tests", 6);
     GameResults actual = ref.playGame(state, players);
-    assertEquals(results.winners(), actual.winners());
-    assertEquals(results.ruleBreakers(), actual.ruleBreakers());
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
   }
 
 
@@ -414,8 +412,8 @@ public class BasicQGameRefereeTest {
       List.of("tess", "tessy", "3Peat"));
     XGamesInputCreator.createTest(state, players, results, "7/Tests", 7);
     GameResults actual = ref.playGame(state, players);
-    assertEquals(results.winners(), actual.winners());
-    assertEquals(results.ruleBreakers(), actual.ruleBreakers());
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
   }
 
 
@@ -440,8 +438,8 @@ public class BasicQGameRefereeTest {
       new ArrayList<>());
     XGamesInputCreator.createTest(state, players, results, "7/Tests", 8);
     GameResults actual = ref.playGame(state, players);
-    assertEquals(results.winners(), actual.winners());
-    assertEquals(results.ruleBreakers(), actual.ruleBreakers());
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
   }
 
   @Test
@@ -464,7 +462,7 @@ public class BasicQGameRefereeTest {
       new ArrayList<>());
     XGamesInputCreator.createTest(state, players, results, "7/Tests", 9);
     GameResults actual = ref.playGame(state, players);
-    assertEquals(results.winners(), actual.winners());
-    assertEquals(results.ruleBreakers(), actual.ruleBreakers());
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
   }
 }

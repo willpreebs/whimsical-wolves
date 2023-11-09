@@ -16,15 +16,19 @@ import qgame.util.PosnUtil;
  * picks the one with the smallest row-column order.
  */
 public class DagStrategy extends SmallestRowColumnTileStrategy {
+  
   public DagStrategy(PlacementRule ruleBook) {
     super(ruleBook);
   }
 
-  protected Placement makePlacementGivenPositions(IPlayerGameState currentState,
-                                    List<Posn> legalPlaces) {
-    Tile bestTile = bestTile(currentState);
-    legalPlaces.sort(PosnUtil::rowColumnCompare);
-    Posn posn = legalPlaces. get(0);
+  /**
+   * Returns the best Placement determined by a given list of Posns assumed to be legal.
+   * The best Placement is determined by the smallest row column order of all the Posns
+   */
+  protected Placement getBestPlacement(IPlayerGameState currentState, List<Posn> legalPosns, Tile bestTile) {
+    // Tile bestTile = this.bestTile(currentState);
+    legalPosns.sort(PosnUtil::rowColumnCompare);
+    Posn posn = legalPosns.get(0);
     return new Placement(posn, bestTile);
   }
 }

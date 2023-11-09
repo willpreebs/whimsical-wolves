@@ -1,9 +1,5 @@
 package qgame.player;
 
-import java.util.List;
-
-import qgame.state.map.Tile;
-
 /**
  * Fake players which are created for testing
  * other game components such as the ref.

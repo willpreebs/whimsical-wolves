@@ -23,8 +23,15 @@ public class ExtendSameLineRule extends ARule {
       .allMatch(otherElement -> func.test(first, otherElement));
   }
 
+  /**
+   * Returns true if all of the given placements are in the same row or column,
+   * and if there are no duplicate placements in the list.
+   * @param placements
+   * @param state Not used in this implementation
+   * @return
+   */
   @Override
-  public boolean validPlacements(List<Placement> placements, IPlayerGameState map) {
+  public boolean isPlacementListLegal(List<Placement> placements, IPlayerGameState state) {
     validateArg(Predicate.not(List::isEmpty), placements, "Placements cannot be empty.");
     List<Posn> posns = placements
       .stream()

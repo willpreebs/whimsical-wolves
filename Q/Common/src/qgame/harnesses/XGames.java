@@ -14,14 +14,15 @@ import qgame.referee.IReferee;
 import qgame.rule.placement.PlacementRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.IGameState;
+import qgame.util.RuleUtil;
 
 public class XGames {
   public static void main(String[] args) {
     JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(System.in));
     JsonElement jState = parser.next();
     JsonElement jActors = parser.next();
-    PlacementRule placementRules = HarnessUtil.createPlaceRules();
-    ScoringRule scoringRules = HarnessUtil.createScoreRules();
+    PlacementRule placementRules = RuleUtil.createPlaceRules();
+    ScoringRule scoringRules = RuleUtil.createOldScoreRules();
     IGameState state = JsonConverter.JStateToQGameState(jState);
     List<Player> players = JsonConverter.playersFromJActors(jActors, placementRules);
     IReferee ref = new QReferee(placementRules, scoringRules, 10000);

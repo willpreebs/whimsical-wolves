@@ -35,8 +35,8 @@ public class RuleTests {
   Tile.Shape eight = Tile.Shape.EIGHT_STAR;
 
   ScoringRule owned = new PlaceAllOwnedTiles(1, 6);
-  ScoringRule perTile = new PointPerTileRule();
-  ScoringRule contiguousTile = new PointPerContiguousSequenceRule();
+  ScoringRule perTile = new PointPerTileRule(1);
+  ScoringRule contiguousTile = new PointPerContiguousSequenceRule(1);
   ScoringRule qRule = new QRule(6);
   ScoringRule multi = new MultiScoringRule(perTile, contiguousTile, qRule);
 

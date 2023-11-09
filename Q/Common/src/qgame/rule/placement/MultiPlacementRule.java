@@ -18,7 +18,7 @@ public class MultiPlacementRule extends ARule {
   }
 
   @Override
-  public boolean validPlacements(List<Placement> placements, IPlayerGameState gameState) {
-    return this.rules.stream().allMatch(rule -> rule.validPlacements(placements, gameState));
+  public boolean isPlacementListLegal(List<Placement> placements, IPlayerGameState gameState) {
+    return this.rules.stream().allMatch(rule -> rule.isPlacementListLegal(placements, gameState));
   }
 }

@@ -4,10 +4,10 @@ import java.util.List;
 
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
+import qgame.player.strategy.TurnStrategy;
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.state.map.QTile;
-import qgame.player.strategy.TurnStrategy;
 import qgame.state.Placement;
 import qgame.state.IPlayerGameState;
 

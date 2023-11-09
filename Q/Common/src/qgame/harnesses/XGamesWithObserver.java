@@ -16,18 +16,20 @@ import qgame.referee.IReferee;
 import qgame.rule.placement.PlacementRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.IGameState;
+import qgame.util.RuleUtil;
 
 public class XGamesWithObserver {
     
     public static void main(String[]args) {
-        PlacementRule rules = HarnessUtil.createPlaceRules();
-        ScoringRule scoreRules = HarnessUtil.createScoreRules();
+
+        PlacementRule rules = RuleUtil.createPlaceRules();
+        ScoringRule scoreRules = RuleUtil.createOldScoreRules();
         JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(System.in));
         JsonElement jState = parser.next();
         JsonElement jActorSpecA = parser.next();
 
         IGameState state = JsonConverter.JStateToQGameState(jState);
-        List<Player> players = JsonConverter.playersFromJActorSpecA(jActorSpecA, rules);
+        List<Player> players = JsonConverter.playersFromJActorSpecA(jActorSpecA);
 
         boolean withObserver = false;
         if (args.length >= 1) {

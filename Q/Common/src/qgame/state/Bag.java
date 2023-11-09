@@ -24,13 +24,12 @@ public class Bag<T>{
   }
 
   public Bag(Bag<T> items) {
-    this.items = new ArrayList<>(items.viewItems());
+    this.items = new ArrayList<>(items.getItems());
   }
 
   public Bag(Collection<T> items) {
     this.items = new ArrayList<>(items);
   }
-
 
   public void add(T item) throws IllegalArgumentException {
     this.items.add(item);
@@ -41,7 +40,7 @@ public class Bag<T>{
   }
 
   public void addAll(Bag<T> itemsToAdd) throws IllegalArgumentException {
-    this.items.addAll(itemsToAdd.viewItems());
+    this.items.addAll(itemsToAdd.getItems());
   }
 
   private Map<T, Integer> itemCounts(Collection<T> itemsToCount) {
@@ -74,7 +73,7 @@ public class Bag<T>{
     itemsToRemove.forEach(this.items::remove);
   }
 
-  public Collection<T> viewItems() {
+  public Collection<T> getItems() {
     return new ArrayList<>(this.items);
   }
 

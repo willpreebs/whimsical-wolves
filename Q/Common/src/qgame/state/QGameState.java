@@ -40,9 +40,9 @@ public class QGameState implements IGameState {
   }
 
   public QGameState(IGameState state) {
-    this.board = new QMap(state.viewBoard().getBoardState());
-    this.refereeTiles = new Bag<>(state.refereeTiles());
-    this.playerInformation = new ArrayList<>(state.playerInformation());
+    this.board = new QMap(state.getBoard().getBoardState());
+    this.refereeTiles = new Bag<>(state.getRefereeTiles());
+    this.playerInformation = new ArrayList<>(state.getPlayerInformation());
   }
 
   public QGameState() {
@@ -61,7 +61,7 @@ public class QGameState implements IGameState {
   private void validate(IMap map,  Bag<Tile> tiles,
                    List<PlayerInfo> players) {
     ValidationUtil.nonNullObj(map, "Map cannot be null");
-    nonNull(List.of(tiles.viewItems()), "Tiles");
+    nonNull(List.of(tiles.getItems()), "Tiles");
     nonNull(players, "Players");
   }
 
@@ -72,18 +72,18 @@ public class QGameState implements IGameState {
   }
 
   @Override
-  public List<PlayerInfo> playerInformation() {
+  public List<PlayerInfo> getPlayerInformation() {
     return new ArrayList<>(this.playerInformation);
   }
 
   @Override
-  public IMap viewBoard() {
+  public IMap getBoard() {
     return this.board;
   }
 
   @Override
-  public Bag<Tile> refereeTiles() {
-    return new Bag<>(this.refereeTiles.viewItems());
+  public Bag<Tile> getRefereeTiles() {
+    return new Bag<>(this.refereeTiles.getItems());
   }
 
   private List<Integer> allScores() {
@@ -95,10 +95,10 @@ public class QGameState implements IGameState {
   @Override
   public IPlayerGameState getCurrentPlayerState() {
     List<Integer> scores = allScores();
-    IMap boardState = viewBoard();
-    int tileCount = refereeTiles().size();
-    Bag<Tile> playerTile = currentPlayer().tiles();
-    String playerName = currentPlayer().name();
+    IMap boardState = getBoard();
+    int tileCount = getRefereeTiles().size();
+    Bag<Tile> playerTile = getCurrentPlayer().tiles();
+    String playerName = getCurrentPlayer().name();
     return new QPlayerGameState(scores, boardState, tileCount, playerTile, playerName);
   }
 
@@ -149,7 +149,7 @@ public class QGameState implements IGameState {
    * @return PlayerInfo corresponding to current turn's player.
    */
   @Override
-  public PlayerInfo currentPlayer() {
+  public PlayerInfo getCurrentPlayer() {
     return this.playerInformation.get(0);
   }
 }

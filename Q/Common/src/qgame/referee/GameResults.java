@@ -26,11 +26,11 @@ public class GameResults {
     this.ruleBreakers = new ArrayList<>(ruleBreakers);
   }
 
-  public List<String> winners() {
+  public List<String> getWinners() {
     return new ArrayList<>(this.winners);
   }
 
-  public List<String> ruleBreakers() {
+  public List<String> getRuleBreakers() {
     return new ArrayList<>(this.ruleBreakers);
   }
 

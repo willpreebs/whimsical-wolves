@@ -43,10 +43,6 @@ public class QGameObserver implements IGameObserver {
     ObserverView stateFrame;
 
     private final int REF_TILES = 6;
-    // states:
-    // [0]
-    // size = 1
-    // index = 0
 
     public QGameObserver() {
         this.states = new ArrayList<>();
@@ -112,7 +108,10 @@ public class QGameObserver implements IGameObserver {
         }
     }
 
-
+  /**
+   * Alerts the observer that the game is over
+   * and that there will be no more states.
+   */
     @Override
     public void gameOver() {
         // ...

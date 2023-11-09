@@ -84,7 +84,7 @@ public class BasicQGameRuleSetTest {
       new Placement(new Posn(2, 2), new QTile(blue, square)));
     IPlayerGameState state2 = new QPlayerGameState(List.of(0, 0, 0), new QMap(map),
       16, placements.stream().map(Placement::tile).toList(), "");
-    assertTrue(multi.validPlacements(placements, state2));
+    assertTrue(multi.isPlacementListLegal(placements, state2));
 
   }
 
