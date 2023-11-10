@@ -7,6 +7,7 @@ import qgame.state.Bag;
 import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 import qgame.player.Player;
+import qgame.player.SimpleAIPlayer;
 import qgame.state.IPlayerGameState;
 
 public class DisconnectPlayer implements Player {
@@ -38,5 +39,15 @@ public class DisconnectPlayer implements Player {
 
   @Override
   public void win(boolean w) throws IllegalStateException {
+  }
+
+  @Override
+  public boolean equals(Object o) {
+      if (o instanceof DisconnectPlayer) {
+          return this.name().equals(((DisconnectPlayer) o).name());
+      }
+      else {
+          return false;
+      }
   }
 }

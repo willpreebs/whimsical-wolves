@@ -49,4 +49,14 @@ class TimeOutPlayer implements Player {
   public void win(boolean w) throws IllegalStateException {
 
   }
+
+  @Override
+  public boolean equals(Object o) {
+      if (o instanceof TimeOutPlayer) {
+          return this.name().equals(((TimeOutPlayer) o).name());
+      }
+      else {
+          return false;
+      }
+  }
 }

@@ -23,9 +23,9 @@ public class RuleUtil {
   private static final int POINTS_PER_CONTIGUOUS_TILE = 1;
 
   public static PlacementRule createPlaceRules() {
-    List<PlacementRule> rules = List.of( new MultiPlacementRule(new CorrectPlayerTilesRule(),
+    List<PlacementRule> rules = List.of(new CorrectPlayerTilesRule(),
       new ExtendsBoardRule(),
-      new ExtendSameLineRule(), new MatchTraitRule()));
+      new ExtendSameLineRule(), new MatchTraitRule());
     return new MultiPlacementRule(rules);
   }
 

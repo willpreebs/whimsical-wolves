@@ -40,6 +40,16 @@ public class SimpleAIPlayer implements Player {
   public void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException {
   }
 
+  @Override
+  public boolean equals(Object o) {
+      if (o instanceof SimpleAIPlayer) {
+          return this.name().equals(((SimpleAIPlayer) o).name());
+      }
+      else {
+          return false;
+      }
+  }
+
   public TurnStrategy strategy(){
     return this.strat;
   }

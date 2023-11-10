@@ -54,8 +54,9 @@ public class LdasgStrategy extends SmallestRowColumnTileStrategy {
     return maxConstrainedPositions.get(0);
   }
 
-  protected Placement getBestPlacement(IPlayerGameState state, List<Posn> legalPlaces, Tile bestTile) {
+  protected Placement makePlacementGivenPositions(IPlayerGameState state, List<Posn> legalPlaces) {
     // System.out.println(legalPlaces.size());
+    Tile bestTile = bestTile(state);
     Posn bestPosn = bestPosition(legalPlaces, state.getBoard());
     return new Placement(bestPosn, bestTile);
   }

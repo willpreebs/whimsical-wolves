@@ -24,11 +24,12 @@ public class MultiPlacementRule extends ARule {
   public MultiPlacementRule getBoardRules() {
     List<PlacementRule> boardRules = new ArrayList<>();
 
-    for (PlacementRule r : rules) {
+    for (PlacementRule r : this.rules) {
       if (r instanceof BoardRule) {
         boardRules.add(r);
       }
     }
+
     return new MultiPlacementRule(boardRules);
   }
 

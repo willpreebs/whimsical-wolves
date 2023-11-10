@@ -18,12 +18,24 @@ public abstract class ARule implements PlacementRule {
   @Override
   public List<Posn> validPositionsForTile(Tile t, IPlayerGameState gameState) {
     List<Posn> validPosns = gameState.getBoard().validPositions();
-    return new ArrayList<>(
-      validPosns
-      .stream()
-      .map(posn -> new Placement(posn, t))
-      .filter(placement -> this.isPlacementListLegal(List.of(placement), gameState))
-      .map(Placement::posn)
-      .toList());
+    List<Placement> potentialValidPlacements = validPosns.stream().map(posn -> new Placement(posn, t)).toList();
+
+    List<Posn> result = new ArrayList<>();
+    for (Placement p : potentialValidPlacements) {
+      List<Placement> s = List.of(p);
+      if (this.isPlacementListLegal(s, gameState)) {
+        result.add(p.posn());
+      }
+    }
+
+    return result;
+
+    // return new ArrayList<>(
+    //   validPosns
+    //   .stream()
+    //   .map(posn -> new Placement(posn, t))
+    //   .filter(placement -> this.isPlacementListLegal(List.of(placement), gameState))
+    //   .map(Placement::posn)
+    //   .toList());
   }
 }

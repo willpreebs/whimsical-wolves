@@ -53,4 +53,6 @@ public interface Player {
    * @throws IllegalStateException if fails to receive valid data.
    */
   void win(boolean w) throws IllegalStateException;
+
+  boolean equals(Object o);
 }

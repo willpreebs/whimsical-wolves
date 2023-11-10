@@ -168,19 +168,41 @@ public class QReferee implements IReferee {
       .orElse(0);
   }
 
+
+  /**
+   * Notifies the given group of Players in turn order if they've won or lost
+   * @param category
+   * @param hasWon
+   */
+  private void notifyPlayers(List<Player> category, boolean hasWon) {
+
+    for (Player p : this.players) {
+      if (category.contains(p)) {
+        p.win(hasWon);
+      }
+    }
+  }
+
   // Determine all winners in a list of players and return a list of their names.
-  private List<String> findWinners(List<Player> players, List<PlayerInfo> infos, int highestScore) {
+  private List<String> findWinnersAndNotifyPlayers(List<Player> players, List<PlayerInfo> infos, int highestScore) {
     List<String> winners = new ArrayList<>();
+    List<Player> winnerPlayers = new ArrayList<>();
+    List<Player> loserPlayers = new ArrayList<>();
+
     for (int i = 0; i < infos.size(); i++) {
       Player player = players.get(i);
       if (infos.get(i).score() == highestScore) {
         winners.add(player.name());
-        win(player, true);
+        winnerPlayers.add(player);
       }
       else {
-        win(player, false);
+        loserPlayers.add(player);
       }
     }
+
+    notifyPlayers(winnerPlayers, true);
+    notifyPlayers(loserPlayers, false);
+
     winners.sort(Comparator.naturalOrder());
     return winners;
   }
@@ -196,8 +218,9 @@ public class QReferee implements IReferee {
   private GameResults getResults() {
     List<PlayerInfo> playerInfo = currentGameState.getPlayerInformation();
     int highestScore = maxScore(playerInfo);
-    List<String> winners = findWinners(players, playerInfo, highestScore);
-    return new GameResults(winners, ruleBreakers);
+    List<String> winners = findWinnersAndNotifyPlayers(players, playerInfo, highestScore);
+    GameResults gr = new GameResults(winners, ruleBreakers);
+    return gr;
   }
 
   /**
@@ -211,6 +234,7 @@ public class QReferee implements IReferee {
       turnsTakenInRound = new ArrayList<>();
       shouldGameContinue = playRound(turnsTakenInRound);
     }
+    giveObserversStateUpdate();
   }
 
   /**
@@ -445,7 +469,7 @@ public class QReferee implements IReferee {
   private void scorePlacements(List<Placement> placements) {
     IMap board = currentGameState.getBoard();
     int score = this.scoringRules.pointsFor(placements, board);
-    System.out.println("Giving score: " + score + " to player: " + this.currentGameState.getCurrentPlayer().name());
+    // System.out.println("Giving score: " + score + " to player: " + this.currentGameState.getCurrentPlayer().name());
     // int bonus = placedAllTiles(placements) ? ALL_TILE_BONUS : 0;
     // currentGameState.addScoreToCurrentPlayer(score + bonus);
     currentGameState.addScoreToCurrentPlayer(score);

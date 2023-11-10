@@ -3,6 +3,9 @@ package qgame.referee;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import qgame.player.Player;
+
 import static qgame.util.ValidationUtil.nonNullObj;
 /**
  * Represents the results of a game of Q game. It returns a list with the names of all winners of

@@ -67,7 +67,7 @@ public class QGameObserver implements IGameObserver {
     public void next() {
         if (stateIndex < this.states.size() - 1) {
             stateIndex++;
-            System.out.println("Next pressed; index set to: " + stateIndex);
+            // System.out.println("Next pressed; index set to: " + stateIndex);
         }
         renderCurrentState();
     }
@@ -81,7 +81,7 @@ public class QGameObserver implements IGameObserver {
         // System.out.println("previous");
         if (stateIndex > 0) {
             stateIndex--;
-            System.out.println("Previous pressed; index set to: " + stateIndex);
+            // System.out.println("Previous pressed; index set to: " + stateIndex);
         }
         renderCurrentState();
     }
@@ -99,7 +99,7 @@ public class QGameObserver implements IGameObserver {
     } 
 
     private void renderCurrentState() {
-        System.out.println("Rendering state at index: " + this.stateIndex);
+        // System.out.println("Rendering state at index: " + this.stateIndex);
         stateFrame.updateFrame(this, this.getCurrentState());
         this.stateFrame.pack();
     }

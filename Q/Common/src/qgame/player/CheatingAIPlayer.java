@@ -51,6 +51,16 @@ public class CheatingAIPlayer implements Player {
         player.win(w);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof CheatingAIPlayer) {
+            return this.name().equals(((CheatingAIPlayer) o).name());
+        }
+        else {
+            return false;
+        }
+    }
+
 
     public CheatingAIPlayer.Cheat getCheat() {
         return this.cheat;
@@ -58,4 +68,6 @@ public class CheatingAIPlayer implements Player {
     public TurnStrategy strategy() {
         return this.backupStrategy;
     }
+
+
 }

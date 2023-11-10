@@ -59,6 +59,16 @@ public class DummyAIPlayer implements Player{
     player.win(w);
   }
 
+  @Override
+  public boolean equals(Object o) {
+      if (o instanceof DummyAIPlayer) {
+          return this.name().equals(((DummyAIPlayer) o).name());
+      }
+      else {
+          return false;
+      }
+  }
+
   public FailStep failStep() {
     return this.failStep;
   }
