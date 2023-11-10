@@ -1,6 +1,8 @@
 package qgame;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import qgame.state.map.Tile;
@@ -17,5 +19,15 @@ public class TestUtil {
       }
     }
     return allTiles;
+  }
+
+  public static List<Tile> generateOneEachTile(){
+    List<Tile> list = new ArrayList<Tile>();
+    for(Tile.Color c: Tile.Color.values()){
+      for(Tile.Shape s: Tile.Shape.values()){
+        list.add(new QTile(c,s));
+      }
+    }
+    return list;
   }
 }

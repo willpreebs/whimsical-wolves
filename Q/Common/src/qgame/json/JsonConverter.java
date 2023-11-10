@@ -415,6 +415,7 @@ public class JsonConverter {
   private static JsonElement jPlayerFromPlayerInfo(PlayerInfo info) {
     JsonObject object = new JsonObject();
     object.add("score", new JsonPrimitive(info.score()));
+    object.add("name", new JsonPrimitive(info.name()));
     object.add("tile*", jTilesFromTiles(info.tiles().getItems()));
     return object;
   }

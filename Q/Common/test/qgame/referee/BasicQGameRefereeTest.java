@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import qgame.TestUtil;
 import qgame.player.CheatingAIPlayer;
 import qgame.state.Bag;
 import qgame.state.map.Posn;
@@ -73,6 +74,8 @@ public class BasicQGameRefereeTest {
   IGameState onePassOneExchange1;
   IGameState onePassOneExchange2;
   IGameState placeAll;
+
+  IGameState cheatState;
 
   @Before
   public void init() {
@@ -473,15 +476,8 @@ public class BasicQGameRefereeTest {
 
     player1 = new DummyAIPlayer("Tester", new DagStrategy(placementRules));
     player2 = new DummyAIPlayer("Second Tester", new LdasgStrategy(placementRules));
-    cheatingPlayer1  = new CheatingAIPlayer("Cheater 1", new DagStrategy(placementRules),
-            CheatingAIPlayer.Cheat.NOT_OWNED);
     ref = new QReferee(placementRules, scoringRules, 900);
-  }
-
-  @Test
-  public void testCheaterIsKicked() throws IOException {
-    initCheat();
-    IGameState state = new QStateBuilder()
+    cheatState = new QStateBuilder()
             .placeTile(new Posn(-3, 0), new QTile(green, eightStar))
             .addTileBag(new QTile(purple, eightStar))
             .addPlayerInfo(new PlayerInfo(0,
@@ -493,13 +489,261 @@ public class BasicQGameRefereeTest {
                     List.of(new QTile(blue, square), new QTile(green, circle)),
                     "Cheater1"))
             .build();
-            
+  }
+
+  @Test
+  public void testCheaterIsKicked() throws IOException {
+    initCheat();
+    cheatingPlayer1  = new CheatingAIPlayer("Cheater 1", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_OWNED);
     List<Player> players = List.of(
             player1, player2, cheatingPlayer1);
     GameResults results = new GameResults(List.of("Tester"),
             List.of("Cheater1"));
-    XGamesInputCreator.createCheatTest(state, players, results, "8/Tests", 0);
-    GameResults actual = ref.playGame(state, players);
+    XGamesInputCreator.createCheatTest(cheatState, players, results, "8/Tests", 0);
+    GameResults actual = ref.playGame(cheatState, players);
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
+  }
+
+
+  @Test
+  public void testNonAdjacentCoordCheater() throws IOException {
+    initCheat();
+    cheatingPlayer1  = new CheatingAIPlayer("Cheater1", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_ADJACENT);
+    List<Player> players = List.of(
+            player1, player2, cheatingPlayer1);
+    GameResults results = new GameResults(List.of("Tester"),
+            List.of("Cheater1"));
+    XGamesInputCreator.createCheatTest(cheatState, players, results, "8/Tests", 1);
+    GameResults actual = ref.playGame(cheatState, players);
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
+  }
+
+  @Test
+  public void testNotInLineCheat() throws IOException {
+    initCheat();
+    cheatState = new QStateBuilder()
+            .placeTile(new Posn(-3, 0), new QTile(blue, eightStar))
+            .addTileBag(new QTile(purple, eightStar))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(red, eightStar), new QTile(purple, circle)), "Tester"))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(orange, square), new QTile(green, clover)),
+                    "SecondTester"))
+            .addPlayerInfo(new PlayerInfo(11,
+                    List.of(new QTile(blue, square), new QTile(green, eightStar)),
+                    "Cheater1"))
+            .build();
+    cheatingPlayer1  = new CheatingAIPlayer("Cheater1", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_INLINE);
+    List<Player> players = List.of(
+            player1, player2, cheatingPlayer1);
+    GameResults results = new GameResults(List.of("Tester"),
+            List.of("Cheater1"));
+    XGamesInputCreator.createCheatTest(cheatState, players, results, "8/Tests", 2);
+    GameResults actual = ref.playGame(cheatState, players);
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
+  }
+
+  @Test
+  public void testNotEnoughTilesCheat() throws IOException {
+    initCheat();
+    cheatState = new QStateBuilder()
+            .placeTile(new Posn(-3, 0), new QTile(blue, eightStar))
+            .addTileBag(new QTile(purple, eightStar))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(red, eightStar), new QTile(purple, circle)), "Tester"))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(orange, square), new QTile(green, clover)),
+                    "SecondTester"))
+            .addPlayerInfo(new PlayerInfo(11,
+                    List.of(new QTile(blue, square), new QTile(green, eightStar)),
+                    "Cheater1"))
+            .build();
+    cheatingPlayer1  = new CheatingAIPlayer("Cheater1", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_ENOUGH_TILES);
+    List<Player> players = List.of(
+            player1, player2, cheatingPlayer1);
+    GameResults results = new GameResults(List.of("Tester"),
+            List.of("Cheater1"));
+    XGamesInputCreator.createCheatTest(cheatState, players, results, "8/Tests", 3);
+    GameResults actual = ref.playGame(cheatState, players);
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
+  }
+
+  @Test
+  public void testNotLegalNeighborsCheater() throws IOException {
+    initCheat();
+    cheatState = new QStateBuilder()
+            .placeTile(new Posn(-3, 0), new QTile(blue, eightStar))
+            .addTileBag(new QTile(purple, eightStar))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(red, eightStar), new QTile(purple, circle)), "Tester"))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(orange, square), new QTile(green, clover)),
+                    "SecondTester"))
+            .addPlayerInfo(new PlayerInfo(11,
+                    List.of(new QTile(blue, square), new QTile(green, eightStar)),
+                    "Cheater1"))
+            .build();
+    cheatingPlayer1  = new CheatingAIPlayer("Cheater1", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_LEGAL_NEIGHBOR);
+    List<Player> players = List.of(
+            player1, player2, cheatingPlayer1);
+    GameResults results = new GameResults(List.of("Tester"),
+            List.of("Cheater1"));
+    XGamesInputCreator.createCheatTest(cheatState, players, results, "8/Tests", 4);
+    GameResults actual = ref.playGame(cheatState, players);
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
+  }
+
+  @Test
+  public void testNotEnoughTilesCheaterForcedNormal() throws IOException {
+    initCheat();
+    cheatState = new QStateBuilder()
+            .placeTile(new Posn(-3, 0), new QTile(blue, eightStar))
+            .addTileBag(new QTile(purple, eightStar),new QTile(purple, eightStar),
+                    new QTile(purple, eightStar),new QTile(purple, eightStar),
+                    new QTile(purple, eightStar))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(red, eightStar), new QTile(purple, circle)), "Tester"))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(orange, square), new QTile(green, clover)),
+                    "SecondTester"))
+            .addPlayerInfo(new PlayerInfo(11,
+                    List.of(new QTile(blue, square), new QTile(green, eightStar)),
+                    "Cheater1"))
+            .build();
+    cheatingPlayer1  = new CheatingAIPlayer("Cheater1", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_ENOUGH_TILES);
+    List<Player> players = List.of(
+            player1, player2, cheatingPlayer1);
+    GameResults results = new GameResults(List.of("Cheater1"),
+            new ArrayList<>());
+    XGamesInputCreator.createCheatTest(cheatState, players, results, "8/Tests", 5);
+    GameResults actual = ref.playGame(cheatState, players);
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
+  }
+
+  @Test
+  public void testNotALineCheaterPlaysNormally() throws IOException {
+    initCheat();
+    cheatState = new QStateBuilder()
+            .placeTile(new Posn(-3, 0), new QTile(blue, eightStar))
+            .addTileBag(new QTile(purple, eightStar))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(red, eightStar), new QTile(purple, circle)), "Tester"))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(orange, square), new QTile(green, clover)),
+                    "SecondTester"))
+            .addPlayerInfo(new PlayerInfo(11,
+                    List.of(new QTile(blue, square)),
+                    "Cheater1"))
+            .build();
+    cheatingPlayer1  = new CheatingAIPlayer("Cheater1", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_INLINE);
+    List<Player> players = List.of(
+            player1, player2, cheatingPlayer1);
+    GameResults results = new GameResults(List.of("Cheater1"),
+            new ArrayList<>());
+    XGamesInputCreator.createCheatTest(cheatState, players, results, "8/Tests", 6);
+    GameResults actual = ref.playGame(cheatState, players);
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
+  }
+
+  @Test
+  public void testNoFitPrioritizeCheating() throws IOException {
+    initCheat();
+    cheatState = new QStateBuilder()
+            .placeTile(new Posn(-3, 0), new QTile(blue, eightStar))
+            .addTileBag(new QTile(purple, eightStar))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(red, eightStar), new QTile(purple, circle)), "Tester"))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(orange, square), new QTile(green, clover)),
+                    "SecondTester"))
+            .addPlayerInfo(new PlayerInfo(11,
+                    List.of(new QTile(blue, square)),
+                    "Cheater1"))
+            .build();
+    cheatingPlayer1  = new CheatingAIPlayer("Cheater1", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_INLINE);
+    List<Player> players = List.of(
+            player1, player2, cheatingPlayer1);
+    GameResults results = new GameResults(List.of("Tester"),
+            List.of("Cheater1"));
+    XGamesInputCreator.createCheatTest(cheatState, players, results, "8/Tests", 7);
+    GameResults actual = ref.playGame(cheatState, players);
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
+  }
+
+  @Test
+  public void testCheatersLoseBeforeDummiesFail() throws IOException {
+    initCheat();
+    cheatState = new QStateBuilder()
+            .placeTile(new Posn(-3, 0), new QTile(blue, eightStar))
+            .addTileBag(new QTile(purple, eightStar))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(red, eightStar), new QTile(purple, circle)), "Tester"))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(orange, square), new QTile(green, clover)),
+                    "SecondTester"))
+            .addPlayerInfo(new PlayerInfo(11,
+                    List.of(new QTile(blue, square)),
+                    "Cheater1"))
+            .build();
+    player1 = new CheatingAIPlayer("Tester", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_OWNED);
+    cheatingPlayer1  = new CheatingAIPlayer("Cheater1", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_OWNED);
+    player2 = new DummyAIPlayer("SecondTester", new DagStrategy(placementRules),
+            FailStep.TAKE_TURN);
+    List<Player> players = List.of(
+            player1, cheatingPlayer1, player2);
+    GameResults results = new GameResults(List.of("SecondTester"),
+            List.of("Tester, Cheater1"));
+    XGamesInputCreator.createCheatTest(cheatState, players, results, "8/Tests", 8);
+    GameResults actual = ref.playGame(cheatState, players);
+    assertEquals(results.getWinners(), actual.getWinners());
+    assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
+  }
+
+  @Test
+  public void testCheatersDontCheat() throws IOException {
+    initCheat();
+    List<Tile> tiles1 = TestUtil.generateOneEachTile();
+    List<Tile> tiles2 = TestUtil.generateOneEachTile();
+    cheatState = new QStateBuilder()
+            .placeTile(new Posn(-3, 0), new QTile(blue, eightStar))
+            .addTileBag(new QTile(purple, eightStar))
+            .addPlayerInfo(new PlayerInfo(0,
+                    tiles1, "Tester"))
+            .addPlayerInfo(new PlayerInfo(0,
+                    List.of(new QTile(orange, square), new QTile(green, clover)),
+                    "SecondTester"))
+            .addPlayerInfo(new PlayerInfo(11,
+                    tiles2,
+                    "Cheater1"))
+            .build();
+    player1 = new CheatingAIPlayer("Tester", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_OWNED);
+    cheatingPlayer1  = new CheatingAIPlayer("Cheater1", new DagStrategy(placementRules),
+            CheatingAIPlayer.Cheat.NOT_OWNED);
+    List<Player> players = List.of(
+            player1, player2, cheatingPlayer1);
+    GameResults results = new GameResults(List.of("Cheater1"),
+            new ArrayList<>());
+    XGamesInputCreator.createCheatTest(cheatState, players, results, "8/Tests", 9);
+    GameResults actual = ref.playGame(cheatState, players);
     assertEquals(results.getWinners(), actual.getWinners());
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
   }
