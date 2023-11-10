@@ -35,7 +35,7 @@ public class QGameObserver implements IGameObserver {
     ObserverView stateFrame;
 
     private final int REF_TILES = 6;
-    private final String FILE_DIRECTORY = "/8/Tmp";
+    private final String FILE_DIRECTORY = "Tmp";
     private final String FILE_EXTENSION = "png";
 
     public QGameObserver() {
@@ -55,7 +55,7 @@ public class QGameObserver implements IGameObserver {
         nonNullObj(state, "State cannot be null");
         states.add(new QGameState(state));
 
-        //saveStateAsPng(states.size() - 1);
+        saveStateAsPng(states.size() - 1);
     }
 
     /**
@@ -131,6 +131,7 @@ public class QGameObserver implements IGameObserver {
      * @param index
      */
     private void saveStateAsPng(int index) {
+        // System.out.println("save png");
         JFrame currentFrame = new ObserverView(this, this.states.get(index), REF_TILES);
         currentFrame.setVisible(true);
         BufferedImage img = new BufferedImage(currentFrame.getWidth(), currentFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -142,26 +143,14 @@ public class QGameObserver implements IGameObserver {
             currentFrame.setVisible(false);
         }
         catch (Exception e) {
-            // throw new IllegalStateException("Issue writing to file: " + e.getMessage());
+            throw new IllegalStateException("Issue writing to file: " + e.getMessage());
         }
     }
 
     public void saveStatesAsPng() {
 
         for (int i = 0; i < this.states.size(); i++) {
-            JFrame frame = new ObserverView(this, states.get(i), REF_TILES);
-            frame.setVisible(true);
-            BufferedImage img = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_RGB);
-            Graphics2D g = img.createGraphics();
-            frame.paintAll(g);
-            //frame.paint(g);
-            File f = new File("8/Tmp/" + i + ".png");
-            try {
-                ImageIO.write(img, "png", f);
-            }
-            catch (IOException e) {
-                throw new IllegalStateException("Issue writing to file: " + e.getMessage());
-            }
+            saveStateAsPng(i);
         }
     }
 }
