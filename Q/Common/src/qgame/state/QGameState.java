@@ -73,7 +73,13 @@ public class QGameState implements IGameState {
 
   @Override
   public List<PlayerInfo> getPlayerInformation() {
-    return new ArrayList<>(this.playerInformation);
+    List<PlayerInfo> copy = new ArrayList<>();
+
+    for (PlayerInfo i : this.playerInformation) {
+      copy.add(new PlayerInfo(i.score(), new Bag<>(i.tiles()).getItems(), i.name()));
+    }
+
+    return copy;
   }
 
   @Override

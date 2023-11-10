@@ -21,7 +21,7 @@ public class PlayerTilesPanel extends JPanel {
         
         generatePlayerTilesPanels(playerInfoList);
         
-        this.setPreferredSize(new Dimension(500, 75));
+        this.setPreferredSize(new Dimension(500, 400));
   }
 
   private void generatePlayerTilesPanels(List<PlayerInfo> playerInfoList){

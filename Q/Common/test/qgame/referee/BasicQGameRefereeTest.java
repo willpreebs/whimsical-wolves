@@ -474,7 +474,7 @@ public class BasicQGameRefereeTest {
     player1 = new DummyAIPlayer("Tester", new DagStrategy(placementRules));
     player2 = new DummyAIPlayer("Second Tester", new LdasgStrategy(placementRules));
     cheatingPlayer1  = new CheatingAIPlayer("Cheater 1", new DagStrategy(placementRules),
-            CheatingAIPlayer.Cheat.NOT_INLINE);
+            CheatingAIPlayer.Cheat.NOT_OWNED);
     ref = new QReferee(placementRules, scoringRules, 900);
   }
 
@@ -485,22 +485,22 @@ public class BasicQGameRefereeTest {
             .placeTile(new Posn(-3, 0), new QTile(green, eightStar))
             .addTileBag(new QTile(purple, eightStar))
             .addPlayerInfo(new PlayerInfo(0,
-                    List.of(new QTile(red, eightStar), new QTile(green, circle)), "Tester"))
+                    List.of(new QTile(red, eightStar), new QTile(purple, circle)), "Tester"))
             .addPlayerInfo(new PlayerInfo(0,
-                    List.of(new QTile(orange, eightStar), new QTile(green, clover)),
-                    "Second Tester"))
+                    List.of(new QTile(orange, square), new QTile(green, clover)),
+                    "SecondTester"))
             .addPlayerInfo(new PlayerInfo(11,
                     List.of(new QTile(blue, square), new QTile(green, circle)),
-                    "Cheating Player"))
+                    "Cheater1"))
             .build();
+            
     List<Player> players = List.of(
             player1, player2, cheatingPlayer1);
-    GameResults results = new GameResults(List.of("Tester", "Second Tester"),
-            List.of("Cheater 1"));
+    GameResults results = new GameResults(List.of("Tester"),
+            List.of("Cheater1"));
     XGamesInputCreator.createCheatTest(state, players, results, "8/Tests", 0);
     GameResults actual = ref.playGame(state, players);
     assertEquals(results.getWinners(), actual.getWinners());
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
   }
-
 }

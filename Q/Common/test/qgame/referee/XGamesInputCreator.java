@@ -59,7 +59,7 @@ class XGamesInputCreator {
     return jActors;
   }
 
-  private static JsonElement cheatingPlayertoJActorSpec(CheatingAIPlayer player){
+  private static JsonElement cheatingPlayertoJActorSpecA(CheatingAIPlayer player){
     JsonArray jActorSpec = new JsonArray();
     jActorSpec.add(player.name());
     jActorSpec.add(JsonConverter.strategyToJson(player.strategy()));
@@ -75,7 +75,7 @@ class XGamesInputCreator {
       return dummyPlayerToJActorSpec((DummyAIPlayer)player);
     }
     else if (player instanceof CheatingAIPlayer){
-      return cheatingPlayertoJActorSpec((CheatingAIPlayer)player);
+      return cheatingPlayertoJActorSpecA((CheatingAIPlayer)player);
     }
     else{
       throw new IllegalArgumentException("invalid player type");

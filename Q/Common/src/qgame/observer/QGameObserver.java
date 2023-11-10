@@ -5,6 +5,7 @@ import static qgame.util.ValidationUtil.nonNullObj;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,7 +54,8 @@ public class QGameObserver implements IGameObserver {
     public void receiveState(IGameState state) {
         nonNullObj(state, "State cannot be null");
         states.add(new QGameState(state));
-        saveStateAsPng(states.size() - 1);
+
+        //saveStateAsPng(states.size() - 1);
     }
 
     /**
@@ -111,7 +113,7 @@ public class QGameObserver implements IGameObserver {
             w.write(jState.toString());
             w.close();
         } catch (IOException e) {
-            throw new IllegalArgumentException("Cannot create or write to file: " + filepath);
+            // throw new IllegalArgumentException("Cannot create or write to file: " + filepath);
         }
     }
 
@@ -134,13 +136,13 @@ public class QGameObserver implements IGameObserver {
         BufferedImage img = new BufferedImage(currentFrame.getWidth(), currentFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
         currentFrame.paintAll(g);
-        File f = new File(FILE_DIRECTORY + index + "." + FILE_EXTENSION);
+        File f = new File(FILE_DIRECTORY +"/" + index + "." + FILE_EXTENSION);
         try {
             ImageIO.write(img, FILE_EXTENSION, f);
             currentFrame.setVisible(false);
         }
-        catch (IOException e) {
-            throw new IllegalStateException("Issue writing to file: " + e.getMessage());
+        catch (Exception e) {
+            // throw new IllegalStateException("Issue writing to file: " + e.getMessage());
         }
     }
 

@@ -15,11 +15,13 @@ public class CheatingAIPlayer implements Player {
 
     private SimpleAIPlayer player;
     private Cheat cheat;
+    private TurnStrategy backupStrategy;
 
 
     public CheatingAIPlayer(String name, TurnStrategy s, Cheat cheat) {
         this.cheat = cheat;
         TurnStrategy cheatingStrat = new CheatStrategy(cheat, s);
+        this.backupStrategy = s;
         player = new SimpleAIPlayer(name, cheatingStrat);
     }
 
@@ -54,6 +56,6 @@ public class CheatingAIPlayer implements Player {
         return this.cheat;
     }
     public TurnStrategy strategy() {
-        return this.player.strategy();
+        return this.backupStrategy;
     }
 }

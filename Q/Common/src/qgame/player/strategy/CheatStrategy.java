@@ -10,6 +10,7 @@ import qgame.action.ExchangeAction;
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
 import qgame.player.CheatingAIPlayer.Cheat;
+import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.PlacementRule;
 import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
@@ -32,6 +33,10 @@ public class CheatStrategy implements TurnStrategy {
 
     public PlacementRule getPlacementRule() {
         return backupStrategy.getPlacementRule();
+    }
+    
+    private PlacementRule getBoardPlacementRule() {
+        return ((MultiPlacementRule) backupStrategy.getPlacementRule()).getBoardRules();
     }
 
     private Posn getNotAdjacentPosn(IMap map) {
@@ -57,7 +62,7 @@ public class CheatStrategy implements TurnStrategy {
     }
 
     private List<Posn> getValidPosns(Tile t, IPlayerGameState state) {
-        return this.getPlacementRule().validPositionsForTile(t, state);
+        return this.getBoardPlacementRule().validPositionsForTile(t, state);
     }
 
     private List<Placement> getValidPlacements(Tile t, IPlayerGameState state) {
@@ -80,6 +85,7 @@ public class CheatStrategy implements TurnStrategy {
     }
 
     private TurnAction notOwned(IPlayerGameState state) {
+
 
         int numUniqueTiles = TileUtil.getNumberUniqueTiles();
         Bag<Tile> allPossibleTiles = TileUtil.getTileBag(numUniqueTiles); 
@@ -128,7 +134,7 @@ public class CheatStrategy implements TurnStrategy {
 
         return playerTiles.stream()
         .map(t -> getValidPlacements(t, state))
-        .map(list -> list.stream().filter(p -> !inLine(p, p)).findFirst())
+        .map(list -> list.stream().filter(p -> !inLine(p, existing)).findFirst())
         .filter(o -> o.isPresent())
         .map(o -> o.get())
         .findFirst();

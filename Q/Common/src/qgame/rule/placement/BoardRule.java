@@ -1,5 +1,6 @@
 package qgame.rule.placement;
 
+import java.awt.Image;
 import java.util.List;
 
 import qgame.state.map.IMap;
@@ -16,8 +17,9 @@ abstract class BoardRule extends ARule {
 
   protected abstract boolean legalPlacement(Placement placement, IMap map);
 
-  public boolean isPlacementListLegal(List<Placement> placements, IPlayerGameState map) {
-    IMap board = new QMap(map.getBoard().getBoardState());
+  @Override
+  public boolean isPlacementListLegal(List<Placement> placements, IPlayerGameState state) {
+    IMap board = new QMap(state.getBoard().getBoardState());
     for (Placement placement : placements) {
       if (!legalPlacement(placement, board)) {
         return false;

@@ -104,7 +104,7 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
     List<Posn> possiblePlaces = placeRules.validPositionsForTile(tile, currentState);
     List<Placement> possiblePlacements = possiblePlaces.stream()
       .map(posn -> new Placement(posn, tile))
-      .filter(placement -> placementFollowsRules(placement, move, startState)).toList();
+      .filter(placement -> placementFollowsRules(placement, move, currentState)).toList();
 
     return !possiblePlacements.isEmpty();
   }

@@ -1,2 +1,2 @@
-#!/bin/bash
-java -jar --enable-preview ../Q/Other/xgames.jar
+#! /bin/bash
+java -jar --enable-preview ../whimsical-wolves.jar $*

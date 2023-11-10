@@ -1,5 +1,6 @@
 package qgame.player.strategy;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import qgame.state.map.Posn;
@@ -27,8 +28,9 @@ public class DagStrategy extends SmallestRowColumnTileStrategy {
    */
   protected Placement getBestPlacement(IPlayerGameState currentState, List<Posn> legalPosns, Tile bestTile) {
     // Tile bestTile = this.bestTile(currentState);
-    legalPosns.sort(PosnUtil::rowColumnCompare);
-    Posn posn = legalPosns.get(0);
+    ArrayList<Posn> legal = new ArrayList<>(legalPosns);
+    legal.sort(PosnUtil::rowColumnCompare);
+    Posn posn = legal.get(0);
     return new Placement(posn, bestTile);
   }
 }

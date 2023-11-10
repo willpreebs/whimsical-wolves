@@ -213,6 +213,14 @@ public class QReferee implements IReferee {
     }
   }
 
+  /**
+   * Gets the TurnAction from the player and validates the Action.
+   * If the Turn is invalid, returns an empty Optional, otherwise return 
+   * an Optional containing the TurnAction
+   * @param state
+   * @param currentPlayer
+   * @return
+   */
   private Optional<TurnAction> getAndValidateAction(IGameState state, Player currentPlayer) {
     TurnAction action;
     try {
@@ -283,6 +291,11 @@ public class QReferee implements IReferee {
    * @return
    */
   private boolean givePlayerNewTiles(TurnAction action, Player currentPlayer) {
+
+    // if (action instanceof PlaceAction) {  
+    //   System.out.println("Player: " + currentPlayer.name() + " has move " + ((PlaceAction) action).placements().toString());
+    // }
+
     return switch (action) {
       case PassAction ignored -> true;
       case ExchangeAction ignored -> newTiles(currentPlayer);
@@ -293,12 +306,13 @@ public class QReferee implements IReferee {
 
   private TurnAction getAction(IGameState state, Player player)
     throws ExecutionException, InterruptedException, TimeoutException {
-    ThreadFactory factory = Thread.ofVirtual().factory();
-    ExecutorService executor = Executors.newFixedThreadPool(1, factory);
-    IPlayerGameState finalState = state.getCurrentPlayerState();
-    Future<TurnAction> getAction = executor.submit(
-      () -> player.takeTurn(finalState));
-    return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
+    // ThreadFactory factory = Thread.ofVirtual().factory();
+    // ExecutorService executor = Executors.newFixedThreadPool(1, factory);
+    // IPlayerGameState finalState = state.getCurrentPlayerState();
+    // Future<TurnAction> getAction = executor.submit(
+    //   () -> player.takeTurn(finalState));
+    // return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
+    return player.takeTurn(state.getCurrentPlayerState());
   }
 
 
@@ -393,21 +407,32 @@ public class QReferee implements IReferee {
     currentGameState.setCurrentPlayerHand(existing);
   }
 
-  private boolean canExchange(IGameState state) {
+  private boolean isValidExchangeAction(IGameState state) {
     Bag<Tile> playerTiles = state.getCurrentPlayerState().getCurrentPlayerTiles();
     return playerTiles.size() <= state.getRefereeTiles().size();
   }
 
-  private boolean canPlace(PlaceAction place, IGameState state) {
-    return this.placementRules.isPlacementListLegal(
+  /**
+   * Returns true if the PlaceAction satisfies all of the placement rules
+   * @param place
+   * @param state
+   * @return
+   */
+  private boolean isValidPlaceAction(PlaceAction place, IGameState state) {
+    // System.out.println("Testing placement of player: " + state.getCurrentPlayer().name());
+    boolean validPlacements = this.placementRules.isPlacementListLegal(
             place.placements(), state.getCurrentPlayerState());
+    if (!validPlacements) {
+      // System.out.println("Player: " + state.getCurrentPlayer().name() + " broke the rules");
+    }
+    return validPlacements;
   }
 
   private boolean validTurn(TurnAction turnAction, IGameState state) {
     return switch (turnAction) {
       case PassAction ignored -> true;
-      case ExchangeAction ignored -> canExchange(state);
-      case PlaceAction place -> canPlace(place, state);
+      case ExchangeAction ignored -> isValidExchangeAction(state);
+      case PlaceAction place -> isValidPlaceAction(place, state);
       default -> throw new IllegalStateException("Unexpected value: " + turnAction);
     };
   }
@@ -420,6 +445,7 @@ public class QReferee implements IReferee {
   private void scorePlacements(List<Placement> placements) {
     IMap board = currentGameState.getBoard();
     int score = this.scoringRules.pointsFor(placements, board);
+    System.out.println("Giving score: " + score + " to player: " + this.currentGameState.getCurrentPlayer().name());
     // int bonus = placedAllTiles(placements) ? ALL_TILE_BONUS : 0;
     // currentGameState.addScoreToCurrentPlayer(score + bonus);
     currentGameState.addScoreToCurrentPlayer(score);

@@ -21,8 +21,28 @@ public class MultiPlacementRule extends ARule {
     this.rules = new ArrayList<>(rules);
   }
 
+  public MultiPlacementRule getBoardRules() {
+    List<PlacementRule> boardRules = new ArrayList<>();
+
+    for (PlacementRule r : rules) {
+      if (r instanceof BoardRule) {
+        boardRules.add(r);
+      }
+    }
+    return new MultiPlacementRule(boardRules);
+  }
+
   @Override
   public boolean isPlacementListLegal(List<Placement> placements, IPlayerGameState gameState) {
-    return this.rules.stream().allMatch(rule -> rule.isPlacementListLegal(placements, gameState));
+    //return this.rules.stream().allMatch(rule -> rule.isPlacementListLegal(placements, gameState));
+    //System.out.println(gameState.getPlayerName());
+
+    for (PlacementRule r : this.rules) {
+      if (!r.isPlacementListLegal(placements, gameState)) {
+        // System.out.println("Rule broken: " + r.getClass());
+        return false;
+      }
+    }
+    return true;
   }
 }
