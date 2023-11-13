@@ -56,7 +56,11 @@ public class QReferee implements IReferee {
   private final int NUM_PLAYER_TILES = 6;
 
   private IGameState currentGameState;
+
+  // list of Players in order
   private List<Player> players;
+
+
   private List<String> ruleBreakers;
 
   private List<IGameObserver> observers;
@@ -128,33 +132,24 @@ public class QReferee implements IReferee {
     List<PlayerInfo> infos = new ArrayList<>();
 
     for (Player p : players) {
-      PlayerInfo info = new PlayerInfo(0, tileBag.getItems(this.NUM_PLAYER_TILES), p.name());
+      PlayerInfo info = new PlayerInfo(0, tileBag.getItems(this.NUM_PLAYER_TILES), p);
       infos.add(info);
     }
 
     return infos;
   }
 
-  private void setupPlayer(Player player, Bag<Tile> tiles, IMap board) {
-
-    try {
-      player.setup(board, tiles);
-    } catch (IllegalStateException e) {
-      removeCurrentPlayer();
-    }
-  }
   /**
    * Sets up all the players in the game by giving them the current map and the tiles
    * in their hand.
    * @throws IllegalStateException if the list of players or game state is invalid.
    */
   private void setupPlayers() {
-    List<PlayerInfo> info = currentGameState.getPlayerInformation();
-    // validateState(l -> l.size() == info.size(),
-    //   players, "Players does not match playerInfo");
-
+    // List<PlayerInfo> info = currentGameState.getAllPlayerInformation();
+    // // validateState(l -> l.size() == info.size(),
+    // //   players, "Players does not match playerInfo");
     for (int i = 0; i < players.size(); i++) {
-      setupPlayer(players.get(i), info.get(i).tiles(), currentGameState.getBoard());
+      boolean removePlayer = setup(players.get(i));
     }
   }
 
@@ -178,13 +173,13 @@ public class QReferee implements IReferee {
 
     for (Player p : this.players) {
       if (category.contains(p)) {
-        p.win(hasWon);
+        this.win(p, hasWon);
       }
     }
   }
 
   // Determine all winners in a list of players and return a list of their names.
-  private List<String> findWinnersAndNotifyPlayers(List<Player> players, List<PlayerInfo> infos, int highestScore) {
+  private List<String> findWinnersAndNotifyPlayers(List<PlayerInfo> infos, int highestScore) {
     List<String> winners = new ArrayList<>();
     List<Player> winnerPlayers = new ArrayList<>();
     List<Player> loserPlayers = new ArrayList<>();
@@ -207,18 +202,13 @@ public class QReferee implements IReferee {
     return winners;
   }
 
-  private void win(Player player, boolean value) {
-    try {
-      player.win(value);
-    } catch (IllegalStateException ignored) {
-    }
-  }
+
 
   //Returns the winners and rulebreakers of the game
   private GameResults getResults() {
-    List<PlayerInfo> playerInfo = currentGameState.getPlayerInformation();
+    List<PlayerInfo> playerInfo = currentGameState.getAllPlayerInformation();
     int highestScore = maxScore(playerInfo);
-    List<String> winners = findWinnersAndNotifyPlayers(players, playerInfo, highestScore);
+    List<String> winners = findWinnersAndNotifyPlayers(playerInfo, highestScore);
     GameResults gr = new GameResults(winners, ruleBreakers);
     return gr;
   }
@@ -245,18 +235,13 @@ public class QReferee implements IReferee {
    * @param currentPlayer
    * @return
    */
-  private Optional<TurnAction> getAndValidateAction(IGameState state, Player currentPlayer) {
-    TurnAction action;
-    try {
-      action = getAction(state, currentPlayer);
-    } catch (IllegalStateException | TimeoutException | InterruptedException |
-             ExecutionException e) {
+  private Optional<TurnAction> getAndValidateAction(Player currentPlayer) {
+
+    Optional<TurnAction> ta = takeTurn(currentPlayer);
+    if (ta.isEmpty() || !validTurn(ta.get())) {
       return Optional.empty();
     }
-    if (!validTurn(action, state)) {
-      return Optional.empty();
-    }
-    return Optional.of(action);
+    return ta;
   }
 
   private void removeCurrentPlayer() {
@@ -273,24 +258,44 @@ public class QReferee implements IReferee {
   private boolean playRound(List<TurnAction> turnsTaken) {
     List<Player> nextRound = new ArrayList<>();
     boolean gameContinue = true;
+
+    // A Round of gameplay
     while (!players.isEmpty() && gameContinue) {
+      // One player's Turn
+
+
+      boolean removePlayer = false;
+
+      // Step 1: Notify Observers
       giveObserversStateUpdate();
+
+      // Step 2: Get current Player's Turn
       Player currentPlayer = players.remove(0);
-      Optional<TurnAction> possibleAction = getAndValidateAction(currentGameState, currentPlayer);
+      Optional<TurnAction> possibleAction = getAndValidateAction(currentPlayer);
       if (possibleAction.isEmpty()) {
-        this.removeCurrentPlayer();
-        continue;
+        removePlayer = true;
       }
-      TurnAction action = possibleAction.get();
-      turnsTaken.add(action);
-      gameContinue = handleAction(action);
-      
-      boolean successfulNewTiles = givePlayerNewTiles(action, currentPlayer);
-      if (successfulNewTiles) {
+      else {
+        TurnAction action = possibleAction.get();
+        turnsTaken.add(action);
+
+        // Step 3: Perform player's turn and determine if the game should end
+        gameContinue = handleAction(action);
+        
+        // Step 4: Give player new tiles (returns false if method failed) 
+        removePlayer = !givePlayerNewTiles(action, currentPlayer);
+      }
+      // Step 5: Prepare for next round
+      // If current player broke the rules or caused an exception, remove them
+      if (removePlayer) {
+        this.removeCurrentPlayer();
+      }
+      else {
         currentGameState.shiftCurrentToBack();
         nextRound.add(currentPlayer);
       }
     }
+
     players.addAll(nextRound);
     return gameContinue;
   }
@@ -312,7 +317,7 @@ public class QReferee implements IReferee {
    * In the case of a PlaceAction, their entire set of tiles is given.
    * @param action
    * @param currentPlayer
-   * @return
+   * @return True if currentPlayer has not been removed
    */
   private boolean givePlayerNewTiles(TurnAction action, Player currentPlayer) {
 
@@ -328,15 +333,43 @@ public class QReferee implements IReferee {
     };
   }
 
-  private TurnAction getAction(IGameState state, Player player)
-    throws ExecutionException, InterruptedException, TimeoutException {
-    // ThreadFactory factory = Thread.ofVirtual().factory();
-    // ExecutorService executor = Executors.newFixedThreadPool(1, factory);
-    // IPlayerGameState finalState = state.getCurrentPlayerState();
-    // Future<TurnAction> getAction = executor.submit(
-    //   () -> player.takeTurn(finalState));
-    // return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
-    return player.takeTurn(state.getCurrentPlayerState());
+  // private TurnAction getAction(IGameState state, Player player)
+  //   throws ExecutionException, InterruptedException, TimeoutException {
+  //   // ThreadFactory factory = Thread.ofVirtual().factory();
+  //   // ExecutorService executor = Executors.newFixedThreadPool(1, factory);
+  //   // IPlayerGameState finalState = state.getCurrentPlayerState();
+  //   // Future<TurnAction> getAction = executor.submit(
+  //   //   () -> player.takeTurn(finalState));
+  //   // return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
+  //   return player.takeTurn(state.getCurrentPlayerState());
+  // }
+
+  // TODO: Detect infinite loop etc.
+  /**
+   * Return an Optional containing the Player's turn as the value if
+   * calling player.takeTurn() returned a turnAction successfully.
+   * Otherwise return an 
+   * @param player
+   * @return
+   */
+  private Optional<TurnAction> takeTurn(Player player) {
+    try {
+      return Optional.of(player.takeTurn(this.currentGameState.getPlayerState(player)));
+    } catch (IllegalStateException e /*...*/) {
+      // removeCurrentPlayer();
+      return Optional.empty();
+    }
+  }
+
+  private boolean setup(Player player) {
+
+    try {
+      player.setup(this.currentGameState.getPlayerState(player));
+      return true;
+    } catch (IllegalStateException e) {
+      // removeCurrentPlayer();
+      return false;
+    }
   }
 
 
@@ -346,50 +379,58 @@ public class QReferee implements IReferee {
    * @return true if successfully informed player
    */
   private boolean newTiles(Player player) {
+
     try {
-      player.newTiles(
-              currentGameState.getCurrentPlayerState().getCurrentPlayerTiles());
+      player.newTiles(currentGameState.getPlayerInformation(player).tiles());
       return true;
     }
     catch (IllegalStateException e) {
-      removeCurrentPlayer();
+      // removeCurrentPlayer();
       return false;
     }
   }
 
+  private void win(Player player, boolean value) {
+    try {
+      player.win(value);
+    } catch (IllegalStateException ignored) {
+      // TODO: handle exception on win
+    }
+  }
+
 
   /**
-   * Performs action on a game state. Returns false if the game should not continue after the action
-   * Does NOT move the current player to the end of the turn rotation.
+   * Performs the player's action. 
+   * @param action
+   * @return Return false if the game should end as a result of this action
    */
   private boolean handleAction(TurnAction action) {
-    boolean shouldContinue;
-    switch (action) {
-      case PassAction ignored -> { return true;}
-      case ExchangeAction ignored -> shouldContinue = exchangeTiles();
-      case PlaceAction place -> shouldContinue = handlePlacement(place);
+
+    // boolean shouldContinue;
+    return switch (action) {
+      case PassAction ignored -> true;
+      case ExchangeAction ignored -> exchangeTiles();
+      case PlaceAction place -> placeTiles(place);
       default -> throw new IllegalStateException("Unexpected value: " + action);
-    }
-    return shouldContinue;
+    };
   }
 
   /**
-   * Performs the exchange action if the referee has enough tiles to replace
-   * the current player's hand
-   * @return new QGameState with updated information reflecting this action.
-   * replace the player's hand.
+   * Sets the current player's tiles to brand new tiles,
+   * and append the current player's tiles onto the referee's tile bag
+   * @return False if this action should result in the game ending
    */
   private boolean exchangeTiles() {
     Bag<Tile> currentPlayerHand = currentGameState.getCurrentPlayerState().getCurrentPlayerTiles();
     int playerTileSize = currentPlayerHand.size();
     currentGameState.giveRefereeTiles(currentPlayerHand);
-    setCurrentPlayerNTiles(currentGameState, playerTileSize);
+    setCurrentPlayerNTiles(playerTileSize);
     return true;
   }
 
-  private void setCurrentPlayerNTiles(IGameState state, int n) {
-    Bag<Tile> newTiles = new Bag<>(state.takeOutRefTiles(n));
-    state.setCurrentPlayerHand(newTiles);
+  private void setCurrentPlayerNTiles(int n) {
+    Bag<Tile> newTiles = new Bag<>(currentGameState.takeOutRefTiles(n));
+    currentGameState.setCurrentPlayerHand(newTiles);
   }
 
 
@@ -397,8 +438,9 @@ public class QReferee implements IReferee {
   /**
    * places tiles, updates the score of the player who placed them, updates the hand
    * and the ref tiles.
+   * @return False if this action should result in the game ending
    */
-  private boolean handlePlacement(PlaceAction place) {
+  private boolean placeTiles(PlaceAction place) {
     List<Placement> placements = place.placements();
     boolean gameContinue = !placedAllTiles(placements);
     placeTiles(placements);
@@ -418,10 +460,10 @@ public class QReferee implements IReferee {
    * tiles they used in the turn and replenishing the hand from the referee's bag.
    */
   private void updateHandInState(List<Placement> placements) {
-    List<Tile> tilesRemoved = placements.stream().map(Placement::tile).toList();
+    List<Tile> tilesInPlacement = placements.stream().map(Placement::tile).toList();
     Bag<Tile> playerTiles = getCurrentPlayerTiles();
-    playerTiles.remove(tilesRemoved);
-    int amountToRemove = Math.min(tilesRemoved.size(), currentGameState.getRefereeTiles().size());
+    playerTiles.removeAll(tilesInPlacement);
+    int amountToRemove = Math.min(tilesInPlacement.size(), currentGameState.getRefereeTiles().size());
     addCurrentPlayerNTiles(playerTiles, amountToRemove);
   }
 
@@ -431,9 +473,9 @@ public class QReferee implements IReferee {
     currentGameState.setCurrentPlayerHand(existing);
   }
 
-  private boolean isValidExchangeAction(IGameState state) {
-    Bag<Tile> playerTiles = state.getCurrentPlayerState().getCurrentPlayerTiles();
-    return playerTiles.size() <= state.getRefereeTiles().size();
+  private boolean isValidExchangeAction() {
+    Bag<Tile> playerTiles = currentGameState.getCurrentPlayerState().getCurrentPlayerTiles();
+    return playerTiles.size() <= currentGameState.getRefereeTiles().size();
   }
 
   /**
@@ -442,21 +484,21 @@ public class QReferee implements IReferee {
    * @param state
    * @return
    */
-  private boolean isValidPlaceAction(PlaceAction place, IGameState state) {
+  private boolean isValidPlaceAction(PlaceAction place) {
     // System.out.println("Testing placement of player: " + state.getCurrentPlayer().name());
     boolean validPlacements = this.placementRules.isPlacementListLegal(
-            place.placements(), state.getCurrentPlayerState());
+            place.placements(), currentGameState.getCurrentPlayerState());
     if (!validPlacements) {
       // System.out.println("Player: " + state.getCurrentPlayer().name() + " broke the rules");
     }
     return validPlacements;
   }
 
-  private boolean validTurn(TurnAction turnAction, IGameState state) {
+  private boolean validTurn(TurnAction turnAction) {
     return switch (turnAction) {
       case PassAction ignored -> true;
-      case ExchangeAction ignored -> isValidExchangeAction(state);
-      case PlaceAction place -> isValidPlaceAction(place, state);
+      case ExchangeAction ignored -> isValidExchangeAction();
+      case PlaceAction place -> isValidPlaceAction(place);
       default -> throw new IllegalStateException("Unexpected value: " + turnAction);
     };
   }

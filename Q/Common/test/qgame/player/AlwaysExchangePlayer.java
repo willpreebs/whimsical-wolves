@@ -21,26 +21,31 @@ public class AlwaysExchangePlayer implements MockPlayer{
     tiles = hand;
   }
 
+  @Override
   public String name(){
     return "Exchanger";
   };
 
+  @Override
   public TurnAction takeTurn(IPlayerGameState ref){
     return new ExchangeAction();
   }
 
-  public void setup(IMap map, Bag<Tile> tiles){
+  @Override
+  public void setup(IPlayerGameState state){
 
   }
 
+  @Override
   public void newTiles(Bag<Tile> tiles){
     this.tiles = tiles;
   }
 
+  @Override
   public void win(boolean w){
 
   }
-
+  
   public List<Tile> returnHand(){
     return new ArrayList<>(this.tiles.getItems());
   }

@@ -15,6 +15,7 @@ import qgame.player.strategy.LdasgStrategy;
 import qgame.player.strategy.TurnStrategy;
 import qgame.player.CheatingAIPlayer;
 import qgame.player.DummyAIPlayer;
+import qgame.player.LoopingAIPlayer;
 import qgame.referee.GameResults;
 import qgame.rule.placement.PlacementRule;
 import qgame.state.Bag;
@@ -316,7 +317,7 @@ public class JsonConverter {
   }
 
 
-  public static IGameState JStateToQGameState(JsonElement jState) {
+  public static IGameState jStateToQGameState(JsonElement jState) {
     JsonObject jStateObj = jState.getAsJsonObject();
     IMap gameMap = qGameMapFromJMap(jStateObj.get("map"));
     Bag<Tile> tiles = new Bag<>(tilesFromJTileArray(jStateObj.get("tile*")));
@@ -387,6 +388,40 @@ public class JsonConverter {
     }
   }
 
+  public static Player playerFromJActorSpecB(JsonElement element) {
+    JsonElement[] spec = getAsArray(element);
+    validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
+    String name = getAsString(spec[0]);
+    validateArg(size -> size <= 20, name.length(), "Name must be at most 20 characters");
+    PlacementRule rules = RuleUtil.createPlaceRules();
+    TurnStrategy strat = jStrategyToStrategy(spec[1], rules);
+
+    DummyAIPlayer.FailStep step = DummyAIPlayer.FailStep.NONE;
+    CheatingAIPlayer.Cheat cheat = CheatingAIPlayer.Cheat.NONE;
+
+    if (spec.length == 2) {
+      return new DummyAIPlayer(name, strat);
+    }
+    if (spec.length == 3) {
+      step = failStepFromExn(element);
+      return new DummyAIPlayer(name, strat, step);
+    }
+    if (spec.length == 4) {
+      if (getAsString(spec[2]).equals("a cheat")) {
+        cheat = cheatFromJCheat(spec[3]);
+        return new CheatingAIPlayer(name, strat, cheat);
+      }
+      else {
+        step = failStepFromExn(element);
+        int count = getAsInt(spec[3]);
+        return new LoopingAIPlayer(name, strat, step, count);
+      }
+    }
+    else {
+      throw new IllegalArgumentException("Spec length cannot be longer than 4");
+    }
+  }
+
   public static List<Player> playersFromJActors(JsonElement element, PlacementRule rule) {
     JsonElement[] players = getAsArray(element);
     return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpec(spec, rule)).toList());
@@ -395,6 +430,11 @@ public class JsonConverter {
   public static List<Player> playersFromJActorSpecA(JsonElement element) {
     JsonElement[] players = getAsArray(element);
     return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpecA(spec)).toList());
+  }
+
+  public static List<Player> playersFromJActorSpecB(JsonElement element) {
+    JsonElement[] players = getAsArray(element);
+    return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpecB(spec)).toList());
   }
 
   public static JsonElement jResultsFromGameResults(GameResults results) {
@@ -423,7 +463,7 @@ public class JsonConverter {
     JsonElement map = jMapFromQGameMap(state.getBoard());
     JsonElement tiles = jTilesFromTiles(state.getRefereeTiles().getItems());
     JsonArray players = new JsonArray();
-    state.getPlayerInformation()
+    state.getAllPlayerInformation()
       .stream()
       .map(JsonConverter::jPlayerFromPlayerInfo)
       .forEach(players::add);
@@ -434,6 +474,24 @@ public class JsonConverter {
     return result;
   }
 
+  public static IGameState initializeNewStateWithNewPlayerList(IGameState state, List<Player> players) {
 
+    List<PlayerInfo> newInfos = new ArrayList<>();
+    List<PlayerInfo> oldInfos = state.getAllPlayerInformation();
 
+    validateArg(p -> p.size() == oldInfos.size(), players, 
+    "List of players must be the same size as the list of player information in the state");
+
+    for (int i = 0; i < oldInfos.size(); i++) {
+      PlayerInfo info = oldInfos.get(i);
+      Player p = players.get(i);
+      if (!info.name().equals(p.name())) {
+        throw new IllegalArgumentException("List of players must be given in original order.");
+      }
+      System.out.println("Adding player with name: " + p.name());
+      newInfos.add(new PlayerInfo(info.score(), info.tiles().getItems(), players.get(i)));
+    }
+    
+    return new QGameState(state.getBoard(), state.getRefereeTiles(), newInfos);
+  }
 }

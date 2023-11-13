@@ -18,7 +18,7 @@ public class ObserverViewGuiTest {
 
         JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(System.in));
         JsonElement jstate = parser.next();
-        IGameState state = JsonConverter.JStateToQGameState(jstate);
+        IGameState state = JsonConverter.jStateToQGameState(jstate);
 
         ObserverView view = new ObserverView(new QGameObserver(), state, 6);
         view.setVisible(true);

@@ -28,8 +28,10 @@ public class XGamesWithObserver {
         JsonElement jState = parser.next();
         JsonElement jActorSpecA = parser.next();
 
-        IGameState state = JsonConverter.JStateToQGameState(jState);
+        IGameState state = JsonConverter.jStateToQGameState(jState);
         List<Player> players = JsonConverter.playersFromJActorSpecA(jActorSpecA);
+
+        state = JsonConverter.initializeNewStateWithNewPlayerList(state, players);
 
         boolean withObserver = false;
         if (args.length >= 1) {

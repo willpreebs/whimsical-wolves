@@ -16,7 +16,7 @@ import qgame.state.map.Tile;
 public class PlayerTilesPanel extends JPanel {
     
     public PlayerTilesPanel(IGameState state) {
-        List<PlayerInfo> playerInfoList = state.getPlayerInformation();
+        List<PlayerInfo> playerInfoList = state.getAllPlayerInformation();
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
         generatePlayerTilesPanels(playerInfoList);

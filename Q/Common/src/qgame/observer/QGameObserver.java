@@ -2,6 +2,7 @@ package qgame.observer;
 
 import static qgame.util.ValidationUtil.nonNullObj;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -33,6 +34,7 @@ public class QGameObserver implements IGameObserver {
     int stateIndex = -1;
 
     ObserverView stateFrame;
+    Dimension dimension;
 
     private final int REF_TILES = 6;
     private final String FILE_DIRECTORY = "Tmp";
@@ -100,8 +102,12 @@ public class QGameObserver implements IGameObserver {
 
     private void renderCurrentState() {
         // System.out.println("Rendering state at index: " + this.stateIndex);
+        this.dimension = this.stateFrame.getSize();
+        // this.stateFrame.getSize();
         stateFrame.updateFrame(this, this.getCurrentState());
+        
         this.stateFrame.pack();
+        this.stateFrame.setSize(this.dimension);
     }
 
     @Override

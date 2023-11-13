@@ -25,6 +25,10 @@ public class DummyAIPlayer implements Player{
     failStep = step;
   }
 
+  public FailStep getFailStep() {
+    return this.failStep;
+  }
+
   private void failIfStep(FailStep step) {
     if (this.failStep == step) {
       throw new IllegalStateException("FAILURE");
@@ -42,9 +46,9 @@ public class DummyAIPlayer implements Player{
   }
 
   @Override
-  public void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException {
+  public void setup(IPlayerGameState state) throws IllegalStateException {
     failIfStep(FailStep.SETUP);
-    player.setup(map, tiles);
+    player.setup(state);
   }
 
   @Override

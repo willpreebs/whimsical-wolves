@@ -37,8 +37,8 @@ public class CheatingAIPlayer implements Player {
 
 
     @Override
-    public void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException {
-        player.setup(map, tiles);
+    public void setup(IPlayerGameState state) throws IllegalStateException {
+        player.setup(state);
     }
 
     @Override

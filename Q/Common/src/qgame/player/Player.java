@@ -36,7 +36,9 @@ public interface Player {
    * @param tiles The tiles in the players hands
    * @throws IllegalStateException If player is unable to receive the message when.
    */
-  void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException;
+  //void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException;
+
+  void setup(IPlayerGameState state);
   /**
    * Gives the player a new list of tiles.
    * @param tiles The tiles the player now has.

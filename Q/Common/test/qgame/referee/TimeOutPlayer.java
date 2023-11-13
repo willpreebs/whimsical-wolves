@@ -36,7 +36,7 @@ class TimeOutPlayer implements Player {
   }
 
   @Override
-  public void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException {
+  public void setup(IPlayerGameState state) throws IllegalStateException {
 
   }
 

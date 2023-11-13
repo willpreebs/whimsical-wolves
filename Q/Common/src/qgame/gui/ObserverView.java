@@ -41,18 +41,27 @@ public class ObserverView extends JFrame {
     scoreAndButtons.setLayout(new BoxLayout(scoreAndButtons, BoxLayout.X_AXIS));
     scoreAndButtons.add(new ScorePanel(state));
     scoreAndButtons.add(new ButtonPanel(observer));
+
+    JPanel mapAndRefTiles = new JPanel();
+    mapAndRefTiles.setLayout(new BoxLayout(mapAndRefTiles, BoxLayout.X_AXIS));
+    mapAndRefTiles.add(map);
+    mapAndRefTiles.add(new RefereeTiles(state, maxRefTilesToRender));
     
     box.add(scoreAndButtons);
-    box.add(map);
-    box.add(new RefereeTiles(state, maxRefTilesToRender));
+    box.add(mapAndRefTiles);
     box.add(new JScrollPane(new PlayerTilesPanel(state)));
 
     // JScrollPane observerPane = new JScrollPane(box);
 
     //box.setPreferredSize(fiveByFive);
     this.add(box);
+    //this.setSize(new Dimension(this.width, this.height));
     this.pack();
+
+
   }
+
+  // public void updateFrame(IGameObserver observer, IGameState state, int height, )
 
   // TODO: own class ?
   private Component createMapComponent(IGameState state) {

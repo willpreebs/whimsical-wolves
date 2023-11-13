@@ -5,6 +5,7 @@ import java.util.List;
 
 import qgame.state.map.IMap;
 import qgame.state.map.Tile;
+import qgame.player.Player;
 import qgame.player.PlayerInfo;
 
 /**
@@ -17,7 +18,9 @@ public interface IGameState {
    *
    * @return list of players in chronological order of active turns
    */
-  List<PlayerInfo> getPlayerInformation();
+  List<PlayerInfo> getAllPlayerInformation();
+
+  PlayerInfo getPlayerInformation(Player player);
 
   /**
    * Gets an immutable copy of the game map.
@@ -39,6 +42,8 @@ public interface IGameState {
    * know about the current game.
    */
   IPlayerGameState getCurrentPlayerState();
+
+  IPlayerGameState getPlayerState(Player player);
 
   /**
    * Moves the first player in the game to the end of the rotation.
@@ -83,5 +88,7 @@ public interface IGameState {
 
   void giveRefereeTiles(Bag<Tile> tiles) throws IllegalArgumentException;
 
-  PlayerInfo getCurrentPlayer();
+  PlayerInfo getCurrentPlayerInfo();
+
+  Player getCurrentPlayer();
 }

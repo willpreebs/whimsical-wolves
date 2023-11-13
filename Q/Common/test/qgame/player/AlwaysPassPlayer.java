@@ -27,7 +27,7 @@ public class AlwaysPassPlayer implements MockPlayer{
     return new PassAction();
   }
 
-  public void setup(IMap map, Bag<Tile> tiles){
+  public void setup(IPlayerGameState state) {
 
   }
 

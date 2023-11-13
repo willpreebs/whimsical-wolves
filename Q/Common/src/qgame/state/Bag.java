@@ -72,9 +72,14 @@ public class Bag<T>{
     return true;
   }
 
-  public void remove(Collection<T> itemsToRemove) throws IllegalArgumentException {
-    validateArg(this::contains, itemsToRemove, "Cannot remove tiles this bag does not have");
-    itemsToRemove.forEach(this.items::remove);
+  public void remove(T item) {
+    validateArg(this::contains, item, "Cannot remove an item this bag doesn't contain");
+    this.items.remove(item);
+  }
+
+  public void removeAll(Collection<T> itemsToRemove) throws IllegalArgumentException {
+    // validateArg(this::contains, itemsToRemove, "Cannot remove tiles this bag does not have");
+    itemsToRemove.forEach(this::remove);
   }
 
   public Collection<T> getItems() {

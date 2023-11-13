@@ -1,13 +1,10 @@
 package qgame.referee;
 
-import java.util.List;
 
 import qgame.action.TurnAction;
 import qgame.state.Bag;
-import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 import qgame.player.Player;
-import qgame.player.SimpleAIPlayer;
 import qgame.state.IPlayerGameState;
 
 public class DisconnectPlayer implements Player {
@@ -29,7 +26,7 @@ public class DisconnectPlayer implements Player {
   }
 
   @Override
-  public void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException {
+  public void setup(IPlayerGameState state) throws IllegalStateException {
 
   }
 

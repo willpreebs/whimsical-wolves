@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import qgame.player.PlayerInfo;
 import qgame.state.map.IMap;
 import qgame.state.map.QMap;
 import qgame.state.map.Tile;
@@ -14,11 +15,13 @@ import qgame.state.map.Tile;
  */
 public class QPlayerGameState implements IPlayerGameState {
 
-  private final List<Integer> scores;
+  private final List<Integer> allScores;
   private final IMap board;
   private final int refTileCount;
-  private final Bag<Tile> playerTiles;
-  private final String playerName;
+  private final PlayerInfo info;
+
+  // private final Bag<Tile> playerTiles;
+  // private final String playerName;
 
   public QPlayerGameState(List<Integer> scores, IMap board, int refTileCount,
                               Collection<Tile> playerTiles, String playerName) {
@@ -27,16 +30,19 @@ public class QPlayerGameState implements IPlayerGameState {
 
   public QPlayerGameState(List<Integer> scores, IMap board, int refTileCount,
                               Bag<Tile> playerTiles, String playerName) {
-    this.scores = new ArrayList<>(scores);
+    this(scores, board, refTileCount, new PlayerInfo(refTileCount, playerTiles.getItems(), playerName));
+  }
+
+  public QPlayerGameState(List<Integer> scores, IMap board, int refTileCount, PlayerInfo info) {
+    this.allScores = new ArrayList<>(scores);
     this.board = new QMap(board.getBoardState());
     this.refTileCount = refTileCount;
-    this.playerTiles = new Bag<>(playerTiles);
-    this.playerName = playerName;
+    this.info = info;
   }
 
   @Override
   public List<Integer> getPlayerScores() {
-    return new ArrayList<>(scores);
+    return new ArrayList<>(allScores);
   }
 
   @Override
@@ -51,21 +57,21 @@ public class QPlayerGameState implements IPlayerGameState {
 
   @Override
   public Bag<Tile> getCurrentPlayerTiles() {
-    return new Bag<>(this.playerTiles);
+    return new Bag<>(this.info.tiles());
   }
 
   /**
-   * Removes 
+   * Mutates the board by making the given Placement
+   * and removes the Placement's tile from this Player's list of tiles.
    */
   @Override
   public void makePlacement(Placement placement) {
-    this.playerTiles.remove(new ArrayList<>(List.of(placement.tile())));
+    this.info.tiles().remove(placement.tile());
     this.board.placeTile(placement);
   }
 
   @Override
   public String getPlayerName() {
-    return this.playerName;
+    return this.info.name();
   }
-
 }
