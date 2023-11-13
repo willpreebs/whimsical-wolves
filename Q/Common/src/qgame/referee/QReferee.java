@@ -333,16 +333,27 @@ public class QReferee implements IReferee {
     };
   }
 
-  // private TurnAction getAction(IGameState state, Player player)
-  //   throws ExecutionException, InterruptedException, TimeoutException {
-  //   // ThreadFactory factory = Thread.ofVirtual().factory();
-  //   // ExecutorService executor = Executors.newFixedThreadPool(1, factory);
-  //   // IPlayerGameState finalState = state.getCurrentPlayerState();
-  //   // Future<TurnAction> getAction = executor.submit(
-  //   //   () -> player.takeTurn(finalState));
-  //   // return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
-  //   return player.takeTurn(state.getCurrentPlayerState());
-  // }
+  /**
+   * lambda
+   *  
+   */
+  public interface TimeoutLambda {
+    
+    public <T> T playerMethod(Player p, IPlayerGameState state, boolean win);
+    
+  }
+
+  private <T> T callPlayerMethodWithTimeout(TimeoutLambda l, Player player, IGameState state, boolean win)
+    throws ExecutionException, InterruptedException, TimeoutException {
+
+    ThreadFactory factory = Thread.ofVirtual().factory();
+    ExecutorService executor = Executors.newFixedThreadPool(1, factory);
+    IPlayerGameState finalState = state.getCurrentPlayerState();
+    Future<T> getAction = executor.submit(
+      () -> l.playerMethod(player, finalState, win));
+    return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
+    // return player.takeTurn(state.getCurrentPlayerState());
+  }
 
   // TODO: Detect infinite loop etc.
   /**
@@ -353,20 +364,32 @@ public class QReferee implements IReferee {
    * @return
    */
   private Optional<TurnAction> takeTurn(Player player) {
+    TimeoutLambda l = new TimeoutLambda() {
+        public TurnAction playerMethod(Player p, IPlayerGameState state, boolean win) {
+          return p.takeTurn(state);
+        }
+    };
     try {
-      return Optional.of(player.takeTurn(this.currentGameState.getPlayerState(player)));
-    } catch (IllegalStateException e /*...*/) {
+      return Optional.of(callPlayerMethodWithTimeout(l, player, currentGameState, false));
+      // return Optional.of(player.takeTurn(this.currentGameState.getPlayerState(player)));
+    } catch (IllegalStateException | ExecutionException | InterruptedException | TimeoutException e) {
       // removeCurrentPlayer();
       return Optional.empty();
     }
   }
 
   private boolean setup(Player player) {
+    TimeoutLambda l = new TimeoutLambda() {
+        public <T> T playerMethod(Player p, IPlayerGameState state, boolean win) {
+          p.setup(state);
+          return null;
+        }
+    };
 
     try {
-      player.setup(this.currentGameState.getPlayerState(player));
+      callPlayerMethodWithTimeout(l, player, currentGameState, false);
       return true;
-    } catch (IllegalStateException e) {
+    } catch (IllegalStateException | ExecutionException | InterruptedException | TimeoutException e) {
       // removeCurrentPlayer();
       return false;
     }
@@ -379,22 +402,36 @@ public class QReferee implements IReferee {
    * @return true if successfully informed player
    */
   private boolean newTiles(Player player) {
+    TimeoutLambda l = new TimeoutLambda() {
+        public <T> T playerMethod(Player p, IPlayerGameState state, boolean win) {
+          p.newTiles(currentGameState.getPlayerInformation(player).tiles());
+          return null;
+        }
+    };
 
     try {
-      player.newTiles(currentGameState.getPlayerInformation(player).tiles());
+      callPlayerMethodWithTimeout(l, player, currentGameState, false);
       return true;
     }
-    catch (IllegalStateException e) {
+    catch (IllegalStateException | ExecutionException | InterruptedException | TimeoutException e) {
       // removeCurrentPlayer();
       return false;
     }
   }
 
-  private void win(Player player, boolean value) {
+  private boolean win(Player player, boolean value) {
+    TimeoutLambda l = new TimeoutLambda() {
+        public <T> T playerMethod(Player p, IPlayerGameState state, boolean win) {
+          p.win(win);
+          return null;
+        }
+    };
     try {
-      player.win(value);
-    } catch (IllegalStateException ignored) {
+      callPlayerMethodWithTimeout(l, player, currentGameState, value);
+      return true;
+    } catch (IllegalStateException | ExecutionException | InterruptedException | TimeoutException e) {
       // TODO: handle exception on win
+      return false;
     }
   }
 

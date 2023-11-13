@@ -57,8 +57,6 @@ public class ObserverView extends JFrame {
     this.add(box);
     //this.setSize(new Dimension(this.width, this.height));
     this.pack();
-
-
   }
 
   // public void updateFrame(IGameObserver observer, IGameState state, int height, )

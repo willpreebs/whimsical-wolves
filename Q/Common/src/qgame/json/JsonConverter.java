@@ -403,7 +403,7 @@ public class JsonConverter {
       return new DummyAIPlayer(name, strat);
     }
     if (spec.length == 3) {
-      step = failStepFromExn(element);
+      step = failStepFromExn(spec[2]);
       return new DummyAIPlayer(name, strat, step);
     }
     if (spec.length == 4) {
@@ -412,7 +412,7 @@ public class JsonConverter {
         return new CheatingAIPlayer(name, strat, cheat);
       }
       else {
-        step = failStepFromExn(element);
+        step = failStepFromExn(spec[2]);
         int count = getAsInt(spec[3]);
         return new LoopingAIPlayer(name, strat, step, count);
       }
@@ -474,6 +474,7 @@ public class JsonConverter {
     return result;
   }
 
+  // TODO: put in GameState?
   public static IGameState initializeNewStateWithNewPlayerList(IGameState state, List<Player> players) {
 
     List<PlayerInfo> newInfos = new ArrayList<>();
@@ -488,7 +489,7 @@ public class JsonConverter {
       if (!info.name().equals(p.name())) {
         throw new IllegalArgumentException("List of players must be given in original order.");
       }
-      System.out.println("Adding player with name: " + p.name());
+      // System.out.println("Adding player with name: " + p.name());
       newInfos.add(new PlayerInfo(info.score(), info.tiles().getItems(), players.get(i)));
     }
     
