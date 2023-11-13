@@ -42,23 +42,27 @@ import static qgame.util.ValidationUtil.validateArg;
  */
 public class JsonConverter {
 
-  private static int getAsInt(JsonElement element) {
+  public static int getAsInt(JsonElement element) {
     validateArg(JsonElement::isJsonPrimitive, element, "Must be number");
     JsonPrimitive prim = element.getAsJsonPrimitive();
     validateArg(JsonPrimitive::isNumber, prim, "Must be number");
     return prim.getAsInt();
   }
 
-  private static String getAsString(JsonElement element) {
+  public static String getAsString(JsonElement element) {
     validateArg(JsonElement::isJsonPrimitive, element, "Must be string");
     JsonPrimitive prim = element.getAsJsonPrimitive();
     validateArg(JsonPrimitive::isString, prim, "Must be string");
     return prim.getAsString();
   }
 
-  private static JsonElement[] getAsArray(JsonElement element) {
+  public static JsonArray getAsArray(JsonElement element) {
     validateArg(JsonElement::isJsonArray, element, "Must be json array");
-    JsonArray arr = element.getAsJsonArray();
+    return element.getAsJsonArray();
+  }
+
+  public static JsonElement[] getAsElementArray(JsonElement element) {
+    JsonArray arr = getAsArray(element);
     JsonElement[] res = new JsonElement[arr.size()];
     for (int i = 0; i < arr.size(); i++) {
       res[i] = arr.get(i);
@@ -73,7 +77,7 @@ public class JsonConverter {
   }
 
   private static void updateRowFromJRow(Map<Posn, Tile> map, JsonElement element) {
-    JsonElement[] arr = getAsArray(element);
+    JsonElement[] arr = getAsElementArray(element);
     int yVal = getAsInt(arr[0]);
     Stream.of(arr)
       .skip(1)
@@ -87,7 +91,7 @@ public class JsonConverter {
    */
   public static IMap qGameMapFromJMap(JsonElement element) {
     Map<Posn, Tile> map = new HashMap<>();
-    JsonElement[] arr = getAsArray(element);
+    JsonElement[] arr = getAsElementArray(element);
     Stream.of(arr)
       .forEach(ele -> updateRowFromJRow(map, ele));
     return new QMap(map);
@@ -165,7 +169,7 @@ public class JsonConverter {
   }
 
   public static Collection<Tile> tilesFromJTileArray(JsonElement element) {
-    JsonElement[] tiles = getAsArray(element);
+    JsonElement[] tiles = getAsElementArray(element);
     return Arrays.stream(tiles).map(JsonConverter::tileFromJTile).toList();
   }
 
@@ -207,7 +211,7 @@ public class JsonConverter {
   }
 
   public static List<Placement> placementsFromJPlacements(JsonElement jPlacements) throws IllegalArgumentException {
-    JsonElement[] arr = getAsArray(jPlacements);
+    JsonElement[] arr = getAsElementArray(jPlacements);
     return Stream.of(arr)
       .map(JsonConverter::placementFromJPlacement)
       .toList();
@@ -240,11 +244,11 @@ public class JsonConverter {
   }
 
   public static List<PlayerInfo> playerInfosFromJPlayers(JsonElement element) {
-    JsonElement[] players = getAsArray(element);
+    JsonElement[] players = getAsElementArray(element);
     return new ArrayList<>(Stream.of(players).map(JsonConverter::playerFromJPlayer).toList());
   }
   private static List<Integer> scoresFromJPlayers(JsonElement element) {
-    JsonElement[] arr = getAsArray(element);
+    JsonElement[] arr = getAsElementArray(element);
     return Stream.of(arr)
       .map(JsonConverter::playerInfoFromJsonElement)
       .toList();
@@ -256,7 +260,7 @@ public class JsonConverter {
     IMap board = qGameMapFromJMap(jPubAsObj.get("map"));
     int tiles = getAsInt(jPubAsObj.get("tile*"));
     List<Integer> scores = scoresFromJPlayers(jPubAsObj.get("players"));
-    JsonElement[] playerArr = getAsArray(jPubAsObj.get("players"));
+    JsonElement[] playerArr = getAsElementArray(jPubAsObj.get("players"));
     List<Tile> currentPlayerTiles = tilesFromJPlayer(playerArr[0]);
     return new QPlayerGameState(scores, board, tiles, currentPlayerTiles, "");
   }
@@ -349,7 +353,7 @@ public class JsonConverter {
   }
 
   private static Player playerFromJActorSpec(JsonElement element, PlacementRule rule) {
-    JsonElement[] spec = getAsArray(element);
+    JsonElement[] spec = getAsElementArray(element);
     validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
     String name = getAsString(spec[0]);
     validateArg(size -> size <= 20, name.length(), "Name must be at most 20 characters");
@@ -362,7 +366,7 @@ public class JsonConverter {
   }
 
   private static Player playerFromJActorSpecA(JsonElement element) {
-    JsonElement[] spec = getAsArray(element);
+    JsonElement[] spec = getAsElementArray(element);
     validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
     String name = getAsString(spec[0]);
     validateArg(size -> size <= 20, name.length(), "Name must be at most 20 characters");
@@ -389,7 +393,7 @@ public class JsonConverter {
   }
 
   public static Player playerFromJActorSpecB(JsonElement element) {
-    JsonElement[] spec = getAsArray(element);
+    JsonElement[] spec = getAsElementArray(element);
     validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
     String name = getAsString(spec[0]);
     validateArg(size -> size <= 20, name.length(), "Name must be at most 20 characters");
@@ -423,17 +427,17 @@ public class JsonConverter {
   }
 
   public static List<Player> playersFromJActors(JsonElement element, PlacementRule rule) {
-    JsonElement[] players = getAsArray(element);
+    JsonElement[] players = getAsElementArray(element);
     return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpec(spec, rule)).toList());
   }
 
   public static List<Player> playersFromJActorSpecA(JsonElement element) {
-    JsonElement[] players = getAsArray(element);
+    JsonElement[] players = getAsElementArray(element);
     return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpecA(spec)).toList());
   }
 
   public static List<Player> playersFromJActorSpecB(JsonElement element) {
-    JsonElement[] players = getAsArray(element);
+    JsonElement[] players = getAsElementArray(element);
     return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpecB(spec)).toList());
   }
 
