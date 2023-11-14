@@ -25,7 +25,7 @@ public class QPlayer implements Player {
     }
 
     @Override
-    public void setup(IPlayerGameState state) {
+    public void setup(IPlayerGameState state, Bag<Tile> tiles) {
     }
 
     @Override

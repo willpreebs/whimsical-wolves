@@ -48,9 +48,9 @@ public class LoopingAIPlayer extends SimpleAIPlayer {
     }
 
     @Override
-    public void setup(IPlayerGameState state) throws IllegalStateException {
+    public void setup(IPlayerGameState state, Bag<Tile> tiles) throws IllegalStateException {
         loopIfLimitReached(FailStep.SETUP);
-        super.setup(state);
+        super.setup(state, tiles);
     }
 
     @Override

@@ -37,7 +37,7 @@ public class SimpleAIPlayer implements Player {
   }
 
   @Override
-  public void setup(IPlayerGameState state) throws IllegalStateException {
+  public void setup(IPlayerGameState state, Bag<Tile> tiles) throws IllegalStateException {
   }
 
   @Override

@@ -46,9 +46,9 @@ public class DummyAIPlayer implements Player{
   }
 
   @Override
-  public void setup(IPlayerGameState state) throws IllegalStateException {
+  public void setup(IPlayerGameState state, Bag<Tile> tiles) throws IllegalStateException {
     failIfStep(FailStep.SETUP);
-    player.setup(state);
+    player.setup(state, tiles);
   }
 
   @Override

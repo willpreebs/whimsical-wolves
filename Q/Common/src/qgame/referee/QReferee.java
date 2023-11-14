@@ -52,7 +52,7 @@ public class QReferee implements IReferee {
 
   private final int DEFAULT_TIMEOUT = 100000;
 
-  private final int TOTAL_TILES = 1080;
+  private final int TOTAL_TILES = 36;
   private final int NUM_PLAYER_TILES = 6;
 
   private IGameState currentGameState;
@@ -113,7 +113,7 @@ public class QReferee implements IReferee {
 
   @Override
   public GameResults playGame(List<Player> players) {
-
+    System.out.println("Playing game");
     Bag<Tile> tileBag = TileUtil.getTileBag(TOTAL_TILES);
 
     List<PlayerInfo> playerInfos = getDefaultPlayerInfos(players, tileBag);
@@ -381,7 +381,7 @@ public class QReferee implements IReferee {
   private boolean setup(Player player) {
     TimeoutLambda l = new TimeoutLambda() {
         public <T> T playerMethod(Player p, IPlayerGameState state, boolean win) {
-          p.setup(state);
+          p.setup(state, state.getCurrentPlayerTiles());
           return null;
         }
     };

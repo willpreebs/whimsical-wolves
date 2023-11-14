@@ -499,4 +499,21 @@ public class JsonConverter {
     
     return new QGameState(state.getBoard(), state.getRefereeTiles(), newInfos);
   }
+
+  public static TurnAction jChoiceToTurnAction(JsonElement element) {
+    String actionType;
+    if (element.isJsonPrimitive()) {
+      actionType = getAsString(element);
+    }
+    else {
+      actionType = "place";
+    }
+    
+    return switch (actionType) {
+      case "pass" -> new PassAction();
+      case "replace" -> new ExchangeAction();
+      case "place" -> new PlaceAction(placementsFromJPlacements(element));
+      default -> throw new IllegalArgumentException("Illegal TurnAction type");
+    };
+  }
 }

@@ -38,7 +38,7 @@ public interface Player {
    */
   //void setup(IMap map, Bag<Tile> tiles) throws IllegalStateException;
 
-  void setup(IPlayerGameState state);
+  void setup(IPlayerGameState state, Bag<Tile> tiles) throws IllegalStateException;
   /**
    * Gives the player a new list of tiles.
    * @param tiles The tiles the player now has.

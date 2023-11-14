@@ -104,7 +104,7 @@ public class TileUtil {
 
   public static Bag<Tile> getTileBag(int numTiles) {
   
-    List<Tile> bag = new ArrayList<>();
+    List<Tile> bag = new ArrayList<>(numTiles);
     for (int i = 0; i < numTiles; i++) {
       i %= colors.length * shapes.length;
       Tile t = new QTile(colors[i % colors.length], shapes[i / shapes.length]);
