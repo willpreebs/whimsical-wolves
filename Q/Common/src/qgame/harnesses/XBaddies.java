@@ -1,21 +1,18 @@
 package qgame.harnesses;
 
-import java.io.InputStreamReader;
-import java.util.List;
-
-import org.junit.Rule;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 
-import qgame.state.IGameState;
-import qgame.state.QGameState;
-import qgame.util.RuleUtil;
+import java.io.InputStreamReader;
+import java.util.List;
+
 import qgame.json.JsonConverter;
 import qgame.player.Player;
 import qgame.referee.GameResults;
 import qgame.referee.IReferee;
 import qgame.referee.QReferee;
+import qgame.state.IGameState;
+import qgame.util.RuleUtil;
 
 public class XBaddies {
 

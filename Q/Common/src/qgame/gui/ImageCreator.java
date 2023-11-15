@@ -16,7 +16,7 @@ import qgame.state.map.Tile;
 import qgame.state.Placement;
 
 /**
- * Represents a class that produces images of Q game components.
+ * Represents a class that produces images of Q game components i.e. tiles.
  */
 public class ImageCreator {
 

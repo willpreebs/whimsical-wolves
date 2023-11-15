@@ -36,7 +36,7 @@ public class ButtonPanel extends JPanel {
         });
 
         save.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) throws IllegalArgumentException {
                 String filepath = filepathField.getText();
                 observer.save(filepath);               
             }

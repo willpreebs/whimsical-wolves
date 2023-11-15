@@ -27,7 +27,8 @@ public class AlwaysPassPlayer implements MockPlayer{
     return new PassAction();
   }
 
-  public void setup(IPlayerGameState state) {
+  @Override
+  public void setup(IPlayerGameState state, Bag<Tile> tiles) throws IllegalStateException {
 
   }
 

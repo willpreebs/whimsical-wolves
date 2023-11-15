@@ -1,12 +1,6 @@
 package qgame.gui;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import qgame.observer.IGameObserver;
 import qgame.state.IGameState;
@@ -33,30 +27,35 @@ public class ObserverView extends JFrame {
   }
 
   public void updateFrame(IGameObserver observer, IGameState state) {
-    this.getContentPane().removeAll();
-    Box box = Box.createVerticalBox();
-    Component map = createMapComponent(state);
+    try {
+      this.getContentPane().removeAll();
+      Box box = Box.createVerticalBox();
+      Component map = createMapComponent(state);
 
-    JPanel scoreAndButtons = new JPanel();
-    scoreAndButtons.setLayout(new BoxLayout(scoreAndButtons, BoxLayout.X_AXIS));
-    scoreAndButtons.add(new ScorePanel(state));
-    scoreAndButtons.add(new ButtonPanel(observer));
+      JPanel scoreAndButtons = new JPanel();
+      scoreAndButtons.setLayout(new BoxLayout(scoreAndButtons, BoxLayout.X_AXIS));
+      scoreAndButtons.add(new ScorePanel(state));
+      scoreAndButtons.add(new ButtonPanel(observer));
 
-    JPanel mapAndRefTiles = new JPanel();
-    mapAndRefTiles.setLayout(new BoxLayout(mapAndRefTiles, BoxLayout.X_AXIS));
-    mapAndRefTiles.add(map);
-    mapAndRefTiles.add(new RefereeTiles(state, maxRefTilesToRender));
-    
-    box.add(scoreAndButtons);
-    box.add(mapAndRefTiles);
-    box.add(new JScrollPane(new PlayerTilesPanel(state)));
+      JPanel mapAndRefTiles = new JPanel();
+      mapAndRefTiles.setLayout(new BoxLayout(mapAndRefTiles, BoxLayout.X_AXIS));
+      mapAndRefTiles.add(map);
+      mapAndRefTiles.add(new RefereeTiles(state, maxRefTilesToRender));
 
-    // JScrollPane observerPane = new JScrollPane(box);
+      box.add(scoreAndButtons);
+      box.add(mapAndRefTiles);
+      box.add(new JScrollPane(new PlayerTilesPanel(state)));
 
-    //box.setPreferredSize(fiveByFive);
-    this.add(box);
-    //this.setSize(new Dimension(this.width, this.height));
-    this.pack();
+      // JScrollPane observerPane = new JScrollPane(box);
+
+      //box.setPreferredSize(fiveByFive);
+      this.add(box);
+      //this.setSize(new Dimension(this.width, this.height));
+      this.pack();
+    }
+    catch(IllegalArgumentException e){
+      throwDialogBox(e);
+    }
   }
 
   // public void updateFrame(IGameObserver observer, IGameState state, int height, )
@@ -77,5 +76,10 @@ public class ObserverView extends JFrame {
     for (Component c : components) {
       c.paint(g);
     }
+  }
+
+  private void throwDialogBox(Exception e){
+    JOptionPane.showMessageDialog(this, "Exception thrown:" +
+            e.getMessage());
   }
 }

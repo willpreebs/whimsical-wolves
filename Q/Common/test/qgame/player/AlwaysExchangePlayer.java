@@ -32,9 +32,11 @@ public class AlwaysExchangePlayer implements MockPlayer{
   }
 
   @Override
-  public void setup(IPlayerGameState state){
+  public void setup(IPlayerGameState state, Bag<Tile> tiles)
+          throws IllegalStateException {
 
   }
+
 
   @Override
   public void newTiles(Bag<Tile> tiles){

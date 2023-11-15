@@ -26,7 +26,7 @@ public class DisconnectPlayer implements Player {
   }
 
   @Override
-  public void setup(IPlayerGameState state) throws IllegalStateException {
+  public void setup(IPlayerGameState state, Bag<Tile> tiles) throws IllegalStateException {
 
   }
 

@@ -23,13 +23,16 @@ import qgame.state.IGameState;
 import qgame.state.IPlayerGameState;
 import qgame.state.QGameState;
 
+/**
+ * A type of observer for Q-Game that allows for looking
+ * at all states of a game and automatically saving any state
+ * it receives as a PNG locally. It gets states by being
+ * informed by the Referee of a QGame. This implementation
+ * allows for saving a state as a JSON representation of its
+ * information as well.
+ */
 public class QGameObserver implements IGameObserver {
 
-    // List<IGameState> previous;
-    // IGameState current;
-    // IGameState next;
-
-    // GameStates in order that they occur in the game
     List<IGameState> states;
     int stateIndex = -1;
 
@@ -42,7 +45,6 @@ public class QGameObserver implements IGameObserver {
 
     public QGameObserver() {
         this.states = new ArrayList<>();
-        //this.states.add(new QGameState());
         stateFrame = new ObserverView(this, new QGameState(), REF_TILES);
         stateFrame.setVisible(true);
     }
@@ -50,7 +52,7 @@ public class QGameObserver implements IGameObserver {
   /**
    * Gives the observer the game state and saves a GUI representation of the state
    * in an image. see saveStateAsPng()
-   * @param state
+   * @param state state to receive.
    */
     @Override
     public void receiveState(IGameState state) {
@@ -111,15 +113,14 @@ public class QGameObserver implements IGameObserver {
     }
 
     @Override
-    public void save(String filepath) {
+    public void save(String filepath) throws IllegalArgumentException{
         JsonElement jState = JsonConverter.jStateFromQGameState(this.states.get(stateIndex));
         try {
-            // File f = new File(filepath, )
             FileWriter w = new FileWriter(filepath);
             w.write(jState.toString());
             w.close();
         } catch (IOException e) {
-            // throw new IllegalArgumentException("Cannot create or write to file: " + filepath);
+            throw new IllegalArgumentException("Cannot create or write to file: " + filepath);
         }
     }
 
@@ -136,11 +137,12 @@ public class QGameObserver implements IGameObserver {
      * Saves the frame at the given index as an image.
      * @param index
      */
-    private void saveStateAsPng(int index) {
+    private void saveStateAsPng(int index) throws IllegalStateException{
         // System.out.println("save png");
         JFrame currentFrame = new ObserverView(this, this.states.get(index), REF_TILES);
         currentFrame.setVisible(true);
-        BufferedImage img = new BufferedImage(currentFrame.getWidth(), currentFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage img = new BufferedImage(currentFrame.getWidth(),
+                currentFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
         currentFrame.paintAll(g);
         File f = new File(FILE_DIRECTORY +"/" + index + "." + FILE_EXTENSION);
