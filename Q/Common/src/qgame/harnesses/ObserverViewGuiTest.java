@@ -9,7 +9,6 @@ import qgame.gui.ObserverView;
 import qgame.json.JsonConverter;
 import qgame.observer.QGameObserver;
 import qgame.state.IGameState;
-import qgame.state.map.IMap;
 
 public class ObserverViewGuiTest {
     

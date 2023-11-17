@@ -1,116 +1,72 @@
 package qgame.server;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
 
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonStreamParser;
 
 import qgame.player.Player;
 
+/**
+ * A Client represents a remote actor that is responsible for setting up a single
+ * remote player
+ * Contains a Player that determines how the game is played.
+ * Contains a Referee Proxy that receives messages over a socket connection
+ * and calls the Player methods determined by the message.
+ */
 public class Client implements Runnable {
-// public class Client {
 
     private Socket socket;
-    // private RefereeProxy refereeProxy;
     private Player player;
-    // private String name;
-    private ServerSocket server;
 
-    BufferedReader in;
-    PrintWriter out;
+    private JsonStreamParser parser;
+    private PrintWriter printer;
 
-    RefereeProxy refProxy;
+    private RefereeProxy refProxy;
 
-
-    
+    // Creates a Client with a new socket instance from a given ServerSocket
     public Client(ServerSocket server, Player player) throws IOException {
-        this.server = server;
-        this.player = player;  
-    }
-
-    public void startListeningToMessages() throws IOException {
-        refProxy.listenForMessages();
-    }
-    
-    public void startConnection() throws IOException {
+        this.player = player;
         socket = new Socket(server.getInetAddress(), server.getLocalPort());
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new PrintWriter(socket.getOutputStream(), true);
+        parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
+        printer = new PrintWriter(socket.getOutputStream(), true);  
+        this.refProxy = new RefereeProxy(printer, parser, player);
     }
 
-    // public Socket getSocket() {
-    //     return this.socket;
-    // }
-
-    public String sendMessage(String msg) throws IOException {
-        out.println(msg);
-        String resp = in.readLine();
-        return resp;
+    public Socket getSocket() {
+        return this.socket;
     }
 
+    public RefereeProxy getRefereeProxy() {
+        return this.refProxy;
+    }
+
+    public JsonStreamParser getParser() {
+        return this.parser;
+    }
+
+    public PrintWriter getPrinter() {
+        return this.printer;
+    }
+    /**
+     * Runs this Client including sending its player's name and starting the RefereeProxy
+     * so it can handle incoming messages.
+     */
     @Override
     public void run() {
-        System.out.println("Client running on thread: " + Thread.currentThread().threadId());
-        System.out.println("Client thread name: " + Thread.currentThread().getName());
-        // Socket socket = new Socket(server.getInetAddress(), server.getLocalPort());
-        // in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        // out = new PrintWriter(socket.getOutputStream(), true);
-        
-        this.refProxy = new RefereeProxy(socket, player);
-        System.out.println("Writing player name");
-        out.println(new JsonPrimitive(this.player.name()));
 
-        while (true) {
-            try {
-				System.out.println("Client: read line: " + in.readLine());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        // write the player's name to the Server for the setup phase
+        printer.println(new JsonPrimitive(this.player.name()));
+
+        try {
+            refProxy.listenForMessages();
+        } catch (IOException e) {
+            System.out.println("Ref proxy threw error");
+            e.printStackTrace();
         }
-
-        // try {
-        //     this.refProxy.listenForMessages();
-        // } catch (IOException e) {
-        //     throw new IllegalStateException(e);
-        // }
-    
-        // try {
-        //     OutputStreamWriter writer = new OutputStreamWriter(socket.getOutputStream());
-        //     System.out.println("Client writing: " + this.player.name());
-        //     writer.write("\"" + this.player.name() + "\"");
-        //     refereeProxy.listenForMessages();
-        // } catch (IOException e) {
-        //     throw new IllegalStateException("Client IOException: " + e.getMessage());
-        // }
     }
-
-    // private boolean getConnectedMessage(Socket socket) {
-    //     try {
-    //         // JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
-    //         // InputStreamReader r = new InputStreamReader(socket.getInputStream());
-    //         BufferedInputStream b = new BufferedInputStream(socket.getInputStream());
-    //         BufferedReader r = new BufferedReader(new InputStreamReader(b));
-    //         System.out.println("Client: Trying to read connected message");
-    //         String connectedMessage = r.readLine();
-    //         if (connectedMessage.equals("connected")) {
-    //             System.out.println("Client: read connected message");
-    //             return true;
-    //         }
-    //         else {
-    //             System.out.println("Client: Connected message: " + connectedMessage);
-    //         }
-    //         return false;
-    //     } catch (IOException e) {
-    //         throw new IllegalArgumentException("Client IOException while looking for connected message");
-    //     }
-    // }
 }

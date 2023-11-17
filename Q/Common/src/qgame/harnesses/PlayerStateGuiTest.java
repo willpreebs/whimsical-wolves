@@ -1,18 +1,14 @@
 package qgame.harnesses;
 
-import com.google.gson.JsonStreamParser;
-
 import java.io.InputStreamReader;
 import java.util.List;
 
+import com.google.gson.JsonStreamParser;
+
 import qgame.gui.GameStateView;
 import qgame.json.JsonConverter;
-import qgame.rule.scoring.MultiScoringRule;
-import qgame.rule.scoring.ScoringRule;
-import qgame.state.IGameState;
 import qgame.state.IPlayerGameState;
 import qgame.state.Placement;
-import qgame.state.QGameState;
 import qgame.state.QPlayerGameState;
 import qgame.state.map.IMap;
 public class PlayerStateGuiTest {

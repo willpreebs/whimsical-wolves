@@ -301,6 +301,14 @@ public class JsonConverter {
     return onePlacement;
   }
 
+  public static JsonArray jPlacementsFromPlaceAction(PlaceAction action) {
+    JsonArray a = new JsonArray();
+    for (Placement p : action.placements()) {
+      a.add(onePlacementFromPlacement(p));
+    }
+    return a;
+  }
+
   public static TurnStrategy jStrategyToStrategy(JsonElement element, PlacementRule rule) {
     String type = getAsString(element);
     return switch (type) {
@@ -320,6 +328,14 @@ public class JsonConverter {
     };
   }
 
+  public static JsonElement actionToJChoice(TurnAction action) {
+    return switch (action) {
+      case PassAction pass -> new JsonPrimitive("pass");
+      case ExchangeAction exchangeAction -> new JsonPrimitive("replace");
+      case PlaceAction place -> jPlacementsFromPlaceAction(place);
+      default -> throw new IllegalStateException("Unexpected value: " + action);
+    };
+  }
 
   public static IGameState jStateToQGameState(JsonElement jState) {
     JsonObject jStateObj = jState.getAsJsonObject();

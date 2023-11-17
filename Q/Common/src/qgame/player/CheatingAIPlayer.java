@@ -5,7 +5,6 @@ import qgame.player.strategy.CheatStrategy;
 import qgame.player.strategy.TurnStrategy;
 import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
-import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 
 public class CheatingAIPlayer implements Player {

@@ -1,6 +1,7 @@
 package qgame.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -104,12 +105,17 @@ public class TileUtil {
 
   public static Bag<Tile> getTileBag(int numTiles) {
   
-    List<Tile> bag = new ArrayList<>(numTiles);
+    // List<Tile> bag = new ArrayList<>(numTiles);
+    Tile[] a = new Tile[numTiles];
+    int numUniqueTiles = getNumberUniqueTiles();
+
     for (int i = 0; i < numTiles; i++) {
-      i %= colors.length * shapes.length;
-      Tile t = new QTile(colors[i % colors.length], shapes[i / shapes.length]);
-      bag.add(t);
+      int tIndex = i % numUniqueTiles;
+      Tile t = new QTile(colors[tIndex % colors.length], shapes[tIndex / shapes.length]);
+      a[i] = t;
     }
+
+    List<Tile> bag = Arrays.asList(a);
     Collections.shuffle(bag);
     return new Bag<>(bag);
   }

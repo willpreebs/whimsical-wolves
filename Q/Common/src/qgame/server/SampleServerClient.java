@@ -22,35 +22,15 @@ public class SampleServerClient {
         Client c2 = new Client(server, player2);
         Client c3 = new Client(server, player3);
         Client c4 = new Client(server, player4);
-        c1.startConnection();
-        c2.startConnection();
-        c3.startConnection();
-        c4.startConnection();
-
         Thread t1 = new Thread(c1);
         Thread t2 = new Thread(c2);
         Thread t3 = new Thread(c3);
         Thread t4 = new Thread(c4);
-        // Thread serverThread = new Thread(s);
-        // serverThread.start();
         t1.start();
         t2.start();
         t3.start();
         t4.start();
-        s.run();
-        t1.interrupt();
-        t2.interrupt();
-        t3.interrupt();
-        t4.interrupt();
-        c1.startListeningToMessages();
-        c2.startListeningToMessages();
-        c3.startListeningToMessages();
-        c4.startListeningToMessages();
-        // System.out.println("Client1 received: " + c1.sendMessage("hi1"));
-        // System.out.println("Client2 received: " + c2.sendMessage("hi2"));
-        // System.out.println("Client3 received: " + c3.sendMessage("hi3"));
-        // System.out.println("Client4 received: " + c4.sendMessage("hi4"));
 
-        
+        s.run();
     }
 }

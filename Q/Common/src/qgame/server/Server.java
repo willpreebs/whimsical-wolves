@@ -1,21 +1,16 @@
 package qgame.server;
 
-import java.io.BufferedReader;
+import static qgame.util.ValidationUtil.validateArg;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,32 +21,44 @@ import java.util.concurrent.TimeoutException;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonStreamParser;
 
-import netscape.javascript.JSException;
 import qgame.json.JsonConverter;
 import qgame.player.Player;
 import qgame.referee.GameResults;
 import qgame.referee.IReferee;
 import qgame.referee.QReferee;
-import qgame.state.IPlayerGameState;
 
+
+/**
+ * Represents a Server that can connect over TCP to several remote Clients and start a Q Game.
+ * 
+ * Connects to Clients one by one until the maximum number is reached or the waiting period expires.
+ * If a client connects to the socket, they must provide a name for the player within a timeout period.
+ * 
+ * After a number of waiting periods, if the minimum number of clients connect then a game is played
+ * with the remote players
+ * 
+ */
 public class Server implements Runnable {
-// public class Server {
 
     private ServerSocket server;
 
-    // waiting period in milliseconds
-    private int WAITING_PERIOD = 20000;
-    private int TIMEOUT_FOR_NAME_SUBMISSION = 3000;
+    // Waiting period for client signup in milliseconds
+    private final int WAITING_PERIOD = 20000;
 
-    private int NUMBER_WAITING_PERIODS = 2;
+    // Allowed time between a client connection to the socket and their name submission
+    // in milliseconds
+    private final int TIMEOUT_FOR_NAME_SUBMISSION = 3000;
 
-    private int MINIMUM_CLIENTS = 2;
-    private int MAXIMUM_CLIENTS = 4;
+    private final int NUMBER_WAITING_PERIODS = 2;
+
+    private final int MINIMUM_CLIENTS = 2;
+    private final int MAXIMUM_CLIENTS = 4;
 
     public Server(int tcpPort) throws IOException {
-        // this.server = new ServerSocket(tcpPort);
+        validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
         this.server = new ServerSocket(tcpPort);
     }
 
@@ -59,53 +66,16 @@ public class Server implements Runnable {
         return this.server;
     }
 
-    private static class ClientHandler extends Thread {
-        private Socket clientSocket;
-        private PrintWriter out;
-        private BufferedReader in;
-
-        private String playerName;
-
-        public ClientHandler(Socket socket) {
-            this.clientSocket = socket;
-        }
-
-        @Override
-        public void run() {
-            System.out.println("Running client handler");
-            try {
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(
-              new InputStreamReader(clientSocket.getInputStream()));
-            }catch(IOException e){}
-            
-            JsonStreamParser parser = new JsonStreamParser(in);
-            playerName = parser.next().getAsString();
-            System.out.println("Client handler: received player name: " + playerName);
-            out.println("test");
-            // TODO: need to keep ClientHandler alive
-        }
-        public String getPlayerName() {
-            return this.playerName;
-        }
-        public Socket getSocket() {
-            return this.clientSocket;
-        }
-    }
-
+    /**
+     * Runs this server. Connects to several clients and either calls a Referee to play a Q game
+     * with the remote players or sends an empty game result to all remote clients.
+     */
     @Override
     public void run() {
         List<Player> proxies = new ArrayList<>();
 
         int currentWaitingPeriod = 0;
-
-        // while (true)
-        //     try {
-        //         new ClientHandler(server.accept()).start();
-        //     } catch (IOException e) {
-        //         // TODO Auto-generated catch block
-        //         e.printStackTrace();
-        //     }
+        
         while (proxies.size() < MINIMUM_CLIENTS && currentWaitingPeriod < NUMBER_WAITING_PERIODS) {
             getPlayerProxiesWithinTimeout(server, proxies);
             currentWaitingPeriod++;
@@ -118,6 +88,7 @@ public class Server implements Runnable {
 
         IReferee ref = new QReferee();
         GameResults r = ref.playGame(proxies);
+        System.out.println(JsonConverter.jResultsFromGameResults(r));
 
         try {
             server.close();
@@ -127,7 +98,11 @@ public class Server implements Runnable {
         }
     }
 
-    // Assumes all Players in given list are PlayerProxy
+    /**
+     * Sends an empty game result to all Players
+     * Assumes all Players in given list are PlayerProxy
+     * @param proxies
+     */
     private void sendEmptyGameResult (List<Player> proxies) {
         JsonArray emptyResult = new JsonArray();
         emptyResult.add(new JsonArray());
@@ -136,13 +111,6 @@ public class Server implements Runnable {
             PlayerProxy proxy = (PlayerProxy) p;
             proxy.sendOverConnection(emptyResult);
         }
-    }
-
-    private PlayerProxy getPlayerProxyFromJsonElement(JsonStreamParser parser, Socket clientSocket) {
-        JsonElement e = parser.next();
-        System.out.println("server received: " + e.toString());
-        String playerName = JsonConverter.getAsString(e);
-        return new PlayerProxy(playerName, clientSocket);
     }
 
     /**
@@ -156,63 +124,58 @@ public class Server implements Runnable {
         ThreadFactory factory = Thread.ofVirtual().factory();
         ExecutorService executor = Executors.newFixedThreadPool(1, factory);
 
-        // TODO: timeout for sending a name: 3 seconds
         while (true) {
-            // Socket client = null;
-            try {
+            Socket s;
+            PrintWriter out;
+            JsonStreamParser parser;
 
-                // Future<String> playerName = new ClientHandler(server.accept()).start();
-                ClientHandler h = new ClientHandler(server.accept());
-                // Future<?> runH = executor.submit(h);
-                // try {
-                //     runH.get(TIMEOUT_FOR_NAME_SUBMISSION, TimeUnit.MILLISECONDS);
-                // } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                //     // TODO Auto-generated catch block
-                //     e.printStackTrace();
-                // }
-                h.run();
-                String playerName = h.getPlayerName();
-                System.out.println("Server: creating and returning playerproxy: " + playerName);
-                // h.interrupt();
-                return new PlayerProxy(playerName, h.getSocket());
+            try {
+                s = server.accept();
+                out = new PrintWriter(s.getOutputStream(), true);
+                parser = new JsonStreamParser(new InputStreamReader(s.getInputStream()));
             } catch (IOException e) {
-                throw new IllegalStateException(e);
+                // Problem connecting to client, try again
+                continue;
             }
 
-                // JsonStreamParser parser = new JsonStreamParser
-                //     (new InputStreamReader(clientSocket.getInputStream()));
-                // Future<PlayerProxy> futureProxy = executor.submit(() -> getPlayerProxyFromJsonElement(parser, clientSocket));
-                // return futureProxy.get(TIMEOUT_FOR_NAME_SUBMISSION, TimeUnit.MILLISECONDS);
-            // } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
-            //     // allow another connection to the socket
-            // }
+            Future<JsonElement> playerNameJson = executor.submit(() -> parser.next());
+            String playerName;
+            try {
+                playerName = playerNameJson.get(TIMEOUT_FOR_NAME_SUBMISSION, TimeUnit.MILLISECONDS).getAsString();
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                // PlayerName not submitted in time...
+                System.out.println("playerName not submitted in time");
+                continue;
+            } catch (JsonParseException e) {
+                // playerName not formatted json...
+                System.out.println("playerName not formatted json");
+                continue;
+            }
+
+            return new PlayerProxy(playerName, parser, out);
         }
     }
 
 
     private List<Player> getPlayerProxiesWithinTimeout(ServerSocket server, List<Player> proxies) {
+
         ThreadFactory factory = Thread.ofVirtual().factory();
         ExecutorService executor = Executors.newFixedThreadPool(1, factory);
 
         LocalTime start = LocalTime.now();
-
         while (proxies.size() < MAXIMUM_CLIENTS) {
-
+            // calculate the time left in the waiting period
             LocalTime now = LocalTime.now();
-            long millisFromStart = start.until(now, ChronoUnit.MILLIS);
-            // Future<PlayerProxy> futureProxy = executor.submit(() -> getPlayerProxy(server));
-            // TODO timeout
-            PlayerProxy p = getPlayerProxy(server);
-            System.out.println("Server: Adding player proxy to list: " + p.name());
-            proxies.add(p);
-            // try {
-            //     System.out.println("Server: get a player proxy");
-            //     PlayerProxy proxy = futureProxy.get(WAITING_PERIOD - millisFromStart, TimeUnit.MILLISECONDS);
-            //     proxies.add(proxy);
-            // }
-            // catch (InterruptedException | ExecutionException | TimeoutException e) {
-            //     return proxies;
-            // }
+            long waitingPeriodRemaining = WAITING_PERIOD - start.until(now, ChronoUnit.MILLIS);
+
+            try {
+                Future<PlayerProxy> proxy = executor.submit(() -> getPlayerProxy(server));
+                PlayerProxy p = proxy.get(waitingPeriodRemaining, TimeUnit.MILLISECONDS);
+                proxies.add(p);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                // ran out of time in waiting period, returning all of the proxies we have so far.
+                return proxies;
+            }
         }
         return proxies;        
     }

@@ -2,12 +2,8 @@ package qgame.server;
 
 import static qgame.util.ValidationUtil.validateArg;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
-import java.util.List;
+import java.io.PrintWriter;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -18,34 +14,25 @@ import com.google.gson.JsonStreamParser;
 import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
 import qgame.player.Player;
-import qgame.referee.GameResults;
-import qgame.referee.IReferee;
 import qgame.state.Bag;
-import qgame.state.IGameState;
 import qgame.state.IPlayerGameState;
 import qgame.state.map.Tile;
 
-// public class RefereeProxy implements IReferee
+/**
+ * Represents a proxy for the Referee that exists remotely. Deserializes messages
+ * sent over TCP in order to call Player methods.
+ */
 public class RefereeProxy {
 
-    private Socket socket;
     private Player p;
     private JsonStreamParser parser;
-    private BufferedReader in; 
-    private OutputStreamWriter w;
+    private PrintWriter out;
 
-    // assumes socket is already connected to the player proxy
-    public RefereeProxy(Socket socket, Player p) {
-        this.socket = socket;
-        try {
-            this.parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.w = new OutputStreamWriter(socket.getOutputStream());
-        } 
-        catch (IOException e) {
-            // socket failed
-            // ?
-        }
+    private final JsonElement VOID_ELEMENT = new JsonPrimitive("void");
+
+    public RefereeProxy(PrintWriter out, JsonStreamParser parser, Player p) {
+        this.out = out;
+        this.parser = parser;
         this.p = p;
     }
 
@@ -61,29 +48,40 @@ public class RefereeProxy {
 
     private void sendOverConnection(JsonElement e) throws IOException {
         System.out.println("Ref proxy sending: " + e);
-        w.write(e.toString());
+        out.println(e.toString());
     }
 
+    /**
+     * Listens for messages continuously and calls Player methods until the game is over.
+     * Determines the game to be over when a message is sent with the method name "win".
+     * Assumes messages will come over the TCP connection in the following format:
+     * ["methodName", [Argument...]]
+     * @throws IOException If a problem occurs with the TCP connection.
+     */
     public void listenForMessages() throws IOException {
-        System.out.println("Ref Proxy: listening for messages");
+
         boolean gameOver = false;
         while (!gameOver) {
-            String e = in.readLine();
-            // JsonElement e;
-            // try {  
-            //     e = parser.next();
-            // } catch(JsonParseException ex) {
-            //     return;
-            // }
-            System.out.println("Ref proxy receive: " + e);
-            // String methodName = getMethodName(e);
-            // if (methodName.equals("win")) {
-            //     gameOver = true;
-            // }
-            // JsonArray args = getArgs(e);
-            // JsonElement result = makeMethodCall(methodName, args);
-            // sendOverConnection(result);
-            break;
+            // JsonElement element = null;
+            String methodName = null;
+            JsonArray args = null;
+            try {
+                JsonElement element = parser.next();
+                methodName = getMethodName(element);
+                args = getArgs(element);
+                // System.out.println("Ref proxy receive: " + element);
+            } catch (JsonParseException | IllegalArgumentException e) {
+                // Server sent message that is not well formed
+                // or is not the expected format.
+                // TODO: Inform server?
+                e.printStackTrace(out);
+                continue;
+            }
+            if (methodName.equals("win")) {
+                gameOver = true;
+            }
+            JsonElement result = makeMethodCall(methodName, args);
+            sendOverConnection(result);
         }
     }
 
@@ -102,26 +100,26 @@ public class RefereeProxy {
         IPlayerGameState state = JsonConverter.playerGameStateFromJPub(args.get(0));
         Bag<Tile> tiles = new Bag<>(JsonConverter.tilesFromJTileArray(args.get(1)));
         this.p.setup(state, tiles);
-        return new JsonPrimitive("void");
+        return VOID_ELEMENT;
     }
 
     private JsonElement takeTurn(JsonArray args) {
         validateArg(a -> a.size() == 1, args, "takeTurn takes one argument");
         IPlayerGameState state = JsonConverter.playerGameStateFromJPub(args.get(0));
         TurnAction t = this.p.takeTurn(state);
-        return JsonConverter.actionToJson(t);
+        return JsonConverter.actionToJChoice(t);
     }
 
     private JsonElement newTiles(JsonArray args) {
         validateArg(a -> a.size() == 1, args, "takeTurn takes one argument");
         Bag<Tile> tiles = new Bag<>(JsonConverter.tilesFromJTileArray(args.get(0)));
         this.p.newTiles(tiles);
-        return new JsonPrimitive("void");
+        return VOID_ELEMENT;
     }
 
     private JsonElement win(JsonArray args) {
         validateArg(a -> a.size() == 1, args, "win takes one argument");
         this.p.win(args.getAsBoolean());
-        return new JsonPrimitive("void");
+        return VOID_ELEMENT;
     }
 }

@@ -52,7 +52,7 @@ public class QReferee implements IReferee {
 
   private final int DEFAULT_TIMEOUT = 100000;
 
-  private final int TOTAL_TILES = 36;
+  private final int TOTAL_TILES = 300;
   private final int NUM_PLAYER_TILES = 6;
 
   private IGameState currentGameState;
@@ -379,7 +379,7 @@ public class QReferee implements IReferee {
   }
 
   private boolean setup(Player player) {
-    TimeoutLambda l = new TimeoutLambda() {
+    TimeoutLambda lambda = new TimeoutLambda() {
         public <T> T playerMethod(Player p, IPlayerGameState state, boolean win) {
           p.setup(state, state.getCurrentPlayerTiles());
           return null;
@@ -387,7 +387,7 @@ public class QReferee implements IReferee {
     };
 
     try {
-      callPlayerMethodWithTimeout(l, player, currentGameState, false);
+      callPlayerMethodWithTimeout(lambda, player, currentGameState, false);
       return true;
     } catch (IllegalStateException | ExecutionException | InterruptedException | TimeoutException e) {
       // removeCurrentPlayer();
