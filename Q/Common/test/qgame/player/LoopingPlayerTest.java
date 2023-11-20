@@ -69,15 +69,23 @@ public class LoopingPlayerTest {
     }
 
     @Test
-    public void testPlayerLoopOnWin() {
+    public void testPlayerLoopOnWin() throws FileNotFoundException {
         DagStrategy d = new DagStrategy(RuleUtil.createPlaceRules());
         FailStep f = FailStep.WIN;
 
         LoopingAIPlayer looper = new LoopingAIPlayer("looper", d, f, 1);
-        SimpleAIPlayer normal = new SimpleAIPlayer("normal", d);
+        SimpleAIPlayer normal = new SimpleAIPlayer("Tester", d);
+        SimpleAIPlayer normal2 = new SimpleAIPlayer("SecondTester", d);
+
+        List<JsonElement> els = parallelizeTest(testDirectory + "0-in.json");
+        IGameState state = JsonConverter.jStateToQGameState(els.get(0));
+
+        List<Player> players = List.of(normal, normal2, looper);
+
+        state = JsonConverter.initializeNewStateWithNewPlayerList(state, players);
 
         QReferee r = new QReferee();
-        GameResults results = r.playGame(List.of(looper, normal), 100);
+        GameResults results = r.playGame(state, players);
 
         List<String> expectedWinners = List.of();
         List<String> expectedCheaters = List.of(looper.name());
