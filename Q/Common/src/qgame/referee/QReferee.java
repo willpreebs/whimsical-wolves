@@ -130,6 +130,20 @@ public class QReferee implements IReferee {
     return playGame(state, players);
   }
 
+  public GameResults playGame(List<Player> players, int num_ref_tiles) {
+    Bag<Tile> tileBag = TileUtil.getTileBag(num_ref_tiles);
+
+    List<PlayerInfo> playerInfos = getDefaultPlayerInfos(players, tileBag);
+
+    IGameState state = new QStateBuilder()
+    .addTileBag(tileBag.getItems().toArray(new Tile[0]))
+    .placeTile(new Posn(0, 0), tileBag.removeRandomItem())
+    .addPlayerInfo(playerInfos.toArray(new PlayerInfo[0]))
+    .build();
+
+    return playGame(state, players);
+  }
+
   /**
    * Creates player infos for the given list of players at the start of a game
    * @param players
@@ -153,13 +167,21 @@ public class QReferee implements IReferee {
    * in their hand. Removes players if necessary.
    */
   private void setupPlayers() {
-    for (int i = 0; i < players.size(); i++) {
-      Player p = players.get(i);
+
+    List<Player> survivingPlayers = new ArrayList<>();
+
+    while (!this.players.isEmpty()) {
+      Player p = players.remove(0);
       boolean setupSucceeded = setup(p);
-      if (!setupSucceeded) {      
-        this.removePlayer(p);
+      if (!setupSucceeded) {
+        this.removeCurrentPlayer();
+      }
+      else {
+        survivingPlayers.add(p);
+        currentGameState.shiftCurrentToBack();
       }
     }
+    this.players.addAll(survivingPlayers);
   }
 
   // Highest score among the player infos. Returns 0 when there are no players.
@@ -229,7 +251,7 @@ public class QReferee implements IReferee {
   private void playGameRounds(){
     List<TurnAction> turnsTakenInRound = new ArrayList<>();
     boolean shouldGameContinue = true;
-    while(!isGameOver(turnsTakenInRound, players) && shouldGameContinue) {
+    while(!isGameOver(turnsTakenInRound) && shouldGameContinue) {
       turnsTakenInRound = new ArrayList<>();
       shouldGameContinue = playRound(turnsTakenInRound);
     }
@@ -267,13 +289,14 @@ public class QReferee implements IReferee {
    * Referee attempts to play a single round of the game. It goes through
    * each active player in the round, playing each player's turn. Removes players
    * if they have broken a rule or do not respond in time.
-   * @return True if the game should continue, false if it should end.
+   * @return True if a player has placed all of their tiles
+   * in a move, which indicates that the game should end.
    */
   private boolean playRound(List<TurnAction> turnsTaken) {
     List<Player> nextRound = new ArrayList<>();
     boolean gameContinue = true;
 
-    while (!players.isEmpty() && gameContinue) {
+    while (!this.players.isEmpty() && gameContinue) {
 
       boolean removePlayer = false;
 
@@ -592,10 +615,16 @@ public class QReferee implements IReferee {
     return getCurrentPlayerTiles().size() == placements.size();
   }
 
-  // Checks if a game is over, which is when there is only one or less players, or when all turns
-  // played in a round are not placement actions.
-  private boolean isGameOver(List<TurnAction> actions, List<Player> players) {
-    return players.size() <= 1 || noPlacementsMade(actions);
+  /**
+   * Checks if a game is over. A game is over if:
+   * - There are no players left
+   * - All actions in the given list of actions are not place actions
+   * @param actions
+   * @param players
+   * @return
+   */
+  private boolean isGameOver(List<TurnAction> actions) {
+    return players.isEmpty() || noPlacementsMade(actions);
   }
 
   private boolean noPlacementsMade(List<TurnAction> turns) {
