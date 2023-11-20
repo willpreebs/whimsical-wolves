@@ -382,30 +382,7 @@ public class JsonConverter {
   }
 
   private static Player playerFromJActorSpecA(JsonElement element) {
-    JsonElement[] spec = getAsElementArray(element);
-    validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
-    String name = getAsString(spec[0]);
-    validateArg(size -> size <= 20, name.length(), "Name must be at most 20 characters");
-    
-    DummyAIPlayer.FailStep step = DummyAIPlayer.FailStep.NONE;
-    CheatingAIPlayer.Cheat cheat = CheatingAIPlayer.Cheat.NONE;
-    
-    // Assume that the strategy will still play tiles by the rules, even if the player is a cheater
-    PlacementRule rules = RuleUtil.createPlaceRules();
-
-    TurnStrategy strat = jStrategyToStrategy(spec[1], rules);
-    
-    if (spec.length == 3) {
-      step = failStepFromExn(spec[2]);
-      return new DummyAIPlayer(name, strat, step);
-    }
-    else if (spec.length == 4) {
-      cheat = cheatFromJCheat(spec[3]);
-      return new CheatingAIPlayer(name, strat, cheat);
-    }
-    else {
-      return new DummyAIPlayer(name, strat);
-    }
+    return playerFromJActorSpecB(element);
   }
 
   public static Player playerFromJActorSpecB(JsonElement element) {
@@ -438,7 +415,7 @@ public class JsonConverter {
       }
     }
     else {
-      throw new IllegalArgumentException("Spec length cannot be longer than 4");
+      throw new IllegalArgumentException("Invalid spec length");
     }
   }
 
@@ -510,7 +487,7 @@ public class JsonConverter {
         throw new IllegalArgumentException("List of players must be given in original order.");
       }
       // System.out.println("Adding player with name: " + p.name());
-      newInfos.add(new PlayerInfo(info.score(), info.tiles().getItems(), players.get(i)));
+      newInfos.add(new PlayerInfo(info.score(), info.tiles().getItems(), players.get(i).name()));
     }
     
     return new QGameState(state.getBoard(), state.getRefereeTiles(), newInfos);

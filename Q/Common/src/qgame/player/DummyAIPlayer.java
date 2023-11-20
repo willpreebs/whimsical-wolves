@@ -25,9 +25,6 @@ public class DummyAIPlayer implements Player{
     failStep = step;
   }
 
-  public FailStep getFailStep() {
-    return this.failStep;
-  }
 
   private void failIfStep(FailStep step) {
     if (this.failStep == step) {

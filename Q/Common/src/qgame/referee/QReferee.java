@@ -50,7 +50,7 @@ public class QReferee implements IReferee {
   private final ScoringRule scoringRules;
   private final int timeOut;
 
-  private final int DEFAULT_TIMEOUT = 100000;
+  private final int DEFAULT_TIMEOUT = 6000;
 
   private final int TOTAL_TILES = 300;
   private final int NUM_PLAYER_TILES = 6;
@@ -88,7 +88,8 @@ public class QReferee implements IReferee {
     this.observers = new ArrayList<>();
   }
 
-  public QReferee(PlacementRule placementRules, ScoringRule scoringRules, int timeout, List<IGameObserver> observers) {
+  public QReferee(PlacementRule placementRules, ScoringRule scoringRules,
+                  int timeout, List<IGameObserver> observers) {
     this.placementRules = placementRules;
     this.scoringRules = scoringRules;
     validateArg(num -> num > 0, timeout, "Timeout must be positive.");
@@ -132,7 +133,7 @@ public class QReferee implements IReferee {
     List<PlayerInfo> infos = new ArrayList<>();
 
     for (Player p : players) {
-      PlayerInfo info = new PlayerInfo(0, tileBag.getItems(this.NUM_PLAYER_TILES), p);
+      PlayerInfo info = new PlayerInfo(0, tileBag.getItems(this.NUM_PLAYER_TILES), p.name());
       infos.add(info);
     }
 
@@ -231,7 +232,6 @@ public class QReferee implements IReferee {
    * Gets the TurnAction from the player and validates the Action.
    * If the Turn is invalid, returns an empty Optional, otherwise return 
    * an Optional containing the TurnAction
-   * @param state
    * @param currentPlayer
    * @return
    */
@@ -245,7 +245,7 @@ public class QReferee implements IReferee {
   }
 
   private void removeCurrentPlayer() {
-    ruleBreakers.add(this.currentGameState.getCurrentPlayer().name());
+    ruleBreakers.add(this.currentGameState.getCurrentPlayerInfo().name());
     this.currentGameState.removeCurrentPlayer();
   }
 
@@ -345,14 +345,17 @@ public class QReferee implements IReferee {
 
   private <T> T callPlayerMethodWithTimeout(TimeoutLambda l, Player player, IGameState state, boolean win)
     throws ExecutionException, InterruptedException, TimeoutException {
-
     ThreadFactory factory = Thread.ofVirtual().factory();
     ExecutorService executor = Executors.newFixedThreadPool(1, factory);
-    IPlayerGameState finalState = state.getCurrentPlayerState();
-    Future<T> getAction = executor.submit(
-      () -> l.playerMethod(player, finalState, win));
-    return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
-    // return player.takeTurn(state.getCurrentPlayerState());
+    try {
+      IPlayerGameState finalState = state.getCurrentPlayerState();
+      Future<T> getAction = executor.submit(
+              () -> l.playerMethod(player, finalState, win));
+      return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
+    }
+    finally{
+      executor.shutdown();
+    }
   }
 
   // TODO: Detect infinite loop etc.
@@ -404,7 +407,7 @@ public class QReferee implements IReferee {
   private boolean newTiles(Player player) {
     TimeoutLambda l = new TimeoutLambda() {
         public <T> T playerMethod(Player p, IPlayerGameState state, boolean win) {
-          p.newTiles(currentGameState.getPlayerInformation(player).tiles());
+          p.newTiles(currentGameState.getCurrentPlayerInfo().tiles());
           return null;
         }
     };
@@ -516,9 +519,8 @@ public class QReferee implements IReferee {
   }
 
   /**
-   * Returns true if the PlaceAction satisfies all of the placement rules
+   * Returns true if the PlaceAction satisfies all the placement rules
    * @param place
-   * @param state
    * @return
    */
   private boolean isValidPlaceAction(PlaceAction place) {

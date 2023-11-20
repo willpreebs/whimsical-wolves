@@ -83,21 +83,21 @@ public class QGameState implements IGameState {
     return copy;
   }
 
-  @Override
-  public PlayerInfo getPlayerInformation(Player player) {
-    // List<PlayerInfo> allPlayers = getAllPlayerInformation();
-
-    for (int i = 0; i < this.playerInformation.size(); i++) {
-      // if (this.playerInformation.get(i).name().equals(player.name())) {
-      //   return this.playerInformation.get(i);
-      // }
-      if (this.playerInformation.get(i).getPlayer().equals(player)) {
-        return this.playerInformation.get(i);
-      }
-    }
-
-    throw new IllegalArgumentException("Player does not exist in info list");
-  }
+//  @Override
+//  public PlayerInfo getPlayerInformation(Player player) {
+//    // List<PlayerInfo> allPlayers = getAllPlayerInformation();
+//
+//    for (int i = 0; i < this.playerInformation.size(); i++) {
+//      // if (this.playerInformation.get(i).name().equals(player.name())) {
+//      //   return this.playerInformation.get(i);
+//      // }
+//      if (this.playerInformation.get(i).getPlayer().equals(player)) {
+//        return this.playerInformation.get(i);
+//      }
+//    }
+//
+//    throw new IllegalArgumentException("Player does not exist in info list");
+//  }
 
   @Override
   public IMap getBoard() {
@@ -121,19 +121,19 @@ public class QGameState implements IGameState {
     IMap boardState = getBoard();
     int tileCount = getRefereeTiles().size();
     Bag<Tile> playerTile = getCurrentPlayerInfo().tiles();
-    String playerName = getCurrentPlayer().name();
+    String playerName = getCurrentPlayerInfo().name();
     return new QPlayerGameState(scores, boardState, tileCount, playerTile, playerName);
   }
 
-  @Override
-  public IPlayerGameState getPlayerState(Player player) {
-    List<Integer> scores = allScores();
-    IMap boardState = getBoard();
-    int tileCount = getRefereeTiles().size();
-    Bag<Tile> playerTile = getPlayerInformation(player).tiles();
-    String playerName = player.name();
-    return new QPlayerGameState(scores, boardState, tileCount, playerTile, playerName);
-  }
+//  @Override
+//  public IPlayerGameState getPlayerState(Player player) {
+//    List<Integer> scores = allScores();
+//    IMap boardState = getBoard();
+//    int tileCount = getRefereeTiles().size();
+//    Bag<Tile> playerTile = getCurrentPlayerInfo().tiles();
+//    String playerName = player.name();
+//    return new QPlayerGameState(scores, boardState, tileCount, playerTile, playerName);
+//  }
 
   @Override
   public void shiftCurrentToBack() throws IllegalStateException {
@@ -186,8 +186,8 @@ public class QGameState implements IGameState {
     return this.playerInformation.get(0);
   }
 
-  @Override
-  public Player getCurrentPlayer() {
-    return this.getCurrentPlayerInfo().getPlayer();
-  }
+//  @Override
+//  public Player getCurrentPlayer() {
+//    return this.getCurrentPlayerInfo().getPlayer();
+//  }
 }
