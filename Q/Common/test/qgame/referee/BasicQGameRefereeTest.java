@@ -827,7 +827,7 @@ public class BasicQGameRefereeTest {
             FailStep.WIN,1);
     List<Player> players = List.of(
             player1, player2, loopPlayer);
-    GameResults results = new GameResults(List.of("SecondTester"),
+    GameResults results = new GameResults(List.of(),
             List.of("looper"));
     XGamesInputCreator.createHarnessTest(loopState, players, results, "9/Tests", 3);
     GameResults actual = ref.playGame(loopState, players);
@@ -912,7 +912,7 @@ public class BasicQGameRefereeTest {
   public void testExnLooperCheater() throws IOException {
     initLoop();
     loopPlayer = new LoopingAIPlayer("looper", new DagStrategy(placementRules),
-            FailStep.NEW_TILES,2);
+            FailStep.NEW_TILES,4);
     player1 = new CheatingAIPlayer("Tester", new DagStrategy(placementRules),
             CheatingAIPlayer.Cheat.NOT_OWNED);
     player2 = new DummyAIPlayer("SecondTester", new DagStrategy(placementRules),
