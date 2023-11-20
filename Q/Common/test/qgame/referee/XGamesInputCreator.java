@@ -85,14 +85,14 @@ class XGamesInputCreator {
     if(player instanceof DummyAIPlayer){
       return dummyPlayerToJActorSpec((DummyAIPlayer)player);
     }
+    else if (player instanceof LoopingAIPlayer){
+      return loopingPlayerToJActorSpecB((LoopingAIPlayer)player);
+    }
     else if(player instanceof SimpleAIPlayer){
       return simpleAIPlayerToJActorSpec((SimpleAIPlayer)player);
     }
     else if (player instanceof CheatingAIPlayer){
       return cheatingPlayertoJActorSpecA((CheatingAIPlayer)player);
-    }
-    else if (player instanceof LoopingAIPlayer){
-      return loopingPlayerToJActorSpecB((LoopingAIPlayer)player);
     }
     else{
       throw new IllegalArgumentException("invalid player type");
@@ -115,7 +115,7 @@ class XGamesInputCreator {
           throws IOException {
     JsonElement JState = JsonConverter.jStateFromQGameState(state);
     JsonElement actors = playersToJActorsSpecs(players);
-
+    // TODO: design new conversion methods to handle looping players, etc.
     return writeOutToJSON(JState, actors, results, path, num);
   }
 
