@@ -66,20 +66,27 @@ public class Server implements Runnable {
         return this.server;
     }
 
+    protected List<Player> getProxies() {
+
+        List<Player> proxies = new ArrayList<>();
+        int currentWaitingPeriod = 0;
+        
+        while (proxies.size() < MINIMUM_CLIENTS && currentWaitingPeriod < NUMBER_WAITING_PERIODS) {
+            getPlayerProxiesWithinTimeout(proxies);
+            currentWaitingPeriod++;
+        }
+
+        return proxies;
+    }
+
     /**
      * Runs this server. Connects to several clients and either calls a Referee to play a Q game
      * with the remote players or sends an empty game result to all remote clients.
      */
     @Override
     public void run() {
-        List<Player> proxies = new ArrayList<>();
 
-        int currentWaitingPeriod = 0;
-        
-        while (proxies.size() < MINIMUM_CLIENTS && currentWaitingPeriod < NUMBER_WAITING_PERIODS) {
-            getPlayerProxiesWithinTimeout(server, proxies);
-            currentWaitingPeriod++;
-        }
+        List<Player> proxies = getProxies();
 
         if (proxies.size() < MINIMUM_CLIENTS) {
             sendEmptyGameResult(proxies);
@@ -103,7 +110,7 @@ public class Server implements Runnable {
      * Assumes all Players in given list are PlayerProxy
      * @param proxies
      */
-    private void sendEmptyGameResult (List<Player> proxies) {
+    protected void sendEmptyGameResult (List<Player> proxies) {
         JsonArray emptyResult = new JsonArray();
         emptyResult.add(new JsonArray());
         emptyResult.add(new JsonArray());
@@ -157,7 +164,7 @@ public class Server implements Runnable {
     }
 
 
-    private List<Player> getPlayerProxiesWithinTimeout(ServerSocket server, List<Player> proxies) {
+    protected List<Player> getPlayerProxiesWithinTimeout(List<Player> proxies) {
 
         ThreadFactory factory = Thread.ofVirtual().factory();
         ExecutorService executor = Executors.newFixedThreadPool(1, factory);

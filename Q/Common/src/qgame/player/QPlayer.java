@@ -38,8 +38,8 @@ public class QPlayer implements Player {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof QPlayer) {
-            QPlayer p = (QPlayer) other;
+        if (other instanceof Player) {
+            Player p = (Player) other;
             return this.name.equals(p.name());
         }
         else {

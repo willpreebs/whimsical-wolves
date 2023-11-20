@@ -154,6 +154,20 @@ public class QGameState implements IGameState {
   }
 
   @Override
+  public void removePlayer(Player p) {
+    validateGameHasPlayers();
+    
+    for (int i = 0; i < this.playerInformation.size(); i++) {
+      if (this.playerInformation.get(i).getPlayer().equals(p)) {
+        this.playerInformation.remove(i);
+        return;
+      }
+    }
+
+    throw new IllegalStateException("Player does not exist in PlayerInfo list");
+  }
+
+  @Override
   public void setCurrentPlayerHand(Bag<Tile> tiles) throws IllegalStateException {
     validateGameHasPlayers();
     this.playerInformation.get(0).setTiles(tiles);

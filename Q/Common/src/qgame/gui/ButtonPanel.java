@@ -1,6 +1,5 @@
 package qgame.gui;
 
-import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import qgame.observer.IGameObserver;
-import qgame.observer.QGameObserver;
 
 public class ButtonPanel extends JPanel {
     

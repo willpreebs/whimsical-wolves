@@ -29,8 +29,8 @@ public interface IStateBuilder {
   IStateBuilder placeTile(Posn posn, Tile tile);
 
   /**
-   * Creates a statebuilder whose ref has the given
-   * number of tiles.
+   * Creates a statebuilder with the given array of tiles representing
+   * the referee's tiles
    * @param tiles tiles to be added to the ref.
    * @return a StateBuilder whose ref's tiles are updated by.
    * this method.

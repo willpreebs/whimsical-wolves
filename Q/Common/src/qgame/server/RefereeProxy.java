@@ -36,6 +36,18 @@ public class RefereeProxy {
         this.p = p;
     }
 
+    public JsonStreamParser getParser() {
+        return this.parser;
+    }
+
+    public PrintWriter getOut() {
+        return this.out;
+    }
+
+    public Player getPlayer() {
+        return this.p;
+    }
+
     private String getMethodName(JsonElement e) {
         JsonElement[] a = JsonConverter.getAsElementArray(e);
         return JsonConverter.getAsString(a[0]);

@@ -23,7 +23,10 @@ public class Client implements Runnable {
     private Socket socket;
     private Player player;
 
+    // in:
     private JsonStreamParser parser;
+
+    // out:
     private PrintWriter printer;
 
     private RefereeProxy refProxy;
@@ -52,6 +55,14 @@ public class Client implements Runnable {
     public PrintWriter getPrinter() {
         return this.printer;
     }
+
+    public Player getPlayer() {
+        return this.player;
+    }
+
+    protected void sendPlayerName() {
+        printer.println(new JsonPrimitive(this.player.name()));
+    }
     /**
      * Runs this Client including sending its player's name and starting the RefereeProxy
      * so it can handle incoming messages.
@@ -59,8 +70,7 @@ public class Client implements Runnable {
     @Override
     public void run() {
 
-        // write the player's name to the Server for the setup phase
-        printer.println(new JsonPrimitive(this.player.name()));
+        sendPlayerName();
 
         try {
             refProxy.listenForMessages();

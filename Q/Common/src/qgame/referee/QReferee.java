@@ -48,9 +48,12 @@ import static qgame.util.ValidationUtil.validateArg;
 public class QReferee implements IReferee {
   private final PlacementRule placementRules;
   private final ScoringRule scoringRules;
+
+  // The amount of time given to Players to respond before they are kicked out, in milliseconds
   private final int timeOut;
 
-  private final int DEFAULT_TIMEOUT = 100000;
+  // timeout is in milliseconds
+  private final int DEFAULT_TIMEOUT = 10000;
 
   private final int TOTAL_TILES = 300;
   private final int NUM_PLAYER_TILES = 6;
@@ -59,7 +62,6 @@ public class QReferee implements IReferee {
 
   // list of Players in order
   private List<Player> players;
-
 
   private List<String> ruleBreakers;
 
@@ -127,6 +129,12 @@ public class QReferee implements IReferee {
     return playGame(state, players);
   }
 
+  /**
+   * Creates player infos for the given list of players at the start of a game
+   * @param players
+   * @param tileBag The Referee's Bag of tiles to 
+   * @return
+   */
   private List<PlayerInfo> getDefaultPlayerInfos(List<Player> players, Bag<Tile> tileBag) {
 
     List<PlayerInfo> infos = new ArrayList<>();
@@ -141,15 +149,15 @@ public class QReferee implements IReferee {
 
   /**
    * Sets up all the players in the game by giving them the current map and the tiles
-   * in their hand.
-   * @throws IllegalStateException if the list of players or game state is invalid.
+   * in their hand. Removes players if necessary.
    */
   private void setupPlayers() {
-    // List<PlayerInfo> info = currentGameState.getAllPlayerInformation();
-    // // validateState(l -> l.size() == info.size(),
-    // //   players, "Players does not match playerInfo");
     for (int i = 0; i < players.size(); i++) {
-      boolean removePlayer = setup(players.get(i));
+      Player p = players.get(i);
+      boolean setupSucceeded = setup(p);
+      if (!setupSucceeded) {      
+        this.removePlayer(p);
+      }
     }
   }
 
@@ -249,20 +257,22 @@ public class QReferee implements IReferee {
     this.currentGameState.removeCurrentPlayer();
   }
 
+  private void removePlayer(Player p) {
+    ruleBreakers.add(this.currentGameState.getCurrentPlayer().name());
+    this.currentGameState.removePlayer(p);
+  }
+
   /**
    * Referee attempts to play a single round of the game. It goes through
-   * each active player in the round, playing each player's turn.
-   *                     for potential punishment.
+   * each active player in the round, playing each player's turn. Removes players
+   * if they have broken a rule or do not respond in time.
    * @return True if the game should continue, false if it should end.
    */
   private boolean playRound(List<TurnAction> turnsTaken) {
     List<Player> nextRound = new ArrayList<>();
     boolean gameContinue = true;
 
-    // A Round of gameplay
     while (!players.isEmpty() && gameContinue) {
-      // One player's Turn
-
 
       boolean removePlayer = false;
 
@@ -272,6 +282,7 @@ public class QReferee implements IReferee {
       // Step 2: Get current Player's Turn
       Player currentPlayer = players.remove(0);
       Optional<TurnAction> possibleAction = getAndValidateAction(currentPlayer);
+      // possibleAction is empty if the turn is invalid
       if (possibleAction.isEmpty()) {
         removePlayer = true;
       }
@@ -334,63 +345,77 @@ public class QReferee implements IReferee {
   }
 
   /**
-   * lambda
-   *  
+   * Represents a method call on a given Player with a given array of arguments
    */
-  public interface TimeoutLambda {
-    
-    public <T> T playerMethod(Player p, IPlayerGameState state, boolean win);
-    
+  public interface PlayerLambda {
+    public <T> T playerMethod(Player p, Object... args);
   }
 
-  private <T> T callPlayerMethodWithTimeout(TimeoutLambda l, Player player, IGameState state, boolean win)
+  /**
+   * Calls the given PlayerLambda on the given Player with the given array of arguments.
+   * Checks that the player method returns within the timeout period.
+   * @param lambda
+   * @param player
+   * @param args an array of arguments that represents the arguments needed for the
+   * relevant player method
+   * @throws TimeoutException if the player method fails to return in time
+   * @throws ExecutionException if an Exception is thrown by the player method
+   */
+  private <T> T callPlayerMethodWithTimeout(PlayerLambda lambda, Player player, Object... args)
     throws ExecutionException, InterruptedException, TimeoutException {
 
     ThreadFactory factory = Thread.ofVirtual().factory();
     ExecutorService executor = Executors.newFixedThreadPool(1, factory);
-    IPlayerGameState finalState = state.getCurrentPlayerState();
+
     Future<T> getAction = executor.submit(
-      () -> l.playerMethod(player, finalState, win));
+      () -> lambda.playerMethod(player, args));
     return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
-    // return player.takeTurn(state.getCurrentPlayerState());
   }
 
-  // TODO: Detect infinite loop etc.
   /**
    * Return an Optional containing the Player's turn as the value if
    * calling player.takeTurn() returned a turnAction successfully.
-   * Otherwise return an 
+   * Otherwise return an empty Optional
    * @param player
    * @return
    */
   private Optional<TurnAction> takeTurn(Player player) {
-    TimeoutLambda l = new TimeoutLambda() {
-        public TurnAction playerMethod(Player p, IPlayerGameState state, boolean win) {
-          return p.takeTurn(state);
+    PlayerLambda l = new PlayerLambda() {
+        public TurnAction playerMethod(Player p, Object... args) {
+          return p.takeTurn((IPlayerGameState) args[0]);
         }
     };
+
     try {
-      return Optional.of(callPlayerMethodWithTimeout(l, player, currentGameState, false));
-      // return Optional.of(player.takeTurn(this.currentGameState.getPlayerState(player)));
-    } catch (IllegalStateException | ExecutionException | InterruptedException | TimeoutException e) {
-      // removeCurrentPlayer();
+      return Optional.of(callPlayerMethodWithTimeout(l, player, currentGameState.getCurrentPlayerState()));
+    } catch (ExecutionException | InterruptedException | TimeoutException e) {
       return Optional.empty();
     }
   }
 
+  /**
+   * Calls the Setup method on the given player
+   * @param player
+   * @return false if they player fails to return before the timeout
+   * or if the player throws an exception.
+   */
   private boolean setup(Player player) {
-    TimeoutLambda lambda = new TimeoutLambda() {
-        public <T> T playerMethod(Player p, IPlayerGameState state, boolean win) {
-          p.setup(state, state.getCurrentPlayerTiles());
+    PlayerLambda lambda = new PlayerLambda() {
+        public <T> T playerMethod(Player p, Object... args) {
+          IPlayerGameState state = (IPlayerGameState) args[0];
+          Bag<Tile> tiles = (Bag<Tile>) args[1];
+          p.setup(state, tiles);
           return null;
         }
     };
 
     try {
-      callPlayerMethodWithTimeout(lambda, player, currentGameState, false);
+      IPlayerGameState state = currentGameState.getPlayerState(player);
+      Bag<Tile> tiles = this.getPlayerTiles(player);
+      callPlayerMethodWithTimeout(lambda, player, state, tiles);
       return true;
-    } catch (IllegalStateException | ExecutionException | InterruptedException | TimeoutException e) {
-      // removeCurrentPlayer();
+    } 
+    catch (ExecutionException | InterruptedException | TimeoutException e) {
       return false;
     }
   }
@@ -402,35 +427,35 @@ public class QReferee implements IReferee {
    * @return true if successfully informed player
    */
   private boolean newTiles(Player player) {
-    TimeoutLambda l = new TimeoutLambda() {
-        public <T> T playerMethod(Player p, IPlayerGameState state, boolean win) {
-          p.newTiles(currentGameState.getPlayerInformation(player).tiles());
+    PlayerLambda l = new PlayerLambda() {
+        public <T> T playerMethod(Player p, Object... args) {
+          p.newTiles((Bag<Tile>) args[0]);
           return null;
         }
     };
 
     try {
-      callPlayerMethodWithTimeout(l, player, currentGameState, false);
+      Bag<Tile> tiles = getPlayerTiles(player);
+      callPlayerMethodWithTimeout(l, player, tiles);
       return true;
     }
     catch (IllegalStateException | ExecutionException | InterruptedException | TimeoutException e) {
-      // removeCurrentPlayer();
       return false;
     }
   }
 
   private boolean win(Player player, boolean value) {
-    TimeoutLambda l = new TimeoutLambda() {
-        public <T> T playerMethod(Player p, IPlayerGameState state, boolean win) {
-          p.win(win);
+    PlayerLambda l = new PlayerLambda() {
+        public <T> T playerMethod(Player p, Object... args) {
+          p.win((Boolean) args[0]);
           return null;
         }
     };
+
     try {
-      callPlayerMethodWithTimeout(l, player, currentGameState, value);
+      callPlayerMethodWithTimeout(l, player, value);
       return true;
     } catch (IllegalStateException | ExecutionException | InterruptedException | TimeoutException e) {
-      // TODO: handle exception on win
       return false;
     }
   }
@@ -465,6 +490,10 @@ public class QReferee implements IReferee {
     return true;
   }
 
+  /**
+   * Gives the current player a number of tiles from the bag.
+   * @param n
+   */
   private void setCurrentPlayerNTiles(int n) {
     Bag<Tile> newTiles = new Bag<>(currentGameState.takeOutRefTiles(n));
     currentGameState.setCurrentPlayerHand(newTiles);
@@ -573,5 +602,9 @@ public class QReferee implements IReferee {
 
   private Bag<Tile> getCurrentPlayerTiles() {
     return currentGameState.getCurrentPlayerState().getCurrentPlayerTiles();
+  }
+
+  private Bag<Tile> getPlayerTiles(Player player) {
+    return currentGameState.getPlayerInformation(player).tiles();
   }
 }
