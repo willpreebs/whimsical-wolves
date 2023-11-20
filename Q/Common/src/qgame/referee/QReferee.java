@@ -258,8 +258,9 @@ public class QReferee implements IReferee {
   }
 
   private void removePlayer(Player p) {
-    ruleBreakers.add(this.currentGameState.getCurrentPlayer().name());
-    this.currentGameState.removePlayer(p);
+    String playerName = p.name();
+    ruleBreakers.add(playerName);
+    this.currentGameState.removePlayer(playerName);
   }
 
   /**
@@ -608,6 +609,6 @@ public class QReferee implements IReferee {
   }
 
   private Bag<Tile> getPlayerTiles(Player player) {
-    return currentGameState.getPlayerInformation(player).tiles();
+    return currentGameState.getPlayerInfo(player.name()).tiles();
   }
 }

@@ -83,21 +83,27 @@ public class QGameState implements IGameState {
     return copy;
   }
 
-//  @Override
-//  public PlayerInfo getPlayerInformation(Player player) {
-//    // List<PlayerInfo> allPlayers = getAllPlayerInformation();
-//
-//    for (int i = 0; i < this.playerInformation.size(); i++) {
-//      // if (this.playerInformation.get(i).name().equals(player.name())) {
-//      //   return this.playerInformation.get(i);
-//      // }
-//      if (this.playerInformation.get(i).getPlayer().equals(player)) {
-//        return this.playerInformation.get(i);
-//      }
-//    }
-//
-//    throw new IllegalArgumentException("Player does not exist in info list");
-//  }
+ @Override
+ public PlayerInfo getPlayerInfo(String name) {
+
+   for (int i = 0; i < this.playerInformation.size(); i++) {
+     if (this.playerInformation.get(i).name().equals(name)) {
+       return this.playerInformation.get(i);
+     }
+   }
+
+   throw new IllegalArgumentException("Player does not exist in info list");
+ }
+
+ 
+  /**
+   * Returns the current player whose turn it is
+   * @return PlayerInfo corresponding to current turn's player.
+   */
+  @Override
+  public PlayerInfo getCurrentPlayerInfo() {
+    return this.playerInformation.get(0);
+  }
 
   @Override
   public IMap getBoard() {
@@ -154,11 +160,11 @@ public class QGameState implements IGameState {
   }
 
   @Override
-  public void removePlayer(Player p) {
+  public void removePlayer(String name) {
     validateGameHasPlayers();
     
     for (int i = 0; i < this.playerInformation.size(); i++) {
-      if (this.playerInformation.get(i).getPlayer().equals(p)) {
+      if (this.playerInformation.get(i).name().equals(name)) {
         this.playerInformation.remove(i);
         return;
       }
@@ -189,19 +195,4 @@ public class QGameState implements IGameState {
   public void giveRefereeTiles(Bag<Tile> tiles) throws IllegalArgumentException {
     this.refereeTiles.addAll(tiles);
   }
-
-
-  /**
-   * Returns the current player whose turn it is
-   * @return PlayerInfo corresponding to current turn's player.
-   */
-  @Override
-  public PlayerInfo getCurrentPlayerInfo() {
-    return this.playerInformation.get(0);
-  }
-
-//  @Override
-//  public Player getCurrentPlayer() {
-//    return this.getCurrentPlayerInfo().getPlayer();
-//  }
 }
