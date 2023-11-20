@@ -208,16 +208,19 @@ public class QReferee implements IReferee {
 
     while (!this.players.isEmpty()) {
       Player p = players.remove(0);
-      if (category.contains(p)) {
-        boolean callSuccessful = this.win(p, hasWon);
-        if (!callSuccessful) {
-          this.removeCurrentPlayer();
-          ruleBreakersOnWin.add(p.name());
-        }
-        else {
-          survivingPlayers.add(p);
-          currentGameState.shiftCurrentToBack();
-        }
+      if (!category.contains(p)) {
+        survivingPlayers.add(p);
+        currentGameState.shiftCurrentToBack();
+        continue;
+      } 
+      boolean callSuccessful = this.win(p, hasWon);
+      if (!callSuccessful) {
+        this.removeCurrentPlayer();
+        ruleBreakersOnWin.add(p.name());
+      }
+      else {
+        survivingPlayers.add(p);
+        currentGameState.shiftCurrentToBack();
       }
     }
     players.addAll(survivingPlayers);
@@ -248,7 +251,7 @@ public class QReferee implements IReferee {
     
     winners.removeAll(ruleBreakersOnWin);
     winners.sort(Comparator.naturalOrder());
-    
+
     return winners;
   }
 
@@ -267,7 +270,7 @@ public class QReferee implements IReferee {
    * Until the game is over, keep going through each active player in the game, asking
    * for their action, and updating the game as necessary. Plays the game.
    */
-  private void playGameRounds(){
+  private void playGameRounds() {
     List<TurnAction> turnsTakenInRound = new ArrayList<>();
     boolean shouldGameContinue = true;
     while(!isGameOver(turnsTakenInRound) && shouldGameContinue) {
