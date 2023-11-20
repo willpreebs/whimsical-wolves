@@ -13,7 +13,9 @@ import java.util.List;
 import qgame.json.JsonConverter;
 import qgame.player.CheatingAIPlayer;
 import qgame.player.DummyAIPlayer;
+import qgame.player.LoopingAIPlayer;
 import qgame.player.Player;
+import qgame.player.SimpleAIPlayer;
 import qgame.state.IGameState;
 
 /**
@@ -50,64 +52,69 @@ class XGamesInputCreator {
     }
     return jActorSpec;
   }
-  private static JsonElement dummyPlayersToJActors(List<DummyAIPlayer> players) {
-    JsonArray jActors = new JsonArray();
-    players
-      .stream()
-      .map(XGamesInputCreator::dummyPlayerToJActorSpec)
-      .forEach(jActors::add);
-    return jActors;
-  }
 
   private static JsonElement cheatingPlayertoJActorSpecA(CheatingAIPlayer player){
     JsonArray jActorSpec = new JsonArray();
     jActorSpec.add(player.name());
     jActorSpec.add(JsonConverter.strategyToJson(player.strategy()));
-    jActorSpec.add(new JsonPrimitive("a cheat"));
     if (player.getCheat() != CheatingAIPlayer.Cheat.NONE) {
+      jActorSpec.add(new JsonPrimitive("a cheat"));
       jActorSpec.add(cheatToString(player.getCheat()));
     }
     return jActorSpec;
   }
 
-  private static JsonElement playerToJActorSpecA(Player player){
+  private static JsonElement loopingPlayerToJActorSpecB(LoopingAIPlayer player){
+    JsonArray jActorSpec = new JsonArray();
+    jActorSpec.add(player.name());
+    jActorSpec.add(JsonConverter.strategyToJson(player.strategy()));
+    if (player.failStep() != DummyAIPlayer.FailStep.NONE) {
+      jActorSpec.add(failStepToString(player.failStep()));
+      jActorSpec.add(player.getCountLimit());
+    }
+    return jActorSpec;
+  }
+
+  private static JsonElement simpleAIPlayerToJActorSpec(SimpleAIPlayer player){
+    JsonArray jActorSpec = new JsonArray();
+    jActorSpec.add(player.name());
+    jActorSpec.add(JsonConverter.strategyToJson(player.strategy()));
+    return jActorSpec;
+  }
+  private static JsonElement playerToJActorSpec(Player player){
     if(player instanceof DummyAIPlayer){
       return dummyPlayerToJActorSpec((DummyAIPlayer)player);
     }
+    else if(player instanceof SimpleAIPlayer){
+      return simpleAIPlayerToJActorSpec((SimpleAIPlayer)player);
+    }
     else if (player instanceof CheatingAIPlayer){
       return cheatingPlayertoJActorSpecA((CheatingAIPlayer)player);
+    }
+    else if (player instanceof LoopingAIPlayer){
+      return loopingPlayerToJActorSpecB((LoopingAIPlayer)player);
     }
     else{
       throw new IllegalArgumentException("invalid player type");
     }
   }
 
-  private static JsonElement playersToJActorsSpecA(List<Player> players){
+  private static JsonElement playersToJActorsSpecs(List<Player> players){
     JsonArray jActors = new JsonArray();
     players
             .stream()
-            .map(XGamesInputCreator::playerToJActorSpecA)
+            .map(XGamesInputCreator::playerToJActorSpec)
             .forEach(jActors::add);
     return jActors;
   }
 
-  public static boolean createExnTest(IGameState state, List<Player> players, GameResults results,
-                                      String path, int num) throws IOException {
+
+
+  public static boolean createHarnessTest(IGameState state, List<Player> players,
+                                          GameResults results, String path, int num)
+          throws IOException {
     JsonElement JState = JsonConverter.jStateFromQGameState(state);
-
-    List<DummyAIPlayer> dummies = players
-      .stream()
-      .map(player -> (DummyAIPlayer)player)
-      .toList();
-    JsonElement actors = dummyPlayersToJActors(dummies);
-
-    return writeOutToJSON(JState,actors,results,path,num);
-  }
-
-  public static boolean createCheatTest(IGameState state, List<Player> players, GameResults results,
-                                        String path, int num) throws IOException {
-    JsonElement JState = JsonConverter.jStateFromQGameState(state);
-    JsonElement actors = playersToJActorsSpecA(players);
+    JsonElement actors = playersToJActorsSpecs(players);
 
     return writeOutToJSON(JState, actors, results, path, num);
   }

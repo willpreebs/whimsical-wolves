@@ -8,31 +8,24 @@ import static qgame.util.ValidationUtil.nonNullObj;
 
 public class PlayerInfo {
 
-  private Player player;
   private int score;
   private Bag<Tile> tiles;
-  // private String name;
+
+  private String name;
 
   public PlayerInfo(int score, Collection<Tile> tiles, String name) {
-    this(score, tiles, new QPlayer(name));
+    this.score = score;
+    this.tiles = new Bag<Tile>(tiles);
+    this.name = name;
   }
 
-  public PlayerInfo(int score, Collection<Tile> tiles, Player player) {
-    if (score < 0) {
-      throw new IllegalArgumentException("Score must be a natural number.");
-    }
-    nonNullObj(tiles, "tiles cannot be null.");
-    this.score = score;
-    this.tiles = new Bag<>(tiles);
-    this.player = player;
-  }
 
   public int score() {
     return this.score;
   }
 
   public String name() {
-    return this.player.name();
+    return this.name;
   }
 
   public void incrementScore(int amount) {
@@ -47,7 +40,4 @@ public class PlayerInfo {
     this.tiles = (new Bag<>(tiles));
   }
 
-  public Player getPlayer() {
-    return this.player;
-  }
 }

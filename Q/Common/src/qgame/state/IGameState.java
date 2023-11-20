@@ -20,7 +20,7 @@ public interface IGameState {
    */
   List<PlayerInfo> getAllPlayerInformation();
 
-  PlayerInfo getPlayerInformation(Player player);
+  //PlayerInfo getPlayerInformation(Player player);
 
   /**
    * Gets an immutable copy of the game map.
@@ -43,7 +43,7 @@ public interface IGameState {
    */
   IPlayerGameState getCurrentPlayerState();
 
-  IPlayerGameState getPlayerState(Player player);
+  //IPlayerGameState getPlayerState(Player player);
 
   /**
    * Moves the first player in the game to the end of the rotation.
@@ -92,5 +92,5 @@ public interface IGameState {
 
   PlayerInfo getCurrentPlayerInfo();
 
-  Player getCurrentPlayer();
+  //Player getCurrentPlayer();
 }

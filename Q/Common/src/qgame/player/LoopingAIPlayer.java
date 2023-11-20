@@ -12,6 +12,12 @@ import qgame.state.map.Tile;
 import qgame.player.DummyAIPlayer.FailStep;
 import qgame.player.strategy.TurnStrategy;
 
+/**
+ * Represents a type of bad player that will pursue its
+ * strategy and act normally until a specified method is
+ * called countLimit times, after which it will get stuck
+ * in an infinite loop.
+ */
 public class LoopingAIPlayer extends SimpleAIPlayer {
 
     private FailStep step;
@@ -20,7 +26,7 @@ public class LoopingAIPlayer extends SimpleAIPlayer {
     private int count = 0;
 
     public LoopingAIPlayer(String name, TurnStrategy strat, FailStep step, int countLimit) {
-        super(name, strat);  
+        super(name, strat);
         this.step = step;
         this.countLimit = countLimit;
     }
@@ -38,7 +44,7 @@ public class LoopingAIPlayer extends SimpleAIPlayer {
         while (count == countLimit) {
             //infinite loop
         }
-    } 
+    }
 
     @Override
     public TurnAction takeTurn(IPlayerGameState state) throws IllegalStateException {
@@ -69,4 +75,9 @@ public class LoopingAIPlayer extends SimpleAIPlayer {
     public boolean equals(Object other) {
         return super.equals(other);
     }
+
+    public FailStep failStep() {
+        return this.step;
+    }
+    public int getCountLimit(){return this.countLimit;}
 }
