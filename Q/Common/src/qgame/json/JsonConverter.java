@@ -352,7 +352,7 @@ public class JsonConverter {
       case "take-turn" -> DummyAIPlayer.FailStep.TAKE_TURN;
       case "new-tiles" -> DummyAIPlayer.FailStep.NEW_TILES;
       case "win" -> DummyAIPlayer.FailStep.WIN;
-      default -> throw new IllegalStateException("Unexpected value: " + exn);
+      default -> throw new IllegalStateException("Unexpected value for JExn: " + exn);
     };
   }
 

@@ -199,14 +199,29 @@ public class QReferee implements IReferee {
    * Notifies the given group of Players in turn order if they've won or lost
    * @param category
    * @param hasWon
+   * @return a list of the players who caused a problem on a win call
    */
-  private void notifyPlayers(List<Player> category, boolean hasWon) {
+  private List<String> notifyPlayersOfResult(List<Player> category, boolean hasWon) {
 
-    for (Player p : this.players) {
+    List<Player> survivingPlayers = new ArrayList<>();
+    List<String> ruleBreakersOnWin = new ArrayList<>();
+
+    while (!this.players.isEmpty()) {
+      Player p = players.remove(0);
       if (category.contains(p)) {
-        this.win(p, hasWon);
+        boolean callSuccessful = this.win(p, hasWon);
+        if (!callSuccessful) {
+          this.removeCurrentPlayer();
+          ruleBreakersOnWin.add(p.name());
+        }
+        else {
+          survivingPlayers.add(p);
+          currentGameState.shiftCurrentToBack();
+        }
       }
     }
+    players.addAll(survivingPlayers);
+    return ruleBreakersOnWin;
   }
 
   // Determine all winners in a list of players and return a list of their names.
@@ -226,10 +241,14 @@ public class QReferee implements IReferee {
       }
     }
 
-    notifyPlayers(winnerPlayers, true);
-    notifyPlayers(loserPlayers, false);
-
+    
+    List<String> ruleBreakersOnWin = new ArrayList<>();
+    ruleBreakersOnWin.addAll(notifyPlayersOfResult(winnerPlayers, true));
+    ruleBreakersOnWin.addAll(notifyPlayersOfResult(loserPlayers, false));
+    
+    winners.removeAll(ruleBreakersOnWin);
     winners.sort(Comparator.naturalOrder());
+    
     return winners;
   }
 

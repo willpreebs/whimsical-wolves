@@ -20,18 +20,33 @@ public class LoopingPlayerTest {
     public void testPlayerLoopOnSetup() {
 
         DagStrategy d = new DagStrategy(RuleUtil.createPlaceRules());
-
         FailStep f = FailStep.SETUP;
 
         LoopingAIPlayer looper = new LoopingAIPlayer("looper", d, f, 1);
-
         SimpleAIPlayer normal = new SimpleAIPlayer("normal", d);
 
         QReferee r = new QReferee();
-
         GameResults results = r.playGame(List.of(looper, normal), 100);
 
         List<String> expectedWinners = List.of(normal.name());
+        List<String> expectedCheaters = List.of(looper.name());
+        
+        assertEquals(expectedWinners, results.getWinners());
+        assertEquals(expectedCheaters, results.getRuleBreakers());
+    }
+
+    @Test
+    public void testPlayerLoopOnWin() {
+        DagStrategy d = new DagStrategy(RuleUtil.createPlaceRules());
+        FailStep f = FailStep.WIN;
+
+        LoopingAIPlayer looper = new LoopingAIPlayer("looper", d, f, 1);
+        SimpleAIPlayer normal = new SimpleAIPlayer("normal", d);
+
+        QReferee r = new QReferee();
+        GameResults results = r.playGame(List.of(looper, normal), 100);
+
+        List<String> expectedWinners = List.of();
         List<String> expectedCheaters = List.of(looper.name());
         
         assertEquals(expectedWinners, results.getWinners());
