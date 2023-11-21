@@ -131,6 +131,9 @@ public abstract class NewSmallestRowColumnTileStrategy implements TurnStrategy {
             if (p.isEmpty()) {
                 canAddToMove = false;
             }
+            else {
+                move.add(p.get());
+            }
         }
         return move;
     }   

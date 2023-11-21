@@ -441,6 +441,7 @@ public class QReferee implements IReferee {
     try {
       return Optional.of(callPlayerMethodWithTimeout(l, player, currentGameState.getCurrentPlayerState()));
     } catch (ExecutionException | InterruptedException | TimeoutException e) {
+      // e.printStackTrace(System.out);
       return Optional.empty();
     }
   }

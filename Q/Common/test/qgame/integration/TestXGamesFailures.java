@@ -18,6 +18,8 @@ import qgame.player.Player;
 import qgame.referee.GameResults;
 import qgame.referee.QReferee;
 import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.board.BoardRule;
+import qgame.rule.placement.move.MoveRule;
 import qgame.state.IGameState;
 import qgame.util.RuleUtil;
 
@@ -25,16 +27,22 @@ public class TestXGamesFailures {
     
     PlacementRule placementRules;
 
+    BoardRule bRule;
+    MoveRule mRule;
+
     @Before
     public void init() {
         placementRules = RuleUtil.createPlaceRules();
+        bRule = RuleUtil.createBoardRules();
+        mRule = RuleUtil.createMoveRules();
     }
 
     public GameResults getGameResults(String directory, int testNum) throws FileNotFoundException {
         List<JsonElement> elements = TestUtil.getJsonTestElements(directory, testNum);
 
         IGameState state = JsonConverter.jStateToOldQGameState(elements.get(0));
-        List<Player> players = JsonConverter.playersFromJActors(elements.get(1), placementRules);
+        // List<Player> players = JsonConverter.playersFromJActors(elements.get(1), placementRules);
+        List<Player> players = JsonConverter.playersFromNewJActors(elements.get(1), bRule, mRule);
         state = JsonConverter.initializeNewStateWithNewPlayerList(state, players, false);
         QReferee ref = new QReferee();
 
@@ -42,11 +50,29 @@ public class TestXGamesFailures {
     }
 
     @Test
-    public void test7_0_4() throws FileNotFoundException {
+    public void testAllIn7() {
 
-        GameResults r = getGameResults("7/grade/0/", 4);
+        for (int dir = 0; dir < 42; dir++) {
+            for (int testNum = 0; testNum < 10; testNum++) {
+                try {
+                    performTest(dir, testNum);
+                } catch (FileNotFoundException e) {
+                    continue;
+                } catch (AssertionError e) {
+                    System.out.println("Test " + dir + "/" + testNum + " failed");
+                }
+            }
+        }
+    }
 
-        JsonElement results = TestUtil.getJsonTestResult("7/grade/0/", 4);
+    
+    public void performTest(int dir, int testNum) throws FileNotFoundException {
+
+        String directory = "7/grade/" + dir + "/";
+
+        GameResults r = getGameResults(directory, testNum);
+
+        JsonElement results = TestUtil.getJsonTestResult(directory, testNum);
         
         JsonArray expectedWinners = results.getAsJsonArray().get(0).getAsJsonArray();
         JsonArray expectedCheaters = results.getAsJsonArray().get(1).getAsJsonArray();

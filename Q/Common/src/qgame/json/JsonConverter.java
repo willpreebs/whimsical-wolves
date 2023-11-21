@@ -423,6 +423,20 @@ public class JsonConverter {
     return new DummyAIPlayer(name, strat, step);
   }
 
+  private static Player playerFromNewJActorSpec(JsonElement element, BoardRule bRule, MoveRule mRule) {
+    JsonElement[] spec = getAsElementArray(element);
+    validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
+    String name = getAsString(spec[0]);
+    validateArg(size -> size <= 20, name.length(), "Name must be at most 20 characters");
+    TurnStrategy strat = jStrategyToNewStrategy(spec[1], bRule, mRule);
+    // TurnStrategy strat = jStrategyToStrategy(spec[1], rule);
+    DummyAIPlayer.FailStep step = DummyAIPlayer.FailStep.NONE;
+    if (spec.length == 3) {
+      step = failStepFromExn(spec[2]);
+    }
+    return new DummyAIPlayer(name, strat, step);
+  }
+
   private static Player playerFromJActorSpecA(JsonElement element) {
     return playerFromJActorSpecB(element);
   }
@@ -465,6 +479,12 @@ public class JsonConverter {
     JsonElement[] players = getAsElementArray(element);
     return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpec(spec, rule)).toList());
   }
+
+  public static List<Player> playersFromNewJActors(JsonElement element, BoardRule bRule, MoveRule mRule) {
+    JsonElement[] players = getAsElementArray(element);
+    return new ArrayList<>(stream(players).map(spec -> playerFromNewJActorSpec(spec, bRule, mRule)).toList());
+  }
+
 
   public static List<Player> playersFromJActorSpecA(JsonElement element) {
     JsonElement[] players = getAsElementArray(element);

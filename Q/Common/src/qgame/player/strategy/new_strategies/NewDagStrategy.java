@@ -2,6 +2,7 @@ package qgame.player.strategy.new_strategies;
 
 import static qgame.util.ValidationUtil.validateArg;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import qgame.rule.placement.board.BoardRule;
@@ -27,7 +28,8 @@ public class NewDagStrategy extends NewSmallestRowColumnTileStrategy {
     public Placement getBestPlacement(IPlayerGameState state, List<Posn> posns, Tile t) {
         validateArg(list -> !list.isEmpty(), posns, "posns cannot be empty");
 
-        posns.sort(PosnUtil::rowColumnCompare);
-        return new Placement(posns.get(0), t);
+        ArrayList<Posn> mutablePosns = new ArrayList<>(posns);
+        mutablePosns.sort(PosnUtil::rowColumnCompare);
+        return new Placement(mutablePosns.get(0), t);
     }
 }
