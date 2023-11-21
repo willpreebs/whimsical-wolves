@@ -301,11 +301,11 @@ public class QReferee implements IReferee {
     this.currentGameState.removeCurrentPlayer();
   }
 
-  private void removePlayer(Player p) {
-    String playerName = p.name();
-    ruleBreakers.add(playerName);
-    this.currentGameState.removePlayer(playerName);
-  }
+  // private void removePlayer(Player p) {
+  //   String playerName = p.name();
+  //   ruleBreakers.add(playerName);
+  //   this.currentGameState.removePlayer(playerName);
+  // }
 
   /**
    * Referee attempts to play a single round of the game. It goes through
@@ -415,7 +415,9 @@ public class QReferee implements IReferee {
     Future<T> getAction = executor.submit(
       () -> lambda.playerMethod(player, args));
     try {
-      return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
+      //TODO: Use timeout
+      // return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
+      return getAction.get();
     }
     finally {
       executor.shutdown();
@@ -461,7 +463,7 @@ public class QReferee implements IReferee {
 
     try {
       IPlayerGameState state = currentGameState.getCurrentPlayerState();
-      Bag<Tile> tiles = this.getPlayerTiles(player);
+      Bag<Tile> tiles = this.getCurrentPlayerTiles();
       callPlayerMethodWithTimeout(lambda, player, state, tiles);
       return true;
     } 
@@ -485,7 +487,7 @@ public class QReferee implements IReferee {
     };
 
     try {
-      Bag<Tile> tiles = getPlayerTiles(player);
+      Bag<Tile> tiles = getCurrentPlayerTiles();
       callPlayerMethodWithTimeout(l, player, tiles);
       return true;
     }
@@ -659,7 +661,7 @@ public class QReferee implements IReferee {
     return currentGameState.getCurrentPlayerState().getCurrentPlayerTiles();
   }
 
-  private Bag<Tile> getPlayerTiles(Player player) {
-    return currentGameState.getPlayerInfo(player.name()).tiles();
-  }
+  // private Bag<Tile> getPlayerTiles(Player player) {
+  //   return currentGameState.getPlayerInfo(player.name()).tiles();
+  // }
 }

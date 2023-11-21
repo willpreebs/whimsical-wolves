@@ -243,10 +243,26 @@ public class JsonConverter {
    return new PlayerInfo(score, tiles, name);
   }
 
+  private static PlayerInfo playerFromOldJPlayer(JsonElement element) {
+    JsonObject jPlayer = element.getAsJsonObject();
+    int score = getAsInt(jPlayer.get("score"));
+    Collection<Tile> tiles = tilesFromJTileArray(jPlayer.get("tile*"));
+    String name = "";
+    return new PlayerInfo(score, tiles, name);
+  }
+
+
   public static List<PlayerInfo> playerInfosFromJPlayers(JsonElement element) {
     JsonElement[] players = getAsElementArray(element);
     return new ArrayList<>(Stream.of(players).map(JsonConverter::playerFromJPlayer).toList());
   }
+
+  public static List<PlayerInfo> playerInfosFromOldJPlayers(JsonElement element) {
+    JsonElement[] players = getAsElementArray(element);
+    return new ArrayList<>(Stream.of(players).map(JsonConverter::playerFromOldJPlayer).toList());
+  }
+
+
   private static List<Integer> scoresFromJPlayers(JsonElement element) {
     JsonElement[] arr = getAsElementArray(element);
     return Stream.of(arr)
@@ -342,6 +358,15 @@ public class JsonConverter {
     IMap gameMap = qGameMapFromJMap(jStateObj.get("map"));
     Bag<Tile> tiles = new Bag<>(tilesFromJTileArray(jStateObj.get("tile*")));
     List<PlayerInfo> players = playerInfosFromJPlayers(jStateObj.get("players"));
+    return new QGameState(gameMap, tiles, players);
+  }
+
+  // parses an IGameState without requiring inclusion of player names
+  public static IGameState jStateToOldQGameState(JsonElement jState) {
+    JsonObject jStateObj = jState.getAsJsonObject();
+    IMap gameMap = qGameMapFromJMap(jStateObj.get("map"));
+    Bag<Tile> tiles = new Bag<>(tilesFromJTileArray(jStateObj.get("tile*")));
+    List<PlayerInfo> players = playerInfosFromOldJPlayers(jStateObj.get("players"));
     return new QGameState(gameMap, tiles, players);
   }
 
@@ -471,26 +496,29 @@ public class JsonConverter {
     return result;
   }
 
+   public static IGameState initializeNewStateWithNewPlayerList(IGameState state, List<Player> players, boolean verifyNames) {
+      List<PlayerInfo> newInfos = new ArrayList<>();
+      List<PlayerInfo> oldInfos = state.getAllPlayerInformation();
+
+      validateArg(p -> p.size() == oldInfos.size(), players, 
+      "List of players must be the same size as the list of player information in the state");
+
+      for (int i = 0; i < oldInfos.size(); i++) {
+        PlayerInfo info = oldInfos.get(i);
+        Player p = players.get(i);
+        if (verifyNames && !info.name().equals(p.name())) {
+          throw new IllegalArgumentException("List of players must be given in original order.");
+        }
+        // System.out.println("Adding player with name: " + p.name());
+        newInfos.add(new PlayerInfo(info.score(), info.tiles().getItems(), players.get(i).name()));
+      }
+      
+      return new QGameState(state.getBoard(), state.getRefereeTiles(), newInfos);
+   }
+
   // TODO: put in GameState?
   public static IGameState initializeNewStateWithNewPlayerList(IGameState state, List<Player> players) {
-
-    List<PlayerInfo> newInfos = new ArrayList<>();
-    List<PlayerInfo> oldInfos = state.getAllPlayerInformation();
-
-    validateArg(p -> p.size() == oldInfos.size(), players, 
-    "List of players must be the same size as the list of player information in the state");
-
-    for (int i = 0; i < oldInfos.size(); i++) {
-      PlayerInfo info = oldInfos.get(i);
-      Player p = players.get(i);
-      if (!info.name().equals(p.name())) {
-        throw new IllegalArgumentException("List of players must be given in original order.");
-      }
-      // System.out.println("Adding player with name: " + p.name());
-      newInfos.add(new PlayerInfo(info.score(), info.tiles().getItems(), players.get(i).name()));
-    }
-    
-    return new QGameState(state.getBoard(), state.getRefereeTiles(), newInfos);
+    return initializeNewStateWithNewPlayerList(state, players, true);
   }
 
   public static TurnAction jChoiceToTurnAction(JsonElement element) {

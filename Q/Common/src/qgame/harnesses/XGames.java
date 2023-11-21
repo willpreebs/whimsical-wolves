@@ -23,8 +23,10 @@ public class XGames {
     JsonElement jActors = parser.next();
     PlacementRule placementRules = RuleUtil.createPlaceRules();
     ScoringRule scoringRules = RuleUtil.createOldScoreRules();
-    IGameState state = JsonConverter.jStateToQGameState(jState);
+    IGameState state = JsonConverter.jStateToOldQGameState(jState);
     List<Player> players = JsonConverter.playersFromJActors(jActors, placementRules);
+    state = JsonConverter.initializeNewStateWithNewPlayerList(state, players, false);
+
     IReferee ref = new QReferee(placementRules, scoringRules, 10000);
     GameResults results = ref.playGame(state, players);
     System.out.println(JsonConverter.jResultsFromGameResults(results));
