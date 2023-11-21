@@ -83,17 +83,17 @@ public class QGameState implements IGameState {
     return copy;
   }
 
- @Override
- public PlayerInfo getPlayerInfo(String name) {
+//  @Override
+//  public PlayerInfo getPlayerInfo(String name) {
 
-   for (int i = 0; i < this.playerInformation.size(); i++) {
-     if (this.playerInformation.get(i).name().equals(name)) {
-       return this.playerInformation.get(i);
-     }
-   }
+//    for (int i = 0; i < this.playerInformation.size(); i++) {
+//      if (this.playerInformation.get(i).name().equals(name)) {
+//        return this.playerInformation.get(i);
+//      }
+//    }
 
-   throw new IllegalArgumentException("Player does not exist in info list");
- }
+//    throw new IllegalArgumentException("Player does not exist in info list");
+//  }
 
  
   /**

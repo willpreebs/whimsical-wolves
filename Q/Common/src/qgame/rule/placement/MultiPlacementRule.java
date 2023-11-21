@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import qgame.state.Placement;
+import qgame.rule.placement.board.BoardRule;
 import qgame.state.IPlayerGameState;
 
 /**
@@ -35,12 +36,9 @@ public class MultiPlacementRule extends ARule {
 
   @Override
   public boolean isPlacementListLegal(List<Placement> placements, IPlayerGameState gameState) {
-    //return this.rules.stream().allMatch(rule -> rule.isPlacementListLegal(placements, gameState));
-    //System.out.println(gameState.getPlayerName());
 
     for (PlacementRule r : this.rules) {
       if (!r.isPlacementListLegal(placements, gameState)) {
-        // System.out.println("Rule broken: " + r.getClass());
         return false;
       }
     }

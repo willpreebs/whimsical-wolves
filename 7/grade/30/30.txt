@@ -1,0 +1,95 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/mysterious-whales/7/xgames)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/0-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/1-out.json)
+Exception in thread "main" java.lang.IllegalStateException: WinExnPlayer
+	at player.WinExnPlayer.win(WinExnPlayer.java:120)
+	at dev.referee.Referee.informPlayersOfResult(Referee.java:216)
+	at test_harness.XGames.main(XGames.java:43)
+	at test_harness.Harness.main(Harness.java:26)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "red") (shape . "square"))))))
+          (players
+           .
+           (#hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "star"))
+                      #hasheq((color . "red") (shape . "clover")))))
+            #hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "star"))
+                      #hasheq((color . "red") (shape . "clover")))))))
+          (tile* . ()))
+  (("A" "dag") ("B" "dag" "win")))
+(*** expected)
+'((("A") ("B")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/2-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/2-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "red") (shape . "square"))))))
+          (players
+           .
+           (#hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "star"))
+                      #hasheq((color . "red") (shape . "clover")))))
+            #hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "star"))
+                      #hasheq((color . "red") (shape . "clover")))))))
+          (tile* . ()))
+  (("A" "dag" "setup") ("B" "dag" "take-turn")))
+(*** expected)
+'((() ("A" "B")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ((() ("A" "B" "B")))))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/5-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/5-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/6-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/6-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/7-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/7-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "red") (shape . "square"))))))
+          (players
+           .
+           (#hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "star"))
+                      #hasheq((color . "blue") (shape . "clover")))))
+            #hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "star"))
+                      #hasheq((color . "red") (shape . "clover")))))))
+          (tile* . (#hasheq((color . "red") (shape . "circle")))))
+  (("A" "dag") ("B" "dag")))
+(*** expected)
+'((("B") ()))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ((("A") ()))))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/8-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/8-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/9-out.json)
+((/course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/0-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/5-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/5-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/6-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/6-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/8-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/8-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/30/Tests/9-out.json))
+((passed 5) (total 8) (partial-score 5))
+

@@ -1,0 +1,294 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/mysterious-whales/7/xgames)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/0-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((0
+             (0 #hasheq((color . "orange") (shape . "clover")))
+             (1 #hasheq((color . "purple") (shape . "diamond"))))
+            (1 (0 #hasheq((color . "purple") (shape . "diamond"))))))
+          (players
+           .
+           (#hasheq((score . 0)
+                    (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 50)
+                    (tile*
+                     .
+                     (#hasheq((color . "purple") (shape . "clover"))
+                      #hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "yellow") (shape . "diamond")))))))
+          (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+  (("A" "dag" "take-turn") ("B" "dag") ("C" "dag") ("D" "dag")))
+(*** expected)
+'((("B") ("A")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ((("B") ("A" "A")))))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/1-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((0
+             (0 #hasheq((color . "orange") (shape . "clover")))
+             (1 #hasheq((color . "purple") (shape . "diamond"))))
+            (1 (0 #hasheq((color . "purple") (shape . "diamond"))))))
+          (players
+           .
+           (#hasheq((score . 9999999)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "square")))))
+            #hasheq((score . 50)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "square"))
+                      #hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "yellow") (shape . "diamond")))))))
+          (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+  (("A" "dag") ("B" "dag") ("C" "dag" "take-turn") ("D" "dag")))
+(*** expected)
+'((("A") ("C")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ((("A") ()))))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/2-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/2-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((0
+             (0 #hasheq((color . "orange") (shape . "clover")))
+             (1 #hasheq((color . "purple") (shape . "diamond"))))
+            (1 (0 #hasheq((color . "purple") (shape . "diamond"))))))
+          (players
+           .
+           (#hasheq((score . 9999999)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "square")))))
+            #hasheq((score . 50)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "square"))
+                      #hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "yellow") (shape . "diamond")))))))
+          (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+  (("A" "dag") ("B" "dag") ("C" "dag" "take-turn") ("D" "dag" "take-turn")))
+(*** expected)
+'((("A") ("C" "D")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ((("A") ()))))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/4-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/4-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((0
+             (0 #hasheq((color . "orange") (shape . "clover")))
+             (1 #hasheq((color . "purple") (shape . "diamond"))))
+            (1 (0 #hasheq((color . "purple") (shape . "square"))))))
+          (players
+           .
+           (#hasheq((score . 9999999)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "square")))))
+            #hasheq((score . 50)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "square"))
+                      #hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "yellow") (shape . "diamond")))))))
+          (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+  (("A" "dag" "take-turn") ("B" "dag") ("C" "dag" "take-turn") ("D" "dag")))
+(*** expected)
+'((("B") ("A" "C")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ((("B") ("A" "A")))))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/6-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/6-out.json)
+Exception in thread "main" java.lang.IllegalArgumentException: Number of players must be between 2 and 4.
+Current number of players is: 1
+	at dev.referee.Referee.checkNumberPlayersConstaint(Referee.java:223)
+	at dev.referee.Referee.<init>(Referee.java:147)
+	at test_harness.Converter.constructRefWithStrategicActors(Converter.java:59)
+	at test_harness.XGames.main(XGames.java:40)
+	at test_harness.Harness.main(Harness.java:26)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "orange") (shape . "square"))))))
+          (players
+           .
+           (#hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "circle")))))))
+          (tile* . ()))
+  (("A" "dag")))
+(*** expected)
+'((("A") ()))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/7-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/7-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((0
+             (0 #hasheq((color . "orange") (shape . "clover")))
+             (1 #hasheq((color . "purple") (shape . "diamond"))))
+            (1 (0 #hasheq((color . "purple") (shape . "diamond"))))))
+          (players
+           .
+           (#hasheq((score . 9999999)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "square")))))
+            #hasheq((score . 50)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "square"))
+                      #hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "yellow") (shape . "diamond")))))))
+          (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+  (("A" "dag" "take-turn")
+   ("B" "dag" "take-turn")
+   ("C" "dag" "take-turn")
+   ("D" "dag" "take-turn")))
+(*** expected)
+'((() ("A" "B" "C" "D")))
+(*** but received)
+'(((plain fast with-newline plain-unicode)
+   ((() ("A" "A" "B" "B" "C" "C" "D" "D")))))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/8-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/8-out.json)
+Exception in thread "main" java.lang.NullPointerException: Cannot invoke "player.IPlayer.getName()" because "p" is null
+	at test_harness.Converter.addNamesToBuilder(Converter.java:111)
+	at test_harness.Converter.constructXGamesOutputString(Converter.java:99)
+	at test_harness.XGames.main(XGames.java:46)
+	at test_harness.Harness.main(Harness.java:26)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((0
+             (0 #hasheq((color . "orange") (shape . "clover")))
+             (1 #hasheq((color . "purple") (shape . "diamond"))))
+            (1 (0 #hasheq((color . "purple") (shape . "diamond"))))))
+          (players
+           .
+           (#hasheq((score . 9999999)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "square")))))
+            #hasheq((score . 50)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "square"))
+                      #hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "yellow") (shape . "diamond")))))))
+          (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+  (("A" "dag" "setup")
+   ("B" "dag" "setup")
+   ("C" "dag" "setup")
+   ("D" "dag" "setup")))
+(*** expected)
+'((() ("A" "B" "C" "D")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/18/Tests/9-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((0
+             (0 #hasheq((color . "orange") (shape . "clover")))
+             (1 #hasheq((color . "purple") (shape . "diamond"))))
+            (1 (0 #hasheq((color . "purple") (shape . "diamond"))))))
+          (players
+           .
+           (#hasheq((score . 9999999)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "circle"))
+                      #hasheq((color . "red") (shape . "square")))))
+            #hasheq((score . 50)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "square"))
+                      #hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+            #hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "yellow") (shape . "diamond")))))))
+          (tile* . (#hasheq((color . "orange") (shape . "circle")))))
+  (("A" "dag" "new-tiles")
+   ("B" "dag")
+   ("C" "dag" "new-tiles")
+   ("D" "dag" "take-turn")))
+(*** expected)
+'((("B") ("A")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ((("A") ()))))
+
+
+()
+((passed 0) (total 8) (partial-score 0))
+

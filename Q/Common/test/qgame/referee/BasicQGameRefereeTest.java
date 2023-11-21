@@ -26,12 +26,12 @@ import qgame.player.MockPlayer;
 import qgame.player.Player;
 import qgame.player.PlayerInfo;
 import qgame.player.DummyAIPlayer;
-import qgame.rule.placement.CorrectPlayerTilesRule;
-import qgame.rule.placement.ExtendSameLineRule;
-import qgame.rule.placement.ExtendsBoardRule;
-import qgame.rule.placement.MatchTraitRule;
 import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.board.ExtendsBoardRule;
+import qgame.rule.placement.board.MatchTraitRule;
+import qgame.rule.placement.move.ExtendSameLineRule;
+import qgame.rule.placement.state.CorrectPlayerTilesRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.QGameState;
 import qgame.state.QStateBuilder;
@@ -113,8 +113,8 @@ public class BasicQGameRefereeTest {
     tileMap.put(new Posn(0, 1), new QTile(red, square));
     IMap map = new QMap(tileMap);
     List<PlayerInfo> info = new ArrayList<>();
-    info.add(new PlayerInfo(0, List.of(new QTile(orange, star)), ""));
-    info.add(new PlayerInfo(0, List.of(new QTile(orange, circle)), ""));
+    info.add(new PlayerInfo(0, List.of(new QTile(orange, star)), "Tester"));
+    info.add(new PlayerInfo(0, List.of(new QTile(orange, circle)), "SecondTester"));
     allPass = new QGameState(map, new Bag<>(), info);
   }
 
@@ -221,11 +221,11 @@ public class BasicQGameRefereeTest {
       .addTileBag(new QTile(blue, eightStar))
       .placeTile(new Posn(0, 0), new QTile(red, clover))
       .addPlayerInfo(new PlayerInfo(0, List.of(new QTile(red, eightStar),
-        new QTile(green, eightStar)), ""))
+        new QTile(green, eightStar)), "Tester"))
       .addPlayerInfo(new PlayerInfo(0, List.of(new QTile(green, square),
         new QTile(green, eightStar), new QTile(green, eightStar),
         new QTile(green, eightStar), new QTile(green, eightStar),
-        new QTile(green, eightStar), new QTile(green, eightStar)), ""))
+        new QTile(green, eightStar), new QTile(green, eightStar)), "SecondTester"))
       .build();
   }
 
@@ -268,7 +268,6 @@ public class BasicQGameRefereeTest {
     GameResults actual = ref.playGame(state, players);
     assertEquals(results.getWinners(), actual.getWinners());
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
-
   }
 
   @Test

@@ -115,7 +115,6 @@ class XGamesInputCreator {
           throws IOException {
     JsonElement JState = JsonConverter.jStateFromQGameState(state);
     JsonElement actors = playersToJActorsSpecs(players);
-    // TODO: design new conversion methods to handle looping players, etc.
     return writeOutToJSON(JState, actors, results, path, num);
   }
 

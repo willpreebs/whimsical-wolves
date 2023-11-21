@@ -92,7 +92,7 @@ public interface IGameState {
 
   PlayerInfo getCurrentPlayerInfo();
 
-  PlayerInfo getPlayerInfo(String name);
+  // PlayerInfo getPlayerInfo(String name);
 
   //Player getCurrentPlayer();
 }

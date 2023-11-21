@@ -1,0 +1,90 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/mysterious-whales/7/xgames)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/13/Tests/2-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/13/Tests/2-out.json)
+Exception in thread "main" java.lang.IllegalStateException: WinExnPlayer
+	at player.WinExnPlayer.win(WinExnPlayer.java:120)
+	at dev.referee.Referee.informPlayersOfResult(Referee.java:216)
+	at test_harness.XGames.main(XGames.java:43)
+	at test_harness.Harness.main(Harness.java:26)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((-1 (0 #hasheq((color . "yellow") (shape . "square"))))
+            (0
+             (-1 #hasheq((color . "red") (shape . "circle")))
+             (0 #hasheq((color . "yellow") (shape . "circle")))
+             (1 #hasheq((color . "green") (shape . "circle"))))
+            (1 (0 #hasheq((color . "yellow") (shape . "diamond"))))))
+          (players
+           .
+           (#hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "blue") (shape . "circle"))
+                      #hasheq((color . "green") (shape . "diamond"))
+                      #hasheq((color . "orange") (shape . "circle"))
+                      #hasheq((color . "purple") (shape . "clover"))
+                      #hasheq((color . "yellow") (shape . "diamond")))))
+            #hasheq((score . 1)
+                    (tile*
+                     .
+                     (#hasheq((color . "blue") (shape . "square"))
+                      #hasheq((color . "blue") (shape . "square"))
+                      #hasheq((color . "yellow") (shape . "square"))
+                      #hasheq((color . "purple") (shape . "clover"))
+                      #hasheq((color . "yellow") (shape . "diamond")))))))
+          (tile* . ()))
+  (("B" "dag") ("A" "ldasg" "win")))
+(*** expected)
+'((("B") ("A")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/13/Tests/7-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/13/Tests/7-out.json)
+Exception in thread "main" java.lang.IllegalStateException: WinExnPlayer
+	at player.WinExnPlayer.win(WinExnPlayer.java:120)
+	at dev.referee.Referee.informPlayersOfResult(Referee.java:216)
+	at test_harness.XGames.main(XGames.java:43)
+	at test_harness.Harness.main(Harness.java:26)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((-1 (0 #hasheq((color . "yellow") (shape . "square"))))
+            (0
+             (-1 #hasheq((color . "red") (shape . "circle")))
+             (0 #hasheq((color . "yellow") (shape . "circle")))
+             (1 #hasheq((color . "green") (shape . "circle"))))
+            (1 (0 #hasheq((color . "yellow") (shape . "diamond"))))))
+          (players
+           .
+           (#hasheq((score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "blue") (shape . "circle"))
+                      #hasheq((color . "green") (shape . "diamond"))
+                      #hasheq((color . "orange") (shape . "circle"))
+                      #hasheq((color . "purple") (shape . "clover"))
+                      #hasheq((color . "yellow") (shape . "diamond")))))
+            #hasheq((score . 1)
+                    (tile*
+                     .
+                     (#hasheq((color . "blue") (shape . "square"))
+                      #hasheq((color . "blue") (shape . "square"))
+                      #hasheq((color . "yellow") (shape . "square"))
+                      #hasheq((color . "purple") (shape . "clover"))
+                      #hasheq((color . "yellow") (shape . "diamond")))))))
+          (tile* . ()))
+  (("B" "dag") ("A" "ldasg" "win")))
+(*** expected)
+'((("B") ("A")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+()
+((passed 0) (total 2) (partial-score 0))
+
