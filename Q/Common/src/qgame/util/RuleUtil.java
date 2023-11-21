@@ -4,9 +4,12 @@ import java.util.List;
 
 import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.board.ExtendsBoardRule;
 import qgame.rule.placement.board.MatchTraitRule;
+import qgame.rule.placement.board.MultiBoardRule;
 import qgame.rule.placement.move.ExtendSameLineRule;
+import qgame.rule.placement.move.MoveRule;
 import qgame.rule.placement.state.CorrectPlayerTilesRule;
 import qgame.rule.scoring.MultiScoringRule;
 import qgame.rule.scoring.PlaceAllOwnedTiles;
@@ -27,6 +30,15 @@ public class RuleUtil {
       new ExtendsBoardRule(),
       new ExtendSameLineRule(), new MatchTraitRule());
     return new MultiPlacementRule(rules);
+  }
+
+  public static BoardRule createBoardRules() {
+    List<BoardRule> rules = List.of(new ExtendsBoardRule(), new MatchTraitRule());
+    return new MultiBoardRule(rules);
+  }
+
+  public static MoveRule createMoveRules() {
+    return new ExtendSameLineRule();
   }
 
   public static ScoringRule createScoreRules(int numberPlayerTiles) {

@@ -15,8 +15,8 @@ import qgame.util.PosnUtil;
 
 public class NewLdasgStrategy extends NewSmallestRowColumnTileStrategy {
 
-    public NewLdasgStrategy(StateRule stateRule, BoardRule boardRule, MoveRule moveRule) {
-        super(stateRule, boardRule, moveRule);
+    public NewLdasgStrategy(BoardRule boardRule, MoveRule moveRule) {
+        super(boardRule, moveRule);
     }
 
     private long getNumberNeighbors(IMap map, Posn p) {

@@ -27,19 +27,19 @@ import qgame.util.TileUtil;
 
 public abstract class NewSmallestRowColumnTileStrategy implements TurnStrategy {
 
-    private StateRule stateRule;
+    // private StateRule stateRule;
     private BoardRule boardRule;
     private MoveRule moveRule;
     
-    public NewSmallestRowColumnTileStrategy(StateRule stateRule, BoardRule boardRule, MoveRule moveRule) {
-        this.stateRule = stateRule;
+    public NewSmallestRowColumnTileStrategy(BoardRule boardRule, MoveRule moveRule) {
+        // this.stateRule = stateRule;
         this.boardRule = boardRule;
         this.moveRule = moveRule;
     }
 
-    public StateRule getStateRule() {
-        return stateRule;
-    }
+    // public StateRule getStateRule() {
+    //     return stateRule;
+    // }
 
     public BoardRule getBoardRule() {
         return boardRule;
@@ -53,7 +53,8 @@ public abstract class NewSmallestRowColumnTileStrategy implements TurnStrategy {
     
     @Override
     public PlacementRule getPlacementRule() {
-        return new MultiPlacementRule(stateRule, boardRule, moveRule); 
+        // return new MultiPlacementRule(stateRule, boardRule, moveRule); 
+        return new MultiPlacementRule(boardRule, moveRule); 
     }
 
     private boolean canPlaceTile(IMap board, Tile tile) {

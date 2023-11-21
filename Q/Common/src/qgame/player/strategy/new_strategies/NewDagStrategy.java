@@ -15,8 +15,8 @@ import qgame.util.PosnUtil;
 
 public class NewDagStrategy extends NewSmallestRowColumnTileStrategy {
 
-    public NewDagStrategy(StateRule stateRule, BoardRule boardRule, MoveRule moveRule) {
-        super(stateRule, boardRule, moveRule);
+    public NewDagStrategy(BoardRule boardRule, MoveRule moveRule) {
+        super(boardRule, moveRule);
     }
 
     /**
