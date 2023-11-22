@@ -106,7 +106,7 @@ public class LoopingPlayerTest {
 
         state = JsonConverter.initializeNewStateWithNewPlayerList(state, players);
 
-        IReferee ref = new QReferee(RuleUtil.createPlaceRules(), RuleUtil.createScoreRules(6), 20000);
+        IReferee ref = new QReferee(RuleUtil.createPlaceRules(), RuleUtil.createScoreRules(), 20000);
         GameResults gr = ref.playGame(state, players);
         return gr;
     }

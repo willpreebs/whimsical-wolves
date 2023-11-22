@@ -23,7 +23,7 @@ public class XGamesWithObserver {
     public static void main(String[]args) {
 
         PlacementRule rules = RuleUtil.createPlaceRules();
-        ScoringRule scoreRules = RuleUtil.createScoreRules(6);
+        ScoringRule scoreRules = RuleUtil.createScoreRules();
         JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(System.in));
         JsonElement jState = parser.next();
         JsonElement jActorSpecA = parser.next();

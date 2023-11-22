@@ -72,7 +72,7 @@ public class QReferee implements IReferee {
       new ExtendSameLineRule(),
       new ExtendsBoardRule(), new CorrectPlayerTilesRule());
     
-    this.scoringRules = RuleUtil.createScoreRules(NUM_PLAYER_TILES);
+    this.scoringRules = RuleUtil.createScoreRules();
 
     this.timeOut = DEFAULT_TIMEOUT;
     this.players = new ArrayList<>();

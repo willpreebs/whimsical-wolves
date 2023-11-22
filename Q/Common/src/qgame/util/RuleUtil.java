@@ -46,7 +46,7 @@ public class RuleUtil {
     return new CorrectPlayerTilesRule();
   }
 
-  public static ScoringRule createScoreRules(int numberPlayerTiles) {
+  public static ScoringRule createScoreRules() {
     List<ScoringRule> rules = List.of(
       new PointPerTileRule(POINTS_PER_TILE),
       new QRule(Q_BONUS),

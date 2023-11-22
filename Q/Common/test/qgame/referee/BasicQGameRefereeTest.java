@@ -475,7 +475,7 @@ public class BasicQGameRefereeTest {
 
   public void initCheat() {
     placementRules = RuleUtil.createPlaceRules();
-    ScoringRule scoringRules =  RuleUtil.createScoreRules(6);
+    ScoringRule scoringRules =  RuleUtil.createScoreRules();
 
     player1 = new DummyAIPlayer("Tester", new DagStrategy(placementRules));
     player2 = new DummyAIPlayer("SecondTester", new LdasgStrategy(placementRules));
@@ -753,7 +753,7 @@ public class BasicQGameRefereeTest {
 
   public void initLoop(){
     placementRules = RuleUtil.createPlaceRules();
-    ScoringRule scoringRules =  RuleUtil.createScoreRules(6);
+    ScoringRule scoringRules =  RuleUtil.createScoreRules();
     player1 = new SimpleAIPlayer("Tester", new DagStrategy(placementRules));
     player2 = new SimpleAIPlayer("SecondTester", new LdasgStrategy(placementRules));
     ref = new QReferee(placementRules, scoringRules, 900);
