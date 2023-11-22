@@ -10,7 +10,9 @@ import qgame.json.JsonConverter;
 import qgame.state.map.IMap;
 import qgame.util.RuleUtil;
 import qgame.rule.scoring.ScoringRule;
+import qgame.state.IGameState;
 import qgame.state.Placement;
+import qgame.state.QGameState;
 
 public class XScore {
   public static void main(String[] args) {
@@ -21,6 +23,7 @@ public class XScore {
     IMap boardState = JsonConverter.qGameMapFromJMap(jMap);
     List<Placement> placements = JsonConverter.placementsFromJPlacements(jPlacements);
     ScoringRule rules = RuleUtil.createOldScoreRules();
-    System.out.println(rules.pointsFor(placements, boardState));
+    IGameState state = new QGameState(boardState);
+    System.out.println(rules.pointsFor(placements, state));
   }
 }

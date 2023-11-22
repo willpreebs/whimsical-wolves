@@ -25,7 +25,7 @@ public class NewDagStrategy extends NewSmallestRowColumnTileStrategy {
      * Mutates given list of posns
      */
     @Override
-    public Placement getBestPlacement(IPlayerGameState state, List<Posn> posns, Tile t) {
+    public Placement getBestPlacement(IPlayerGameState state, List<Placement> move, List<Posn> posns, Tile t) {
         validateArg(list -> !list.isEmpty(), posns, "posns cannot be empty");
 
         ArrayList<Posn> mutablePosns = new ArrayList<>(posns);

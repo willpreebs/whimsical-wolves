@@ -3,6 +3,7 @@ package qgame.rule.scoring;
 import java.util.List;
 
 import qgame.state.map.IMap;
+import qgame.state.IGameState;
 import qgame.state.Placement;
 
 /**
@@ -12,15 +13,14 @@ import qgame.state.Placement;
 public class PlaceAllOwnedTiles implements ScoringRule {
 
   private final int ALL_TILES_BONUS;
-  private final int tileCount;
 
-  public PlaceAllOwnedTiles(int tileCount, int bonus) {
+  public PlaceAllOwnedTiles(int bonus) {
     this.ALL_TILES_BONUS = bonus;
-    this.tileCount = tileCount;
   }
   
   @Override
-  public int pointsFor(List<Placement> placements, IMap map) {
-    return placements.size() == tileCount ? ALL_TILES_BONUS : 0;
+  public int pointsFor(List<Placement> placements, IGameState state) {
+    int numPlayerTiles = state.getCurrentPlayerInfo().tiles().size();
+    return placements.size() == numPlayerTiles ? ALL_TILES_BONUS : 0;
   }
 }

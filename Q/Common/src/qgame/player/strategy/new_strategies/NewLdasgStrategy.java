@@ -26,8 +26,9 @@ public class NewLdasgStrategy extends NewSmallestRowColumnTileStrategy {
         .count();
     }
 
-    private List<Posn> getMaxConstrainedPosns(IPlayerGameState state, List<Posn> posns) {
+    private List<Posn> getMaxConstrainedPosns(IPlayerGameState state, List<Placement> move, List<Posn> posns) {
         IMap map = state.getBoard();
+        move.forEach(p -> map.placeTile(p));
 
         List<Posn> maxList = new ArrayList<>();
 
@@ -35,7 +36,8 @@ public class NewLdasgStrategy extends NewSmallestRowColumnTileStrategy {
         for (Posn p : posns) {
             int n = (int) getNumberNeighbors(map, p);
             if (n > max) {
-                maxList = List.of(p);
+                maxList = new ArrayList<>();
+                maxList.add(p);
                 max = n;
             }
             else if (n == max) {
@@ -46,9 +48,9 @@ public class NewLdasgStrategy extends NewSmallestRowColumnTileStrategy {
     }
 
     @Override
-    public Placement getBestPlacement(IPlayerGameState state, List<Posn> posns, Tile t) {
-        
-        List<Posn> maxNeighborList = getMaxConstrainedPosns(state, posns);
+    public Placement getBestPlacement(IPlayerGameState state, List<Placement> move, List<Posn> posns, Tile t) {
+
+        ArrayList<Posn> maxNeighborList = new ArrayList<>(getMaxConstrainedPosns(state, move, posns));
         maxNeighborList.sort(PosnUtil::rowColumnCompare);
         return new Placement(maxNeighborList.get(0), t);
     }

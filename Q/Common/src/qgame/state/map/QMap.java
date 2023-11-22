@@ -91,7 +91,7 @@ public class QMap implements IMap {
   @Override
   public void printMap() {
 
-    Set<Posn> posns = this.getBoardState().keySet();
+    Set<Posn> posns = this.tileMap.keySet();
     int topRow = posns.stream().map(Posn::y).reduce(Integer.MAX_VALUE, Integer::min);
     int bottomRow = posns.stream().map(Posn::y).reduce(Integer.MIN_VALUE, Integer::max);
     int leftCol = posns.stream().map(Posn::x).reduce(Integer.MAX_VALUE, Integer::min);

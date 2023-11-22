@@ -412,10 +412,10 @@ public class JsonConverter {
     validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
     String name = getAsString(spec[0]);
     validateArg(size -> size <= 20, name.length(), "Name must be at most 20 characters");
-    MoveRule mRule = RuleUtil.createMoveRules();
-    BoardRule bRule = RuleUtil.createBoardRules();
-    TurnStrategy strat = jStrategyToNewStrategy(spec[1], bRule, mRule);
-    // TurnStrategy strat = jStrategyToStrategy(spec[1], rule);
+    // MoveRule mRule = RuleUtil.createMoveRules();
+    // BoardRule bRule = RuleUtil.createBoardRules();
+    // TurnStrategy strat = jStrategyToNewStrategy(spec[1], bRule, mRule);
+    TurnStrategy strat = jStrategyToStrategy(spec[1], rule);
     DummyAIPlayer.FailStep step = DummyAIPlayer.FailStep.NONE;
     if (spec.length == 3) {
       step = failStepFromExn(spec[2]);

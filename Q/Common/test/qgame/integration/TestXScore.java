@@ -23,10 +23,14 @@ import qgame.rule.placement.move.MoveRule;
 import qgame.rule.placement.state.StateRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.IGameState;
+import qgame.state.Placement;
+import qgame.state.QGameState;
+import qgame.state.map.IMap;
 import qgame.util.RuleUtil;
 
-public class TestXGamesFailures {
-    
+
+public class TestXScore {
+
     PlacementRule placementRules;
 
     BoardRule bRule;
@@ -45,25 +49,25 @@ public class TestXGamesFailures {
         placementRules = new MultiPlacementRule(bRule, mRule, sRule);
     }
 
-    public GameResults getGameResults(String directory, int testNum) throws FileNotFoundException {
+    public int getTestResults(String directory, int testNum) throws FileNotFoundException {
         List<JsonElement> elements = TestUtil.getJsonTestElements(directory, testNum);
 
-        IGameState state = JsonConverter.jStateToOldQGameState(elements.get(0));
-        // List<Player> players = JsonConverter.playersFromJActors(elements.get(1), placementRules);
-        List<Player> players = JsonConverter.playersFromNewJActors(elements.get(1), bRule, mRule);
-        state = JsonConverter.initializeNewStateWithNewPlayerList(state, players, false);
-        QReferee ref = new QReferee(placementRules, scoreRules, 10000);
+        IMap boardState = JsonConverter.qGameMapFromJMap(elements.get(0));
+        List<Placement> placements = JsonConverter.placementsFromJPlacements(elements.get(1));
 
-        return ref.playGame(state, players);
+        ScoringRule rules = RuleUtil.createOldScoreRules();
+        IGameState state = new QGameState(boardState);
+
+        return rules.pointsFor(placements, state);
     }
 
     @Test
-    public void testAllIn7() {
+    public void testAllIn5() {
         int numFails = 0;
         int numSuccess = 0;
 
-        for (int dir = -1; dir < 42; dir++) {
-            for (int testNum = 0; testNum < 10; testNum++) {
+        for (int dir = -1; dir < 43; dir++) {
+            for (int testNum = 0; testNum < 5; testNum++) {
                 try {
                     performTest(dir, testNum);
                     numSuccess++;
@@ -75,38 +79,30 @@ public class TestXGamesFailures {
                 }
             }
         }
+
+        for (int testNum = 0; testNum < 5; testNum++) {
+
+        }
+
+
         System.out.println("tests failed: " + numFails + " and " + numSuccess + " passed");
     }
 
     @Test
     public void runIndividualTest() throws FileNotFoundException {
-        performTest(7, 5);
+        performTest(1, 0);
     }
+
     
     public void performTest(int dir, int testNum) throws FileNotFoundException {
 
-        String directory = "7/grade/" + dir + "/";
+        String directory = "5/grade/" + dir + "/";
 
-        GameResults r = getGameResults(directory, testNum);
+        int r = getTestResults(directory, testNum);
 
         JsonElement results = TestUtil.getJsonTestResult(directory, testNum);
-        
-        JsonArray expectedWinners = results.getAsJsonArray().get(0).getAsJsonArray();
-        JsonArray expectedCheaters = results.getAsJsonArray().get(1).getAsJsonArray();
+        int expected = results.getAsInt();
 
-        List<String> expectedWinnerNames = 
-        expectedWinners.asList()
-        .stream()
-        .map(e -> e.getAsString())
-        .toList();
-
-        List<String> expectedCheaterNames =
-        expectedCheaters.asList()
-        .stream()
-        .map(e -> e.getAsString())
-        .toList();
-
-        assertEquals(expectedWinnerNames, r.getWinners());
-        assertEquals(expectedCheaterNames, r.getRuleBreakers());
+        assertEquals(expected, r);
     }
 }

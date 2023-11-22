@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import qgame.state.map.Posn;
 import qgame.state.map.IMap;
 import qgame.state.map.Tile;
+import qgame.state.IGameState;
 import qgame.state.Placement;
 
 /**
@@ -77,7 +78,8 @@ public class QRule extends CrawlingRule {
   }
 
   @Override
-  public int pointsFor(List<Placement> placements, IMap map) {
+  public int pointsFor(List<Placement> placements, IGameState state) {
+    IMap map = state.getBoard();
     Set<Set<Posn>> streaks = new HashSet<>();
 
     placements

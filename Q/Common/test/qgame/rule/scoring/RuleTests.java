@@ -8,7 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import qgame.observer.IGameObserver;
+import qgame.state.IGameState;
 import qgame.state.Placement;
+import qgame.state.QGameState;
 import qgame.state.map.Posn;
 import qgame.state.map.IMap;
 import qgame.state.map.QMap;
@@ -34,7 +37,7 @@ public class RuleTests {
   Tile.Shape star = Tile.Shape.STAR;
   Tile.Shape eight = Tile.Shape.EIGHT_STAR;
 
-  ScoringRule owned = new PlaceAllOwnedTiles(1, 6);
+  ScoringRule owned = new PlaceAllOwnedTiles(6);
   ScoringRule perTile = new PointPerTileRule(1);
   ScoringRule contiguousTile = new PointPerContiguousSequenceRule(1);
   ScoringRule qRule = new QRule(6);
@@ -121,16 +124,17 @@ public class RuleTests {
   @Test
   public void testAllOwned1() {
     placements1.forEach(allOwnedMap::placeTile);
-    int perScore = perTile.pointsFor(placements1, allOwnedMap);
-    int seqScore = contiguousTile.pointsFor(placements1, allOwnedMap);
-    int qScore = qRule.pointsFor(placements1, allOwnedMap);
+    IGameState state = new QGameState(allOwnedMap);
+    int perScore = perTile.pointsFor(placements1, state);
+    int seqScore = contiguousTile.pointsFor(placements1, state);
+    int qScore = qRule.pointsFor(placements1, state);
 
 //    assertEquals(6, ownedScore);
     assertEquals(2, perScore);
     assertEquals(3, seqScore);
     assertEquals(0, qScore);
 
-    int totalScore = multi.pointsFor(placements1, allOwnedMap);
+    int totalScore = multi.pointsFor(placements1, state);
 
     assertEquals(5, totalScore);
   }
@@ -138,75 +142,80 @@ public class RuleTests {
   @Test
   public void testOneQ1() {
     placements2.forEach(oneQMap::placeTile);
-//    int ownedScore = owned.pointsFor(placements2, oneQState);
-    int perScore = perTile.pointsFor(placements2, oneQMap);
-    int seqScore = contiguousTile.pointsFor(placements2, oneQMap);
-    int qScore = qRule.pointsFor(placements2, oneQMap);
+    IGameState state = new QGameState(oneQMap);
+//    int ownedScore = owned.pointsFor(placements2, state);
+    int perScore = perTile.pointsFor(placements2, state);
+    int seqScore = contiguousTile.pointsFor(placements2, state);
+    int qScore = qRule.pointsFor(placements2, state);
 
 //    assertEquals(0, ownedScore);
     assertEquals(1, perScore);
     assertEquals(6, seqScore);
     assertEquals(6, qScore);
-    int totalScore = multi.pointsFor(placements2, oneQMap);
+    int totalScore = multi.pointsFor(placements2, state);
     assertEquals(13, totalScore);
   }
 
   @Test
   public void testOneQDoesNotCountWith7() {
     placements3.forEach(oneQMap::placeTile);
-    int perScore = perTile.pointsFor(placements3, oneQMap);
-    int seqScore = contiguousTile.pointsFor(placements3, oneQMap);
-    int qScore = qRule.pointsFor(placements3, oneQMap);
+    IGameState state = new QGameState(oneQMap);
+    int perScore = perTile.pointsFor(placements3, state);
+    int seqScore = contiguousTile.pointsFor(placements3, state);
+    int qScore = qRule.pointsFor(placements3, state);
 
 //    assertEquals(6, ownedScore);
     assertEquals(2, perScore);
     assertEquals(7, seqScore);
     assertEquals(0, qScore);
-    int totalScore = multi.pointsFor(placements3, oneQMap);
+    int totalScore = multi.pointsFor(placements3, state);
     assertEquals(9, totalScore);
   }
 
   @Test
   public void testOneQ2() {
     placements2.forEach(oneQMap::placeTile);
+    IGameState state = new QGameState(oneQMap);
 //    int ownedScore = owned.pointsFor(placements2, oneQState2);
-    int perScore = perTile.pointsFor(placements2, oneQMap);
-    int seqScore = contiguousTile.pointsFor(placements2, oneQMap);
-    int qScore = qRule.pointsFor(placements2, oneQMap);
+    int perScore = perTile.pointsFor(placements2, state);
+    int seqScore = contiguousTile.pointsFor(placements2, state);
+    int qScore = qRule.pointsFor(placements2, state);
 
 //    assertEquals(6, ownedScore);
     assertEquals(1, perScore);
     assertEquals(6, seqScore);
     assertEquals(6, qScore);
-    int totalScore = multi.pointsFor(placements2, oneQMap);
+    int totalScore = multi.pointsFor(placements2, state);
     assertEquals(13, totalScore);
   }
 
   @Test
   public void testMultConsecutiveSeq() {
     placements4.forEach(multConsecutiveSeqMap::placeTile);
-    int perScore = perTile.pointsFor(placements4, multConsecutiveSeqMap);
-    int seqScore = contiguousTile.pointsFor(placements4, multConsecutiveSeqMap);
-    int qScore = qRule.pointsFor(placements4, multConsecutiveSeqMap);
+    IGameState state = new QGameState(multConsecutiveSeqMap);
+    int perScore = perTile.pointsFor(placements4, state);
+    int seqScore = contiguousTile.pointsFor(placements4, state);
+    int qScore = qRule.pointsFor(placements4, state);
 
     assertEquals(3, perScore);
     assertEquals(9, seqScore);
     assertEquals(0, qScore);
-    int totalScore = multi.pointsFor(placements4, multConsecutiveSeqMap);
+    int totalScore = multi.pointsFor(placements4, state);
     assertEquals(12, totalScore);
   }
 
   @Test
   public void testSimple() {
     placements5.forEach(oneTile::placeTile);
-    int perScore = perTile.pointsFor(placements5, oneTile);
-    int seqScore = contiguousTile.pointsFor(placements5, oneTile);
-    int qScore = qRule.pointsFor(placements5, oneTile);
+    IGameState state = new QGameState(oneTile);
+    int perScore = perTile.pointsFor(placements5, state);
+    int seqScore = contiguousTile.pointsFor(placements5, state);
+    int qScore = qRule.pointsFor(placements5, state);
 
     assertEquals(1, perScore);
     assertEquals(2, seqScore);
     assertEquals(0, qScore);
-    int totalScore = multi.pointsFor(placements5, oneTile);
+    int totalScore = multi.pointsFor(placements5, state);
     assertEquals(3, totalScore);
   }
 
@@ -221,7 +230,7 @@ public class RuleTests {
     List<Placement> placements = new ArrayList<>(
       List.of(new Placement(new Posn(-1, 2), new QTile(purple, eight))));
 
-    int points = multi.pointsFor(placements, new QMap(map));
+    int points = multi.pointsFor(placements, new QGameState(new QMap(map)));
     assertEquals(5, points);
 
   }

@@ -155,7 +155,9 @@ public class QReferee implements IReferee {
     List<PlayerInfo> infos = new ArrayList<>();
 
     for (Player p : players) {
-      PlayerInfo info = new PlayerInfo(0, tileBag.getItems(this.NUM_PLAYER_TILES), p.name());
+      Collection<Tile> playerTiles = tileBag.getItems(this.NUM_PLAYER_TILES);
+      tileBag.removeAll(playerTiles);
+      PlayerInfo info = new PlayerInfo(0, playerTiles, p.name());
       infos.add(info);
     }
 
@@ -339,8 +341,10 @@ public class QReferee implements IReferee {
         // Step 3: Perform player's turn and determine if the game should end
         gameContinue = handleAction(action);
         
-        // Step 4: Give player new tiles (returns false if method failed) 
-        removePlayer = !givePlayerNewTiles(action, currentPlayer);
+        if (gameContinue) {
+          // Step 4: Give player new tiles (returns false if method failed) 
+          removePlayer = !givePlayerNewTiles(action, currentPlayer);
+        }
       }
       // Step 5: Prepare for next round
       // If current player broke the rules or caused an exception, remove them
@@ -628,7 +632,7 @@ public class QReferee implements IReferee {
    */
   private void scorePlacements(List<Placement> placements) {
     IMap board = currentGameState.getBoard();
-    int score = this.scoringRules.pointsFor(placements, board);
+    int score = this.scoringRules.pointsFor(placements, currentGameState);
     // System.out.println("Giving score: " + score + " to player: " + this.currentGameState.getCurrentPlayer().name());
     // int bonus = placedAllTiles(placements) ? ALL_TILE_BONUS : 0;
     // currentGameState.addScoreToCurrentPlayer(score + bonus);

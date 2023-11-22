@@ -11,6 +11,7 @@ import qgame.rule.placement.board.MultiBoardRule;
 import qgame.rule.placement.move.ExtendSameLineRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.rule.placement.state.CorrectPlayerTilesRule;
+import qgame.rule.placement.state.StateRule;
 import qgame.rule.scoring.MultiScoringRule;
 import qgame.rule.scoring.PlaceAllOwnedTiles;
 import qgame.rule.scoring.PointPerContiguousSequenceRule;
@@ -41,12 +42,25 @@ public class RuleUtil {
     return new ExtendSameLineRule();
   }
 
+  public static StateRule createStateRules() {
+    return new CorrectPlayerTilesRule();
+  }
+
   public static ScoringRule createScoreRules(int numberPlayerTiles) {
     List<ScoringRule> rules = List.of(
       new PointPerTileRule(POINTS_PER_TILE),
       new QRule(Q_BONUS),
       new PointPerContiguousSequenceRule(POINTS_PER_CONTIGUOUS_TILE),
-      new PlaceAllOwnedTiles(ALL_TILE_BONUS, numberPlayerTiles));
+      new PlaceAllOwnedTiles(ALL_TILE_BONUS));
+    return new MultiScoringRule(rules);
+  }
+
+  public static ScoringRule createScoreRules(int pointsPerTile, int qBonus, int pointsPerContiguousTile, int allTilesBonus) {
+    List<ScoringRule> rules = List.of(
+      new PointPerTileRule(pointsPerTile),
+      new QRule(qBonus),
+      new PointPerContiguousSequenceRule(pointsPerContiguousTile),
+      new PlaceAllOwnedTiles(allTilesBonus));
     return new MultiScoringRule(rules);
   }
 

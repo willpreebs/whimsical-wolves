@@ -6,6 +6,7 @@ import java.util.Set;
 
 import qgame.state.map.Posn;
 import qgame.state.map.IMap;
+import qgame.state.IGameState;
 import qgame.state.Placement;
 import qgame.util.PosnUtil;
 
@@ -52,7 +53,8 @@ public class PointPerContiguousSequenceRule extends CrawlingRule {
   }
 
   @Override
-  public int pointsFor(List<Placement> placements, IMap map) {
+  public int pointsFor(List<Placement> placements, IGameState state) {
+    IMap map = state.getBoard();
     List<Set<Posn>> connected = findAllContiguousSequences(placements, map);
     return connected
       .stream()

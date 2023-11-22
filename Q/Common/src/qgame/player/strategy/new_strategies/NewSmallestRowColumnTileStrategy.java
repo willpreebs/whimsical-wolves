@@ -12,13 +12,10 @@ import qgame.player.strategy.TurnStrategy;
 import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.PlacementRule;
 import qgame.rule.placement.board.BoardRule;
-import qgame.rule.placement.board.MultiBoardRule;
 import qgame.rule.placement.move.MoveRule;
-import qgame.rule.placement.state.StateRule;
 import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
 import qgame.state.Placement;
-import qgame.state.QPlayerGameState;
 import qgame.state.map.IMap;
 import qgame.state.map.Posn;
 import qgame.state.map.QMap;
@@ -49,7 +46,7 @@ public abstract class NewSmallestRowColumnTileStrategy implements TurnStrategy {
         return moveRule;
     }
     
-    public abstract Placement getBestPlacement(IPlayerGameState state, List<Posn> posns, Tile t);
+    public abstract Placement getBestPlacement(IPlayerGameState state, List<Placement> move, List<Posn> posns, Tile t);
     
     @Override
     public PlacementRule getPlacementRule() {
@@ -73,17 +70,18 @@ public abstract class NewSmallestRowColumnTileStrategy implements TurnStrategy {
         .anyMatch(tile -> canPlaceTile(board, tile));
     }
 
-    // private IPlayerGameState copyState(IPlayerGameState state) {
-    //     return new QPlayerGameState(state.getPlayerScores(), state.getBoard(),
-    //     state.getNumberRemainingTiles(), state.getCurrentPlayerTiles().getItems(), state.getPlayerName());
-    // }
+    private List<Tile> removeTilesFromList(List<Tile> tiles, List<Tile> moveTiles) {
+        ArrayList<Tile> ts = new ArrayList<>(tiles);
+        for (Tile t : moveTiles) {
+            ts.remove(t);
+        }
+        return ts;
+    }
 
     private List<Tile> getTilesLeft(IPlayerGameState state, List<Placement> move) {
         List<Tile> tilesLeft = new ArrayList<>(state.getCurrentPlayerTiles().getItems());
         List<Tile> moveTiles = move.stream().map(p -> p.tile()).toList();
-        tilesLeft.removeAll(moveTiles);
-        
-        return tilesLeft;
+        return removeTilesFromList(tilesLeft, moveTiles);
     }
 
     private IMap getMapWithPlacements(IMap start, List<Placement> move) {
@@ -114,7 +112,7 @@ public abstract class NewSmallestRowColumnTileStrategy implements TurnStrategy {
             else {
                 List<Posn> posns = placements
                 .stream().map(p -> p.posn()).toList();
-                return Optional.of(getBestPlacement(state, posns, t));
+                return Optional.of(getBestPlacement(state, move, posns, t));
             }
         }
         return Optional.empty();
@@ -142,8 +140,8 @@ public abstract class NewSmallestRowColumnTileStrategy implements TurnStrategy {
     public TurnAction chooseAction(IPlayerGameState state) {
         if (!canPlaceAnyOnBoard(state.getBoard(), state.getCurrentPlayerTiles())) {
             if (state.getNumberRemainingTiles() < state.getCurrentPlayerTiles().size()) {
-            return new PassAction();
-        }
+                return new PassAction();
+            }
             return new ExchangeAction();
         }
         return new PlaceAction(getBestMove(state));
