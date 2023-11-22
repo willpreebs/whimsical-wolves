@@ -868,7 +868,6 @@ public class BasicQGameRefereeTest {
     assertEquals(results.getRuleBreakers(), actual.getRuleBreakers());
   }
 
-  //failing test
   @Test
   public void testCheatersandLoopers() throws IOException {
     initLoop();
@@ -911,7 +910,7 @@ public class BasicQGameRefereeTest {
   public void testExnLooperCheater() throws IOException {
     initLoop();
     loopPlayer = new LoopingAIPlayer("looper", new DagStrategy(placementRules),
-            FailStep.NEW_TILES,4);
+            FailStep.NEW_TILES,5);
     player1 = new CheatingAIPlayer("Tester", new DagStrategy(placementRules),
             CheatingAIPlayer.Cheat.NOT_OWNED);
     player2 = new DummyAIPlayer("SecondTester", new DagStrategy(placementRules),

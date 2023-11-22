@@ -420,8 +420,8 @@ public class QReferee implements IReferee {
       () -> lambda.playerMethod(player, args));
     try {
       //TODO: Use timeout
-      // return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
-      return getAction.get();
+      return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
+      //return getAction.get();
     }
     finally {
       executor.shutdown();
