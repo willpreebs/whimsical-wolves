@@ -7,6 +7,8 @@ import java.util.function.Predicate;
 
 import qgame.state.map.Posn;
 import qgame.state.Placement;
+import qgame.rule.placement.board.BoardRule;
+import qgame.rule.placement.board.EmptyBoardRule;
 import qgame.state.IPlayerGameState;
 import qgame.util.PosnUtil;
 
@@ -59,5 +61,15 @@ public class ExtendSameLineRule extends MoveRule {
     .toList();
 
     return allSame(posns, PosnUtil::sameCol) || allSame(posns, PosnUtil::sameRow);
+  }
+
+  @Override
+  public BoardRule getBoardRule() {
+    return new EmptyBoardRule();
+  }
+
+  @Override
+  public MoveRule getMoveRule() {
+    return this;
   }
 }

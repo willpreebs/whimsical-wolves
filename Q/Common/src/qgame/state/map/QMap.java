@@ -100,7 +100,7 @@ public class QMap implements IMap {
 
       System.out.println("Printing map ----------------");
 
-      for (int row = bottomRow; row <= topRow; row++) {
+      for (int row = topRow; row <= bottomRow; row++) {
           for (int col = leftCol; col <= rightCol; col++) {
             try {
               Tile tile = this.getTileAtPosn(new Posn(row, col));

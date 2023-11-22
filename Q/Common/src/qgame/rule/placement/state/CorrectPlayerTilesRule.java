@@ -7,6 +7,10 @@ import java.util.Map;
 
 import qgame.state.Placement;
 import qgame.rule.placement.ARule;
+import qgame.rule.placement.board.BoardRule;
+import qgame.rule.placement.board.EmptyBoardRule;
+import qgame.rule.placement.move.EmptyMoveRule;
+import qgame.rule.placement.move.MoveRule;
 import qgame.state.IPlayerGameState;
 import qgame.state.map.Tile;
 import qgame.util.TileUtil;
@@ -70,5 +74,15 @@ public class CorrectPlayerTilesRule extends StateRule {
     else {
       return false;
     }
+  }
+
+  @Override
+  public BoardRule getBoardRule() {
+    return new EmptyBoardRule();
+  }
+
+  @Override
+  public MoveRule getMoveRule() {
+    return new EmptyMoveRule();
   }
 }

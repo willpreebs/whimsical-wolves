@@ -1,67 +1,39 @@
-// package qgame.player.strategy;
-
-// import java.util.ArrayList;
-// import java.util.List;
-
-// import qgame.state.map.Posn;
-// import qgame.state.map.Tile;
-// import qgame.rule.placement.PlacementRule;
-// import qgame.state.Placement;
-// import qgame.state.IPlayerGameState;
-// import qgame.util.PosnUtil;
-
-// /**
-//  * Represents a strategy where the player looks for the smallest tile
-//  * that can extend the current board. If there are multiple tiles of
-//  * equally small value (as determined in the Tile Util comparator), it
-//  * picks the one with the smallest row-column order.
-//  */
-// public class DagStrategy extends SmallestRowColumnTileStrategy {
-  
-//   public DagStrategy(PlacementRule ruleBook) {
-//     super(ruleBook);
-//   }
-
-//   /**
-//    * Returns the best Placement determined by a given list of Posns assumed to be legal.
-//    * The best Placement is determined by the smallest row column order of all the Posns
-//    */
-//   protected Placement getBestPlacement(IPlayerGameState currentState, List<Posn> legalPosns, Tile bestTile) {
-//     // Tile bestTile = this.bestTile(currentState);
-//     ArrayList<Posn> legal = new ArrayList<>(legalPosns);
-//     legal.sort(PosnUtil::rowColumnCompare);
-//     Posn posn = legal.get(0);
-//     return new Placement(posn, bestTile);
-//   }
-// }
-
 package qgame.player.strategy;
 
+import static qgame.util.ValidationUtil.validateArg;
+
+import java.util.ArrayList;
 import java.util.List;
 
+import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.board.BoardRule;
+import qgame.rule.placement.move.MoveRule;
+import qgame.state.IPlayerGameState;
+import qgame.state.Placement;
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
-import qgame.rule.placement.PlacementRule;
-import qgame.state.Placement;
-import qgame.state.IPlayerGameState;
 import qgame.util.PosnUtil;
 
-/**
- * Represents a strategy where the player looks for the smallest tile
- * that can extend the current board. If there are multiple tiles of
- * equally small value (as determined in the Tile Util comparator), it
- * picks the one with the smallest row-column order.
- */
 public class DagStrategy extends SmallestRowColumnTileStrategy {
-  public DagStrategy(PlacementRule ruleBook) {
-    super(ruleBook);
-  }
 
-  protected Placement makePlacementGivenPositions(IPlayerGameState currentState,
-                                    List<Posn> legalPlaces) {
-    Tile bestTile = bestTile(currentState);
-    legalPlaces.sort(PosnUtil::rowColumnCompare);
-    Posn posn = legalPlaces. get(0);
-    return new Placement(posn, bestTile);
-  }
+    public DagStrategy(BoardRule boardRule, MoveRule moveRule) {
+        super(boardRule, moveRule);
+    }
+
+    public DagStrategy(PlacementRule rule) {
+        super(rule.getBoardRule(), rule.getMoveRule());
+    }
+
+    /**
+     * 
+     * Mutates given list of posns
+     */
+    @Override
+    public Placement getBestPlacement(IPlayerGameState state, List<Placement> move, List<Posn> posns, Tile t) {
+        validateArg(list -> !list.isEmpty(), posns, "posns cannot be empty");
+
+        ArrayList<Posn> mutablePosns = new ArrayList<>(posns);
+        mutablePosns.sort(PosnUtil::rowColumnCompare);
+        return new Placement(mutablePosns.get(0), t);
+    }
 }

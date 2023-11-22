@@ -6,6 +6,8 @@ import java.util.function.BiPredicate;
 import qgame.state.map.Posn;
 import qgame.state.map.IMap;
 import qgame.state.map.Tile;
+import qgame.rule.placement.move.EmptyMoveRule;
+import qgame.rule.placement.move.MoveRule;
 import qgame.state.Placement;
 import qgame.util.PosnUtil;
 import qgame.util.TileUtil;
@@ -59,5 +61,15 @@ public class MatchTraitRule extends BoardRule {
             .stream()
             .filter(neighbor -> func.test(posn, neighbor))
             .map(board::getTileAtPosn).toList();
+  }
+
+  @Override
+  public BoardRule getBoardRule() {
+    return this;
+  }
+
+  @Override
+  public MoveRule getMoveRule() {
+    return new EmptyMoveRule();
   }
 }

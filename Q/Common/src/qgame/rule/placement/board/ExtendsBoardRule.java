@@ -6,6 +6,9 @@ import qgame.state.Placement;
 
 import static qgame.util.PosnUtil.neighbors;
 
+import qgame.rule.placement.move.EmptyMoveRule;
+import qgame.rule.placement.move.MoveRule;
+
 /**
  * Represents a rule that checks that each placement extends the board according to the Q game
  * board extending rules.
@@ -22,5 +25,15 @@ public class ExtendsBoardRule extends BoardRule {
   public boolean isLegalPlacementOnBoard(Placement move, IMap map) {
     Posn posn = move.posn();
     return !map.posnHasTile(posn) && hasNeighbor(posn, map);
+  }
+
+  @Override
+  public BoardRule getBoardRule() {
+    return this;
+  }
+
+  @Override
+  public MoveRule getMoveRule() {
+    return new EmptyMoveRule();
   }
 }

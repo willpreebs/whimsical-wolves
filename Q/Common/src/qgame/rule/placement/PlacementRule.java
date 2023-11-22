@@ -5,6 +5,8 @@ import java.util.List;
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.state.Placement;
+import qgame.rule.placement.board.BoardRule;
+import qgame.rule.placement.move.MoveRule;
 import qgame.state.IPlayerGameState;
 
 /**
@@ -30,4 +32,9 @@ public interface PlacementRule {
    * @return a list of posns where a tile can be placed on at a given game state
    */
   List<Posn> validPositionsForTile(Tile t, IPlayerGameState gameState);
+
+  BoardRule getBoardRule();
+
+  MoveRule getMoveRule();
+  
 }

@@ -12,9 +12,9 @@ import qgame.player.Player;
 import qgame.player.PlayerInfo;
 import qgame.player.strategy.DagStrategy;
 import qgame.player.strategy.LdasgStrategy;
+import qgame.player.strategy.DagStrategy;
+import qgame.player.strategy.LdasgStrategy;
 import qgame.player.strategy.TurnStrategy;
-import qgame.player.strategy.new_strategies.NewDagStrategy;
-import qgame.player.strategy.new_strategies.NewLdasgStrategy;
 import qgame.player.CheatingAIPlayer;
 import qgame.player.DummyAIPlayer;
 import qgame.player.LoopingAIPlayer;
@@ -338,16 +338,6 @@ public class JsonConverter {
     };
   }
 
-    public static TurnStrategy jStrategyToNewStrategy(JsonElement element, BoardRule bRule, MoveRule mRule) {
-    String type = getAsString(element);
-    return switch (type) {
-      case "dag" -> new NewDagStrategy(bRule, mRule);
-      case "ldasg" -> new NewLdasgStrategy(bRule, mRule);
-      default -> throw new IllegalStateException("Unexpected value: " + type);
-    };
-  }
-
-
   public static JsonElement actionToJson(TurnAction action) {
     return switch (action) {
       case PassAction pass -> new JsonPrimitive("pass");
@@ -406,30 +396,12 @@ public class JsonConverter {
     };
   }
 
-  // TODO: switching between new/old strategies here
   private static Player playerFromJActorSpec(JsonElement element, PlacementRule rule) {
     JsonElement[] spec = getAsElementArray(element);
     validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
     String name = getAsString(spec[0]);
     validateArg(size -> size <= 20, name.length(), "Name must be at most 20 characters");
-    // MoveRule mRule = RuleUtil.createMoveRules();
-    // BoardRule bRule = RuleUtil.createBoardRules();
-    // TurnStrategy strat = jStrategyToNewStrategy(spec[1], bRule, mRule);
     TurnStrategy strat = jStrategyToStrategy(spec[1], rule);
-    DummyAIPlayer.FailStep step = DummyAIPlayer.FailStep.NONE;
-    if (spec.length == 3) {
-      step = failStepFromExn(spec[2]);
-    }
-    return new DummyAIPlayer(name, strat, step);
-  }
-
-  private static Player playerFromNewJActorSpec(JsonElement element, BoardRule bRule, MoveRule mRule) {
-    JsonElement[] spec = getAsElementArray(element);
-    validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
-    String name = getAsString(spec[0]);
-    validateArg(size -> size <= 20, name.length(), "Name must be at most 20 characters");
-    TurnStrategy strat = jStrategyToNewStrategy(spec[1], bRule, mRule);
-    // TurnStrategy strat = jStrategyToStrategy(spec[1], rule);
     DummyAIPlayer.FailStep step = DummyAIPlayer.FailStep.NONE;
     if (spec.length == 3) {
       step = failStepFromExn(spec[2]);
@@ -479,12 +451,6 @@ public class JsonConverter {
     JsonElement[] players = getAsElementArray(element);
     return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpec(spec, rule)).toList());
   }
-
-  public static List<Player> playersFromNewJActors(JsonElement element, BoardRule bRule, MoveRule mRule) {
-    JsonElement[] players = getAsElementArray(element);
-    return new ArrayList<>(stream(players).map(spec -> playerFromNewJActorSpec(spec, bRule, mRule)).toList());
-  }
-
 
   public static List<Player> playersFromJActorSpecA(JsonElement element) {
     JsonElement[] players = getAsElementArray(element);

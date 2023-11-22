@@ -155,8 +155,8 @@ public class QReferee implements IReferee {
     List<PlayerInfo> infos = new ArrayList<>();
 
     for (Player p : players) {
-      Collection<Tile> playerTiles = tileBag.getItems(this.NUM_PLAYER_TILES);
-      tileBag.removeAll(playerTiles);
+      Collection<Tile> playerTiles = tileBag.removeFirstNItems(this.NUM_PLAYER_TILES);
+      // tileBag.removeAll(playerTiles);
       PlayerInfo info = new PlayerInfo(0, playerTiles, p.name());
       infos.add(info);
     }
@@ -631,12 +631,10 @@ public class QReferee implements IReferee {
    * @param placements list of placements player made on this turn.
    */
   private void scorePlacements(List<Placement> placements) {
-    IMap board = currentGameState.getBoard();
     int score = this.scoringRules.pointsFor(placements, currentGameState);
-    // System.out.println("Giving score: " + score + " to player: " + this.currentGameState.getCurrentPlayer().name());
-    // int bonus = placedAllTiles(placements) ? ALL_TILE_BONUS : 0;
-    // currentGameState.addScoreToCurrentPlayer(score + bonus);
     currentGameState.addScoreToCurrentPlayer(score);
+    // currentGameState.getBoard().printMap();
+    // System.out.println("Player: " + currentGameState.getCurrentPlayerInfo().name() + " received: " + score + " points");
   }
 
   //Returns true when a list of placements has as many elements as the current player's hand.

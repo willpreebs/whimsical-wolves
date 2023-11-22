@@ -88,7 +88,7 @@ public class QGameState implements IGameState {
 
     return copy;
   }
-  
+
   /**
    * Returns the current player whose turn it is
    * @return PlayerInfo corresponding to current turn's player.
@@ -157,8 +157,8 @@ public class QGameState implements IGameState {
 
   @Override
   public Collection<Tile> takeOutRefTiles(int count) throws IllegalArgumentException {
-    Collection<Tile> newTiles = this.refereeTiles.getItems(count);
-    this.refereeTiles.removeAll(newTiles);
+    Collection<Tile> newTiles = this.refereeTiles.removeFirstNItems(count);
+    // this.refereeTiles.removeAll(newTiles);
     return newTiles;
   }
 

@@ -3,6 +3,8 @@ package qgame.rule.placement.board;
 import java.util.ArrayList;
 import java.util.List;
 
+import qgame.rule.placement.move.EmptyMoveRule;
+import qgame.rule.placement.move.MoveRule;
 import qgame.state.Placement;
 import qgame.state.map.IMap;
 import qgame.state.map.Tile;
@@ -27,6 +29,16 @@ public class MultiBoardRule extends BoardRule {
             }
         }
         return true;
+    }
+
+    @Override
+    public BoardRule getBoardRule() {
+        return this;
+    }
+
+    @Override
+    public MoveRule getMoveRule() {
+        return new EmptyMoveRule();
     }
     
 }

@@ -49,8 +49,7 @@ public class TestXGamesFailures {
         List<JsonElement> elements = TestUtil.getJsonTestElements(directory, testNum);
 
         IGameState state = JsonConverter.jStateToOldQGameState(elements.get(0));
-        // List<Player> players = JsonConverter.playersFromJActors(elements.get(1), placementRules);
-        List<Player> players = JsonConverter.playersFromNewJActors(elements.get(1), bRule, mRule);
+        List<Player> players = JsonConverter.playersFromJActors(elements.get(1), placementRules);
         state = JsonConverter.initializeNewStateWithNewPlayerList(state, players, false);
         QReferee ref = new QReferee(placementRules, scoreRules, 10000);
 
@@ -80,7 +79,7 @@ public class TestXGamesFailures {
 
     @Test
     public void runIndividualTest() throws FileNotFoundException {
-        performTest(7, 5);
+        performTest(-1, 0);
     }
     
     public void performTest(int dir, int testNum) throws FileNotFoundException {

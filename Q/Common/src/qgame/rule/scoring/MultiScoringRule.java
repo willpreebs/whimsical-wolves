@@ -20,6 +20,12 @@ public class MultiScoringRule implements ScoringRule {
 
   @Override
   public int pointsFor(List<Placement> placements, IGameState state) {
-    return rules.stream().mapToInt(rule -> rule.pointsFor(placements, state)).sum();
+    // return rules.stream().mapToInt(rule -> rule.pointsFor(placements, state)).sum();
+    int sum = 0;
+    for (ScoringRule r : rules) {
+      int add = r.pointsFor(placements, state);
+      sum += add;
+    }
+    return sum;
   }
 }
