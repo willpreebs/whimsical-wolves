@@ -26,12 +26,12 @@ import qgame.state.map.Tile;
 import qgame.util.TileUtil;
 import qgame.player.Player;
 import qgame.player.PlayerInfo;
-import qgame.rule.placement.CorrectPlayerTilesRule;
-import qgame.rule.placement.ExtendSameLineRule;
-import qgame.rule.placement.ExtendsBoardRule;
-import qgame.rule.placement.MatchTraitRule;
 import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.board.ExtendsBoardRule;
+import qgame.rule.placement.board.MatchTraitRule;
+import qgame.rule.placement.move.ExtendSameLineRule;
+import qgame.rule.placement.state.CorrectPlayerTilesRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.Placement;
 import qgame.state.IPlayerGameState;
@@ -155,7 +155,9 @@ public class QReferee implements IReferee {
     List<PlayerInfo> infos = new ArrayList<>();
 
     for (Player p : players) {
-      PlayerInfo info = new PlayerInfo(0, tileBag.getItems(this.NUM_PLAYER_TILES), p.name());
+      Collection<Tile> playerTiles = tileBag.removeFirstNItems(this.NUM_PLAYER_TILES);
+      // tileBag.removeAll(playerTiles);
+      PlayerInfo info = new PlayerInfo(0, playerTiles, p.name());
       infos.add(info);
     }
 
@@ -339,8 +341,10 @@ public class QReferee implements IReferee {
         // Step 3: Perform player's turn and determine if the game should end
         gameContinue = handleAction(action);
         
-        // Step 4: Give player new tiles (returns false if method failed) 
-        removePlayer = !givePlayerNewTiles(action, currentPlayer);
+        if (gameContinue) {
+          // Step 4: Give player new tiles (returns false if method failed) 
+          removePlayer = !givePlayerNewTiles(action, currentPlayer);
+        }
       }
       // Step 5: Prepare for next round
       // If current player broke the rules or caused an exception, remove them
@@ -441,6 +445,7 @@ public class QReferee implements IReferee {
     try {
       return Optional.of(callPlayerMethodWithTimeout(l, player, currentGameState.getCurrentPlayerState()));
     } catch (ExecutionException | InterruptedException | TimeoutException e) {
+      // e.printStackTrace(System.out);
       return Optional.empty();
     }
   }
@@ -626,12 +631,10 @@ public class QReferee implements IReferee {
    * @param placements list of placements player made on this turn.
    */
   private void scorePlacements(List<Placement> placements) {
-    IMap board = currentGameState.getBoard();
-    int score = this.scoringRules.pointsFor(placements, board);
-    // System.out.println("Giving score: " + score + " to player: " + this.currentGameState.getCurrentPlayer().name());
-    // int bonus = placedAllTiles(placements) ? ALL_TILE_BONUS : 0;
-    // currentGameState.addScoreToCurrentPlayer(score + bonus);
+    int score = this.scoringRules.pointsFor(placements, currentGameState);
     currentGameState.addScoreToCurrentPlayer(score);
+    // currentGameState.getBoard().printMap();
+    // System.out.println("Player: " + currentGameState.getCurrentPlayerInfo().name() + " received: " + score + " points");
   }
 
   //Returns true when a list of placements has as many elements as the current player's hand.

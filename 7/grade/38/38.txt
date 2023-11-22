@@ -1,0 +1,35 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/mysterious-whales/7/xgames)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/7/38/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/7/38/Tests/0-out.json)
+Exception in thread "main" java.lang.NullPointerException: Cannot invoke "player.IPlayer.getName()" because "p" is null
+	at test_harness.Converter.addNamesToBuilder(Converter.java:111)
+	at test_harness.Converter.constructXGamesOutputString(Converter.java:99)
+	at test_harness.XGames.main(XGames.java:46)
+	at test_harness.Harness.main(Harness.java:26)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "red") (shape . "square"))))))
+          (players
+           .
+           (#hasheq((score . 0)
+                    (tile* . (#hasheq((color . "red") (shape . "square")))))
+            #hasheq((score . 0)
+                    (tile* . (#hasheq((color . "red") (shape . "square")))))
+            #hasheq((score . 0)
+                    (tile* . (#hasheq((color . "red") (shape . "square")))))
+            #hasheq((score . 0)
+                    (tile* . (#hasheq((color . "red") (shape . "square")))))))
+          (tile* . ()))
+  (("a" "dag" "setup")
+   ("b" "ldasg" "setup")
+   ("c" "ldasg" "setup")
+   ("d" "dag" "setup")))
+(*** expected)
+'((() ("a" "b" "c" "d")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+

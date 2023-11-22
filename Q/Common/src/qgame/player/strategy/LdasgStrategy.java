@@ -3,61 +3,60 @@ package qgame.player.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
-import qgame.state.map.Posn;
-import qgame.state.map.IMap;
-import qgame.state.map.Tile;
 import qgame.rule.placement.PlacementRule;
-import qgame.state.Placement;
+import qgame.rule.placement.board.BoardRule;
+import qgame.rule.placement.move.MoveRule;
 import qgame.state.IPlayerGameState;
+import qgame.state.Placement;
+import qgame.state.map.IMap;
+import qgame.state.map.Posn;
+import qgame.state.map.Tile;
 import qgame.util.PosnUtil;
 
-/**
- * Represents a player strategy in which the smallest tile that can extend
- * the board is selected to be placed. If there are multiple placements for this
- * smallest tile, it selects the location with the most tile neighbors. If there
- * are further ties, then it selects the smallest per rowcolumn strategy.
- */
 public class LdasgStrategy extends SmallestRowColumnTileStrategy {
 
-  public LdasgStrategy(PlacementRule rules) {
-    super(rules);
-  }
+    public LdasgStrategy(BoardRule boardRule, MoveRule moveRule) {
+        super(boardRule, moveRule);
+    }
 
-  private List<Posn> neighborsWithTiles(Posn posn, IMap state) {
-    return PosnUtil.neighbors(posn)
-      .stream()
-      .filter(state::posnHasTile)
-      .toList();
-  }
+    public LdasgStrategy(PlacementRule rule) {
+        super(rule.getBoardRule(), rule.getMoveRule());
+    }
 
-  private int neighborsWithTilesSize(Posn posn, IMap state) {
-    return neighborsWithTiles(posn, state).size();
-  }
-  private int maxConstrained(List<Posn> posns, IMap board) {
-    return posns
-      .stream()
-      .map(posn -> this.neighborsWithTiles(posn, board))
-      .map(List::size)
-      .reduce(0, Math::max);
-  }
-  private List<Posn> maxConstrainedNeighbors(List<Posn> posns, IMap board) {
-    int maxConstrainSize = maxConstrained(posns, board);
-    return new ArrayList<>(posns
+    private long getNumberNeighbors(IMap map, Posn p) {
+        return PosnUtil.neighbors(p)
         .stream()
-        .filter(posn -> neighborsWithTilesSize(posn, board) == maxConstrainSize)
-        .toList());
-  }
+        .filter(map::posnHasTile)
+        .count();
+    }
 
-  private Posn bestPosition(List<Posn> posns, IMap board) {
-    List<Posn> maxConstrainedPositions = maxConstrainedNeighbors(posns, board);
-    maxConstrainedPositions.sort(PosnUtil::rowColumnCompare);
-    return maxConstrainedPositions.get(0);
-  }
+    private List<Posn> getMaxConstrainedPosns(IPlayerGameState state, List<Placement> move, List<Posn> posns) {
+        IMap map = state.getBoard();
+        move.forEach(p -> map.placeTile(p));
 
-  protected Placement makePlacementGivenPositions(IPlayerGameState state, List<Posn> legalPlaces) {
-    // System.out.println(legalPlaces.size());
-    Tile bestTile = bestTile(state);
-    Posn bestPosn = bestPosition(legalPlaces, state.getBoard());
-    return new Placement(bestPosn, bestTile);
-  }
+        List<Posn> maxList = new ArrayList<>();
+
+        int max = 0;
+        for (Posn p : posns) {
+            int n = (int) getNumberNeighbors(map, p);
+            if (n > max) {
+                maxList = new ArrayList<>();
+                maxList.add(p);
+                max = n;
+            }
+            else if (n == max) {
+                maxList.add(p);
+            }
+        }
+        return maxList;
+    }
+
+    @Override
+    public Placement getBestPlacement(IPlayerGameState state, List<Placement> move, List<Posn> posns, Tile t) {
+
+        ArrayList<Posn> maxNeighborList = new ArrayList<>(getMaxConstrainedPosns(state, move, posns));
+        maxNeighborList.sort(PosnUtil::rowColumnCompare);
+        return new Placement(maxNeighborList.get(0), t);
+    }
+    
 }

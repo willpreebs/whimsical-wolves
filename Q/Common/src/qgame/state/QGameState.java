@@ -52,6 +52,12 @@ public class QGameState implements IGameState {
     this.playerInformation = new ArrayList<>();
   }
 
+  public QGameState(IMap map) {
+    this.board = map;
+    this.refereeTiles = new Bag<>();
+    this.playerInformation = new ArrayList<>();
+  }
+
   /**
    * Determines whether all constructor parameters are valid before creating
    * a new gameState.
@@ -83,19 +89,6 @@ public class QGameState implements IGameState {
     return copy;
   }
 
- @Override
- public PlayerInfo getPlayerInfo(String name) {
-
-   for (int i = 0; i < this.playerInformation.size(); i++) {
-     if (this.playerInformation.get(i).name().equals(name)) {
-       return this.playerInformation.get(i);
-     }
-   }
-
-   throw new IllegalArgumentException("Player does not exist in info list");
- }
-
- 
   /**
    * Returns the current player whose turn it is
    * @return PlayerInfo corresponding to current turn's player.
@@ -131,16 +124,6 @@ public class QGameState implements IGameState {
     return new QPlayerGameState(scores, boardState, tileCount, playerTile, playerName);
   }
 
-//  @Override
-//  public IPlayerGameState getPlayerState(Player player) {
-//    List<Integer> scores = allScores();
-//    IMap boardState = getBoard();
-//    int tileCount = getRefereeTiles().size();
-//    Bag<Tile> playerTile = getCurrentPlayerInfo().tiles();
-//    String playerName = player.name();
-//    return new QPlayerGameState(scores, boardState, tileCount, playerTile, playerName);
-//  }
-
   @Override
   public void shiftCurrentToBack() throws IllegalStateException {
     validateGameHasPlayers();
@@ -156,21 +139,9 @@ public class QGameState implements IGameState {
   @Override
   public void removeCurrentPlayer() {
     validateGameHasPlayers();
-    this.playerInformation.remove(0);
-  }
-
-  @Override
-  public void removePlayer(String name) {
-    validateGameHasPlayers();
-    
-    for (int i = 0; i < this.playerInformation.size(); i++) {
-      if (this.playerInformation.get(i).name().equals(name)) {
-        this.playerInformation.remove(i);
-        return;
-      }
-    }
-
-    throw new IllegalStateException("Player does not exist in PlayerInfo list");
+    PlayerInfo removed = this.playerInformation.remove(0);
+    Bag<Tile> removedPlayerTiles = removed.tiles();
+    this.refereeTiles.addAll(removedPlayerTiles);
   }
 
   @Override
@@ -186,8 +157,8 @@ public class QGameState implements IGameState {
 
   @Override
   public Collection<Tile> takeOutRefTiles(int count) throws IllegalArgumentException {
-    Collection<Tile> newTiles = this.refereeTiles.getItems(count);
-    this.refereeTiles.removeAll(newTiles);
+    Collection<Tile> newTiles = this.refereeTiles.removeFirstNItems(count);
+    // this.refereeTiles.removeAll(newTiles);
     return newTiles;
   }
 

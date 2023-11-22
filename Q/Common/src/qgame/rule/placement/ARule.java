@@ -29,13 +29,5 @@ public abstract class ARule implements PlacementRule {
     }
 
     return result;
-
-    // return new ArrayList<>(
-    //   validPosns
-    //   .stream()
-    //   .map(posn -> new Placement(posn, t))
-    //   .filter(placement -> this.isPlacementListLegal(List.of(placement), gameState))
-    //   .map(Placement::posn)
-    //   .toList());
   }
 }

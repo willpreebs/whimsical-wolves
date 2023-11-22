@@ -1,12 +1,8 @@
 package qgame.player;
 
-
-
-import qgame.action.PassAction;
 import qgame.action.TurnAction;
 import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
-import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 
 import qgame.player.DummyAIPlayer.FailStep;

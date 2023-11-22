@@ -64,8 +64,6 @@ public interface IGameState {
    */
   void removeCurrentPlayer() throws IllegalStateException;
 
-  void removePlayer(String name);
-
   /**
    * Assigns the list of tiles to the current player in the game.
    * @param tiles The tiles to be given to the current player.
@@ -92,7 +90,4 @@ public interface IGameState {
 
   PlayerInfo getCurrentPlayerInfo();
 
-  PlayerInfo getPlayerInfo(String name);
-
-  //Player getCurrentPlayer();
 }

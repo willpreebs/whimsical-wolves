@@ -33,6 +33,10 @@ public interface IPlayerGameState {
    */
   int getNumberRemainingTiles();
 
+  /**
+   * Gets a new bag containing all of this player's tiles
+   * @return
+   */
   Bag<Tile> getCurrentPlayerTiles();
 
   /**

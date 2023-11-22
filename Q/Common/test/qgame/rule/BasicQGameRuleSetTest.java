@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import qgame.rule.placement.CorrectPlayerTilesRule;
-import qgame.rule.placement.ExtendSameLineRule;
-import qgame.rule.placement.ExtendsBoardRule;
-import qgame.rule.placement.MatchTraitRule;
 import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.board.ExtendsBoardRule;
+import qgame.rule.placement.board.MatchTraitRule;
+import qgame.rule.placement.move.ExtendSameLineRule;
+import qgame.rule.placement.state.CorrectPlayerTilesRule;
 import qgame.state.QPlayerGameState;
 import qgame.state.Placement;
 import qgame.state.IPlayerGameState;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import qgame.state.map.IMap;
+import qgame.state.IGameState;
 import qgame.state.Placement;
 
 public class MultiScoringRule implements ScoringRule {
@@ -18,7 +19,13 @@ public class MultiScoringRule implements ScoringRule {
   }
 
   @Override
-  public int pointsFor(List<Placement> placements, IMap map) {
-    return rules.stream().mapToInt(rule -> rule.pointsFor(placements, map)).sum();
+  public int pointsFor(List<Placement> placements, IGameState state) {
+    // return rules.stream().mapToInt(rule -> rule.pointsFor(placements, state)).sum();
+    int sum = 0;
+    for (ScoringRule r : rules) {
+      int add = r.pointsFor(placements, state);
+      sum += add;
+    }
+    return sum;
   }
 }

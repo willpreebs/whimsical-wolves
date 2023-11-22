@@ -36,11 +36,11 @@ public class Bag<T>{
   }
 
   public void addAll(Collection<T> itemsToAdd) throws IllegalArgumentException {
-    this.items.addAll(itemsToAdd);
+    itemsToAdd.forEach(this::add);
   }
 
   public void addAll(Bag<T> itemsToAdd) throws IllegalArgumentException {
-    this.items.addAll(itemsToAdd.getItems());
+    itemsToAdd.getItems().forEach(this::add);
   }
 
   private Map<T, Integer> itemCounts(Collection<T> itemsToCount) {
@@ -89,8 +89,28 @@ public class Bag<T>{
   public Collection<T> getItems(int count) {
     validateArg(size -> size >= count, this.items.size(), "Cannot request more items "
             + "than bag capacity.");
-    List<T> newItems = this.items.subList(0, count);
-    return new ArrayList<>(newItems);
+
+    List<T> newItems = new ArrayList<>();
+
+    for (int i = 0; i < count; i++) {
+      newItems.add(items.get(i));
+    }
+
+    return newItems;
+    // List<T> newItems = this.items.subList(0, count);
+    // return new ArrayList<>(newItems);
+  }
+
+  public Collection<T> removeFirstNItems(int n) {
+    validateArg(size -> size >= n, this.items.size(), "Cannot request more items "
+            + "than bag capacity.");
+
+    List<T> newItems = new ArrayList<>();
+
+    for (int i = 0; i < n; i++) {
+      newItems.add(items.remove(0));
+    }
+    return newItems;
   }
 
   public int size() {

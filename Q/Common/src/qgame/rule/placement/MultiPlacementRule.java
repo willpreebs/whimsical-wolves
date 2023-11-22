@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import qgame.state.Placement;
+import qgame.rule.placement.board.BoardRule;
+import qgame.rule.placement.board.MultiBoardRule;
+import qgame.rule.placement.move.MoveRule;
+import qgame.rule.placement.move.MultiMoveRule;
 import qgame.state.IPlayerGameState;
 
 /**
@@ -35,15 +39,36 @@ public class MultiPlacementRule extends ARule {
 
   @Override
   public boolean isPlacementListLegal(List<Placement> placements, IPlayerGameState gameState) {
-    //return this.rules.stream().allMatch(rule -> rule.isPlacementListLegal(placements, gameState));
-    //System.out.println(gameState.getPlayerName());
 
     for (PlacementRule r : this.rules) {
       if (!r.isPlacementListLegal(placements, gameState)) {
-        // System.out.println("Rule broken: " + r.getClass());
         return false;
       }
     }
     return true;
+  }
+  @Override
+  public BoardRule getBoardRule() {
+    List<BoardRule> bRules = new ArrayList<>();
+
+    for (PlacementRule r : this.rules) {
+      if (r instanceof BoardRule) {
+        bRules.add((BoardRule) r);
+      }
+    }
+
+    return new MultiBoardRule(bRules);
+  }
+  @Override
+  public MoveRule getMoveRule() {
+    List<MoveRule> mRules = new ArrayList<>();
+
+    for (PlacementRule r : this.rules) {
+      if (r instanceof MoveRule) {
+        mRules.add((MoveRule) r);
+      }
+    }
+
+    return new MultiMoveRule(mRules);
   }
 }

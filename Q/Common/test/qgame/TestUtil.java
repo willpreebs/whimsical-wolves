@@ -1,9 +1,17 @@
 package qgame;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonStreamParser;
 
 import qgame.state.map.Tile;
 import qgame.state.map.QTile;
@@ -29,5 +37,28 @@ public class TestUtil {
       }
     }
     return list;
+  }
+
+  private static List<JsonElement> getJsonElementsFromFile(File f) throws FileNotFoundException {
+      InputStream in = new FileInputStream(f);
+      JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(in));
+
+      List<JsonElement> elements = new ArrayList<>();
+
+      while (parser.hasNext()) {
+          elements.add(parser.next());
+      }
+
+      return elements;
+  }
+
+  public static List<JsonElement> getJsonTestElements(String directory, int testNum) throws FileNotFoundException {
+      File f = new File(directory + testNum + "-in.json");
+      return getJsonElementsFromFile(f);
+  }
+
+  public static JsonElement getJsonTestResult(String directory, int testNum) throws FileNotFoundException {
+      File f = new File(directory + testNum + "-out.json");
+      return getJsonElementsFromFile(f).get(0);
   }
 }
