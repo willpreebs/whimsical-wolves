@@ -14,9 +14,10 @@ import qgame.player.Player;
 /**
  * A Client represents a remote actor that is responsible for setting up a single
  * remote player
- * Contains a Player that determines how the game is played.
+ * Contains a Player that makes turns on the game board.
  * Contains a Referee Proxy that receives messages over a socket connection
  * and calls the Player methods determined by the message.
+ * 
  */
 public class Client implements Runnable {
 
@@ -60,6 +61,10 @@ public class Client implements Runnable {
         return this.player;
     }
 
+    /**
+     * Sends the name of the player this Client controls
+     *  to the server so it can start the game
+     */
     protected void sendPlayerName() {
         printer.println(new JsonPrimitive(this.player.name()));
     }

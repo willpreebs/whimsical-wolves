@@ -67,14 +67,16 @@ public class RefereeProxy {
      * Listens for messages continuously and calls Player methods until the game is over.
      * Determines the game to be over when a message is sent with the method name "win".
      * Assumes messages will come over the TCP connection in the following format:
-     * ["methodName", [Argument...]]
+     * ["methodName", [Argument...]].
+     * 
+     * After the Player returns, the result is sent back as JSON over the same remote connection
+     * to the PlayerProxy.
      * @throws IOException If a problem occurs with the TCP connection.
      */
     public void listenForMessages() throws IOException {
 
         boolean gameOver = false;
         while (!gameOver) {
-            // JsonElement element = null;
             String methodName = null;
             JsonArray args = null;
             try {
@@ -97,6 +99,12 @@ public class RefereeProxy {
         }
     }
 
+    /**
+     * Calls a player method given a method name and an array of arguments.
+     * @param methodName
+     * @param args
+     * @return A JsonElement representing the result of the method call
+     */
     private JsonElement makeMethodCall(String methodName, JsonArray args) {
         return switch (methodName) {
             case "setup" -> setup(args);
@@ -107,6 +115,13 @@ public class RefereeProxy {
         };
     }
 
+    /**
+     * Calls the setup Player method
+     * @param args An array of two JsonElements, the first one representing an
+     * IPlayerGameState (the starting state of the game) and the second one representing
+     * the player's starting tiles. 
+     * @return "void" if setup returns successfully.
+     */
     private JsonElement setup(JsonArray args) {
         validateArg(a -> a.size() == 2, args, "Setup takes two arguments");
         IPlayerGameState state = JsonConverter.playerGameStateFromJPub(args.get(0));
@@ -115,6 +130,12 @@ public class RefereeProxy {
         return VOID_ELEMENT;
     }
 
+    /**
+     * Calls the takeTurn Player method.
+     * @param args A JsonArray with one JsonElement, representing the current player
+     * state of the game. 
+     * @return the resulting TurnAction as a JsonElement.
+     */
     private JsonElement takeTurn(JsonArray args) {
         validateArg(a -> a.size() == 1, args, "takeTurn takes one argument");
         IPlayerGameState state = JsonConverter.playerGameStateFromJPub(args.get(0));
@@ -122,6 +143,12 @@ public class RefereeProxy {
         return JsonConverter.actionToJChoice(t);
     }
 
+    /**
+     * Calls the newTiles Player method.
+     * @param args A JsonArray with one JsonElement, representing the 
+     * Player's new bag of tiles.
+     * @return "void" if newTiles returns successfully.
+     */
     private JsonElement newTiles(JsonArray args) {
         validateArg(a -> a.size() == 1, args, "takeTurn takes one argument");
         Bag<Tile> tiles = new Bag<>(JsonConverter.tilesFromJTileArray(args.get(0)));
@@ -129,6 +156,12 @@ public class RefereeProxy {
         return VOID_ELEMENT;
     }
 
+    /**
+     * Calls the win Player method.
+     * @param args A JsonArray with one JsonElement, which is a boolean that 
+     * specifies if this Player won the game or not.
+     * @return "void" if win returns successfully.
+     */
     private JsonElement win(JsonArray args) {
         validateArg(a -> a.size() == 1, args, "win takes one argument");
         this.p.win(args.getAsBoolean());

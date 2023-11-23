@@ -38,7 +38,11 @@ import qgame.referee.QReferee;
  * If a client connects to the socket, they must provide a name for the player within a timeout period.
  * 
  * After a number of waiting periods, if the minimum number of clients connect then a game is played
- * with the remote players
+ * with the remote players.
+ * 
+ * To connect to this Server, a Client creates a socket connection with the same address
+ * and port of the ServerSocket that is contained in this class. After a connection is
+ * established, the Client is expected to send a player name in json over the connection.
  * 
  */
 public class Server implements Runnable {
@@ -66,6 +70,11 @@ public class Server implements Runnable {
         return this.server;
     }
 
+    /**
+     * Gets the required number of Players for a game within
+     * a number of waiting periods.
+     * @return
+     */
     protected List<Player> getProxies() {
 
         List<Player> proxies = new ArrayList<>();
@@ -121,8 +130,12 @@ public class Server implements Runnable {
     }
 
     /**
-     * Get the list of player proxies. This method will block until
-     * there is a socket connection.
+     * Get a remote Player, represented as a PlayerProxy. 
+     * This method will block until there is a socket connection and
+     * the remote client sends a json formatted name over the connection.
+     * 
+     * Between the socket connection being established and the client sending
+     * a name, there is a time limit specified by TIMEOUT_FOR_NAME_SUBMISSION.
      * @param server
      * @return
      */
@@ -149,11 +162,11 @@ public class Server implements Runnable {
             String playerName;
             try {
                 playerName = playerNameJson.get(TIMEOUT_FOR_NAME_SUBMISSION, TimeUnit.MILLISECONDS).getAsString();
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            } catch (InterruptedException | TimeoutException e) {
                 // PlayerName not submitted in time...
                 System.out.println("playerName not submitted in time");
                 continue;
-            } catch (JsonParseException e) {
+            } catch (JsonParseException | ExecutionException e) {
                 // playerName not formatted json...
                 System.out.println("playerName not formatted json");
                 continue;
@@ -163,7 +176,18 @@ public class Server implements Runnable {
         }
     }
 
-
+    /**
+     * Returns a list of PlayerProxies that represent remote Players.
+     * Connects up to a maximum number of clients within a time limit
+     * specified by WAITING_PERIOD. If the time limit is reached, then
+     * returns all of the players connected so far.
+     * 
+     * The waiting period does not reset between remote connections, instead
+     * the start time is calculated and all clients must connect before
+     * the amount of time specified by WAITING_PERIOD has passed.
+     * @param proxies
+     * @return
+     */
     protected List<Player> getPlayerProxiesWithinTimeout(List<Player> proxies) {
 
         ThreadFactory factory = Thread.ofVirtual().factory();

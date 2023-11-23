@@ -15,6 +15,16 @@ import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
 import qgame.state.map.Tile;
 
+/**
+ * Represents a Player that can communicate remotely in order to 
+ * determine its behavior.
+ * 
+ * Is called by the Q Referee and then sends the method calls as JSON
+ * data over a remote connection. The result of the method call is then
+ * expected to come back over the remote connection, which this Player
+ * Proxy converts into either a TurnAction to send to the Referee or if
+ * the return type is void, the PlayerProxy simply returns.
+ */
 public class PlayerProxy implements Player {
 
     private String name;
@@ -53,6 +63,11 @@ public class PlayerProxy implements Player {
         return element;
     }
 
+    /**
+     * Throws an exception if the element received is not "void"
+     * @param e
+     * @throws IllegalStateException
+     */
     private void assertVoidReturn(JsonElement e) throws IllegalStateException {
         String v = JsonConverter.getAsString(e);
         if (!v.equals("void")) {
@@ -60,6 +75,13 @@ public class PlayerProxy implements Player {
         }
     }
 
+    /**
+     * Given a method name and an array of arguments, returns a JsonArray
+     * containing both.
+     * @param methodCall
+     * @param args
+     * @return
+     */
     private JsonElement buildFunctionCallJson(String methodCall, JsonArray args) {
         JsonArray a = new JsonArray();
         a.add(new JsonPrimitive(methodCall));
@@ -67,6 +89,11 @@ public class PlayerProxy implements Player {
         return a;
     }
   
+    /**
+     * From an array of JsonElements, returns a JsonArray containing all of them.
+     * @param elements
+     * @return
+     */
     private JsonArray buildArgArray(JsonElement... elements) {
         JsonArray a = new JsonArray();
         for (JsonElement e : elements) {
@@ -80,6 +107,10 @@ public class PlayerProxy implements Player {
         return name;
     }
 
+    /**
+     * Sends the given PlayerGameState as JSON over the remote connection.
+     * Expects a TurnAction (formatted in json) from the remote Player.
+     */
     @Override
     public TurnAction takeTurn(IPlayerGameState state) throws IllegalStateException {
         JsonArray args = buildArgArray(JsonConverter.playerStateToJPub(state));
@@ -89,6 +120,10 @@ public class PlayerProxy implements Player {
         return JsonConverter.jChoiceToTurnAction(r);
     }
 
+    /**
+     * Sends a PlayerGameState and a Bag of Tiles as JSON over the remote connection.
+     * Expects "void" in return.
+     */
     @Override
     public void setup(IPlayerGameState state, Bag<Tile> tiles) throws IllegalStateException {
         System.out.println("PlayerProxy: setup called");
@@ -99,6 +134,10 @@ public class PlayerProxy implements Player {
         assertVoidReturn(e);
     }
 
+    /**
+     * Sends a Bag of Tiles as JSON over the remote connection.
+     * Expects "void" in return.
+     */
     @Override
     public void newTiles(Bag<Tile> tiles) throws IllegalStateException {
         JsonArray a = buildArgArray(JsonConverter.jTilesFromTiles(tiles.getItems()));
@@ -107,6 +146,10 @@ public class PlayerProxy implements Player {
         assertVoidReturn(e);
     }
 
+    /**
+     * Sends a boolean as JSON over the remote connection that specifies
+     * whether the player has won or not. Expects "void" in return.
+     */
     @Override
     public void win(boolean w) throws IllegalStateException {
         JsonArray a = buildArgArray(new JsonPrimitive(w));

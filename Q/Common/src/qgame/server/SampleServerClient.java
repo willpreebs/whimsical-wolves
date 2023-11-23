@@ -10,6 +10,12 @@ import qgame.util.RuleUtil;
 
 public class SampleServerClient {
     
+    /**
+     * Runs a game over a TCP socket between a server and 4 clients, 
+     * each with control over a player
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         Server s = new Server(1234);
         ServerSocket server = s.getServer();
