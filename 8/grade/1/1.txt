@@ -110,7 +110,51 @@ Exception in thread "main" java.lang.IllegalStateException: FAILURE
 
 (testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/3-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/3-out.json)
 (testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/4-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/4-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/5-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/5-out.json)
+Exception in thread "main" java.lang.IllegalStateException: FAILURE
+	at qgame.player.DummyAIPlayer.failIfStep(DummyAIPlayer.java:30)
+	at qgame.player.DummyAIPlayer.win(DummyAIPlayer.java:58)
+	at qgame.referee.QReferee.notifyPlayers(QReferee.java:181)
+	at qgame.referee.QReferee.findWinnersAndNotifyPlayers(QReferee.java:203)
+	at qgame.referee.QReferee.getResults(QReferee.java:221)
+	at qgame.referee.QReferee.playGame(QReferee.java:107)
+	at qgame.harnesses.XGamesWithObserver.main(XGamesWithObserver.java:47)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "blue") (shape . "star"))))))
+          (players
+           .
+           (#hasheq((name . "hi")
+                    (score . 3)
+                    (tile* . (#hasheq((color . "orange") (shape . "8star")))))
+            #hasheq((name . "bye")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "circle"))
+                      #hasheq((color . "purple") (shape . "circle"))
+                      #hasheq((color . "blue") (shape . "circle"))
+                      #hasheq((color . "blue") (shape . "diamond"))
+                      #hasheq((color . "blue") (shape . "diamond"))
+                      #hasheq((color . "blue") (shape . "square")))))))
+          (tile*
+           .
+           (#hasheq((color . "blue") (shape . "diamond"))
+            #hasheq((color . "blue") (shape . "8star"))
+            #hasheq((color . "yellow") (shape . "diamond"))
+            #hasheq((color . "orange") (shape . "8star"))
+            #hasheq((color . "red") (shape . "star"))
+            #hasheq((color . "red") (shape . "square")))))
+  (("hi" "dag" "win") ("bye" "ldasg" "a cheat" "not-a-line")))
+(*** expected)
+'((() ("bye" "hi")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
 (testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/6-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/6-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/7-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/7-out.json)
 (testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/8-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/8-out.json)
 ---------------------------------
 (*** score 0)
@@ -160,6 +204,6 @@ Exception in thread "main" java.lang.IllegalStateException: FAILURE
 
 
 (testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/9-out.json)
-((/course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/0-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/3-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/3-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/4-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/4-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/6-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/6-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/9-out.json))
-((passed 5) (total 8) (partial-score 5))
+((/course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/0-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/3-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/3-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/4-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/4-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/6-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/6-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/7-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/7-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/1/Tests/9-out.json))
+((passed 6) (total 10) (partial-score 6))
 

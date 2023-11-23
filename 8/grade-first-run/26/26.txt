@@ -1,0 +1,248 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/0-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/1-out.json)
+Exception in thread "main" java.lang.IllegalStateException: FAILURE
+	at qgame.player.DummyAIPlayer.failIfStep(DummyAIPlayer.java:30)
+	at qgame.player.DummyAIPlayer.win(DummyAIPlayer.java:58)
+	at qgame.referee.QReferee.notifyPlayers(QReferee.java:181)
+	at qgame.referee.QReferee.findWinnersAndNotifyPlayers(QReferee.java:203)
+	at qgame.referee.QReferee.getResults(QReferee.java:221)
+	at qgame.referee.QReferee.playGame(QReferee.java:107)
+	at qgame.harnesses.XGamesWithObserver.main(XGamesWithObserver.java:47)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "red") (shape . "circle"))))))
+          (players
+           .
+           (#hasheq((name . "a")
+                    (score . 15)
+                    (tile* . (#hasheq((color . "green") (shape . "8star")))))
+            #hasheq((name . "bc")
+                    (score . 0)
+                    (tile* . (#hasheq((color . "purple") (shape . "square")))))
+            #hasheq((name . "c")
+                    (score . 0)
+                    (tile* . (#hasheq((color . "red") (shape . "square")))))))
+          (tile* . (#hasheq((color . "red") (shape . "star")))))
+  (("a" "ldasg" "a cheat" "no-fit") ("bc" "ldasg") ("c" "ldasg" "win")))
+(*** expected)
+'((() ("a" "c")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/2-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/2-out.json)
+Exception in thread "main" java.lang.IllegalStateException: FAILURE
+	at qgame.player.DummyAIPlayer.failIfStep(DummyAIPlayer.java:30)
+	at qgame.player.DummyAIPlayer.win(DummyAIPlayer.java:58)
+	at qgame.referee.QReferee.notifyPlayers(QReferee.java:181)
+	at qgame.referee.QReferee.findWinnersAndNotifyPlayers(QReferee.java:204)
+	at qgame.referee.QReferee.getResults(QReferee.java:221)
+	at qgame.referee.QReferee.playGame(QReferee.java:107)
+	at qgame.harnesses.XGamesWithObserver.main(XGamesWithObserver.java:47)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "red") (shape . "circle"))))))
+          (players
+           .
+           (#hasheq((name . "a") (score . 15) (tile* . ()))
+            #hasheq((name . "bc")
+                    (score . 0)
+                    (tile* . (#hasheq((color . "purple") (shape . "square")))))
+            #hasheq((name . "c")
+                    (score . 0)
+                    (tile* . (#hasheq((color . "red") (shape . "square")))))))
+          (tile* . (#hasheq((color . "red") (shape . "star")))))
+  (("a" "ldasg" "a cheat" "bad-ask-for-tiles")
+   ("bc" "ldasg")
+   ("c" "ldasg" "win")))
+(*** expected)
+'((("a") ("c")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/5-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/5-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((-1
+             (2 #hasheq((color . "blue") (shape . "circle")))
+             (3 #hasheq((color . "red") (shape . "8star"))))
+            (0 (2 #hasheq((color . "purple") (shape . "diamond"))))
+            (1
+             (2 #hasheq((color . "purple") (shape . "star")))
+             (3 #hasheq((color . "blue") (shape . "square"))))))
+          (players
+           .
+           (#hasheq((name . "player1")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "clover"))
+                      #hasheq((color . "red") (shape . "8star")))))
+            #hasheq((name . "player2")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "purple") (shape . "star"))
+                      #hasheq((color . "yellow") (shape . "clover")))))
+            #hasheq((name . "player3")
+                    (score . 0)
+                    (tile* . (#hasheq((color . "green") (shape . "diamond")))))
+            #hasheq((name . "player4")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "yellow") (shape . "circle"))
+                      #hasheq((color . "orange") (shape . "star")))))))
+          (tile*
+           .
+           (#hasheq((color . "green") (shape . "clover"))
+            #hasheq((color . "green") (shape . "clover"))
+            #hasheq((color . "orange") (shape . "square"))
+            #hasheq((color . "purple") (shape . "circle")))))
+  (("player1" "dag")
+   ("player2" "dag" "a cheat" "non-adjacent-coordinate")
+   ("player3" "ldasg" "a cheat" "not-a-line")
+   ("player4" "dag")))
+(*** expected)
+'((("player3") ("player2")))
+(*** but received)
+'(((plain fast with-newline plain-unicode)
+   ((("player1" "player3") ("player2")))))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/6-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/6-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/7-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/7-out.json)
+Exception in thread "main" java.lang.IllegalStateException: FAILURE
+	at qgame.player.DummyAIPlayer.failIfStep(DummyAIPlayer.java:30)
+	at qgame.player.DummyAIPlayer.win(DummyAIPlayer.java:58)
+	at qgame.referee.QReferee.notifyPlayers(QReferee.java:181)
+	at qgame.referee.QReferee.findWinnersAndNotifyPlayers(QReferee.java:204)
+	at qgame.referee.QReferee.getResults(QReferee.java:221)
+	at qgame.referee.QReferee.playGame(QReferee.java:107)
+	at qgame.harnesses.XGamesWithObserver.main(XGamesWithObserver.java:47)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((800 (-800 #hasheq((color . "orange") (shape . "8star"))))
+            (801
+             (-800 #hasheq((color . "green") (shape . "diamond")))
+             (-799 #hasheq((color . "yellow") (shape . "star"))))))
+          (players
+           .
+           (#hasheq((name . "player1")
+                    (score . 2)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "star"))
+                      #hasheq((color . "blue") (shape . "star"))
+                      #hasheq((color . "green") (shape . "diamond"))
+                      #hasheq((color . "red") (shape . "8star")))))
+            #hasheq((name . "player2")
+                    (score . 10)
+                    (tile*
+                     .
+                     (#hasheq((color . "yellow") (shape . "circle"))
+                      #hasheq((color . "purple") (shape . "8star"))
+                      #hasheq((color . "orange") (shape . "star")))))
+            #hasheq((name . "player3")
+                    (score . 24)
+                    (tile*
+                     .
+                     (#hasheq((color . "green") (shape . "diamond"))
+                      #hasheq((color . "yellow") (shape . "diamond"))
+                      #hasheq((color . "blue") (shape . "square")))))
+            #hasheq((name . "player4")
+                    (score . 5)
+                    (tile*
+                     .
+                     (#hasheq((color . "blue") (shape . "square"))
+                      #hasheq((color . "red") (shape . "square"))
+                      #hasheq((color . "green") (shape . "diamond")))))))
+          (tile*
+           .
+           (#hasheq((color . "orange") (shape . "8star"))
+            #hasheq((color . "red") (shape . "8star"))
+            #hasheq((color . "blue") (shape . "circle"))
+            #hasheq((color . "blue") (shape . "circle")))))
+  (("player1" "dag" "win")
+   ("player2" "ldasg")
+   ("player3" "ldasg" "a cheat" "no-fit")
+   ("player4" "dag")))
+(*** expected)
+'((("player4") ("player3" "player1")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/8-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/8-out.json)
+Exception in thread "main" java.lang.IllegalStateException: FAILURE
+	at qgame.player.DummyAIPlayer.failIfStep(DummyAIPlayer.java:30)
+	at qgame.player.DummyAIPlayer.win(DummyAIPlayer.java:58)
+	at qgame.referee.QReferee.notifyPlayers(QReferee.java:181)
+	at qgame.referee.QReferee.findWinnersAndNotifyPlayers(QReferee.java:203)
+	at qgame.referee.QReferee.getResults(QReferee.java:221)
+	at qgame.referee.QReferee.playGame(QReferee.java:107)
+	at qgame.harnesses.XGamesWithObserver.main(XGamesWithObserver.java:47)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((0
+             (0 #hasheq((color . "yellow") (shape . "circle")))
+             (1 #hasheq((color . "yellow") (shape . "square")))
+             (2 #hasheq((color . "green") (shape . "square"))))
+            (1
+             (0 #hasheq((color . "blue") (shape . "clover")))
+             (1 #hasheq((color . "blue") (shape . "diamond")))
+             (2 #hasheq((color . "blue") (shape . "square"))))))
+          (players
+           .
+           (#hasheq((name . "player1")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "8star"))
+                      #hasheq((color . "orange") (shape . "diamond")))))
+            #hasheq((name . "player2")
+                    (score . 5)
+                    (tile*
+                     .
+                     (#hasheq((color . "green") (shape . "clover"))
+                      #hasheq((color . "red") (shape . "8star")))))
+            #hasheq((name . "player3")
+                    (score . 4)
+                    (tile* . (#hasheq((color . "purple") (shape . "circle")))))
+            #hasheq((name . "player4")
+                    (score . 7)
+                    (tile*
+                     .
+                     (#hasheq((color . "blue") (shape . "diamond")))))))
+          (tile*
+           .
+           (#hasheq((color . "red") (shape . "8star"))
+            #hasheq((color . "yellow") (shape . "diamond"))
+            #hasheq((color . "green") (shape . "square")))))
+  (("player1" "dag" "new-tiles")
+   ("player2" "dag" "win")
+   ("player3" "ldasg" "a cheat" "bad-ask-for-tiles")
+   ("player4" "ldasg")))
+(*** expected)
+'((("player3") ("player1" "player2")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/9-out.json)
+((/course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/0-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/6-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/6-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/26/Tests/9-out.json))
+((passed 3) (total 8) (partial-score 3))
+

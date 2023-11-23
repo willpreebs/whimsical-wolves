@@ -12,4 +12,6 @@ Functionality
 Inspection
 307/315 pts: See inspection.md
 
+You received the same score on this test run as on the previous.
+
 Total: 497/535 pts

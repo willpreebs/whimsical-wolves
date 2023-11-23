@@ -1,0 +1,109 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/0-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/1-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/2-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/2-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((1 (0 #hasheq((color . "red") (shape . "8star"))))
+            (2 (0 #hasheq((color . "green") (shape . "8star"))))))
+          (players
+           .
+           (#hasheq((name . "player1")
+                    (score . 25)
+                    (tile*
+                     .
+                     (#hasheq((color . "blue") (shape . "8star"))
+                      #hasheq((color . "blue") (shape . "8star")))))
+            #hasheq((name . "player2")
+                    (score . 25)
+                    (tile* . (#hasheq((color . "blue") (shape . "8star")))))))
+          (tile* . (#hasheq((color . "blue") (shape . "8star")))))
+  (("player1" "dag" "setup")
+   ("player2" "dag" "a cheat" "non-adjacent-coordinate")))
+(*** expected)
+'((() ("player1" "player2")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ((("player2") ("player1")))))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/3-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/3-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/4-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/4-out.json)
+Exception in thread "main" java.lang.IllegalStateException: FAILURE
+	at qgame.player.DummyAIPlayer.failIfStep(DummyAIPlayer.java:30)
+	at qgame.player.DummyAIPlayer.win(DummyAIPlayer.java:58)
+	at qgame.referee.QReferee.notifyPlayers(QReferee.java:181)
+	at qgame.referee.QReferee.findWinnersAndNotifyPlayers(QReferee.java:203)
+	at qgame.referee.QReferee.getResults(QReferee.java:221)
+	at qgame.referee.QReferee.playGame(QReferee.java:107)
+	at qgame.harnesses.XGamesWithObserver.main(XGamesWithObserver.java:47)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map
+           .
+           ((1 (0 #hasheq((color . "red") (shape . "8star"))))
+            (2 (0 #hasheq((color . "green") (shape . "8star"))))
+            (3 (0 #hasheq((color . "blue") (shape . "square"))))))
+          (players
+           .
+           (#hasheq((name . "player1")
+                    (score . 25)
+                    (tile*
+                     .
+                     (#hasheq((color . "blue") (shape . "8star"))
+                      #hasheq((color . "purple") (shape . "diamond")))))
+            #hasheq((name . "player2")
+                    (score . 25)
+                    (tile* . (#hasheq((color . "blue") (shape . "8star")))))))
+          (tile* . (#hasheq((color . "blue") (shape . "8star")))))
+  (("player1" "dag" "a cheat" "tile-not-owned") ("player2" "dag" "win")))
+(*** expected)
+'((() ("player1" "player2")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/5-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/5-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/7-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/7-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/8-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/8-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/9-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "orange") (shape . "star"))))))
+          (players
+           .
+           (#hasheq((name . "player1")
+                    (score . 14)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "star"))
+                      #hasheq((color . "orange") (shape . "star"))
+                      #hasheq((color . "orange") (shape . "star")))))
+            #hasheq((name . "player2")
+                    (score . 25)
+                    (tile* . (#hasheq((color . "blue") (shape . "8star")))))
+            #hasheq((name . "player3")
+                    (score . 25)
+                    (tile* . (#hasheq((color . "blue") (shape . "8star")))))
+            #hasheq((name . "player4")
+                    (score . 25)
+                    (tile* . (#hasheq((color . "blue") (shape . "8star")))))))
+          (tile* . (#hasheq((color . "orange") (shape . "star")))))
+  (("player1" "dag")
+   ("player2" "dag" "a cheat" "non-adjacent-coordinate")
+   ("player3" "ldasg" "a cheat" "tile-not-owned")
+   ("player4" "dag" "a cheat" "not-a-line")))
+(*** expected)
+'((("player1" "player2" "player3" "player4") ()))
+(*** but received)
+'(((plain fast with-newline plain-unicode)
+   ((("player2" "player3" "player4") ()))))
+
+
+((/course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/0-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/1-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/3-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/3-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/5-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/5-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/7-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/7-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/8-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/21/Tests/8-out.json))
+((passed 6) (total 9) (partial-score 6))
+

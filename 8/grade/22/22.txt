@@ -191,6 +191,7 @@ Exception in thread "main" java.lang.IllegalStateException: FAILURE
 
 
 (testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/7-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/7-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/8-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/8-out.json)
 (testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/9-out.json)
 ---------------------------------
 (*** score 0)
@@ -225,6 +226,6 @@ Exception in thread "main" java.lang.IllegalStateException: FAILURE
 '(((plain fast with-newline plain-unicode) ((("one" "two") ("three" "four")))))
 
 
-((/course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/0-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/5-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/5-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/7-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/7-out.json))
-((passed 3) (total 7) (partial-score 3))
+((/course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/0-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/5-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/5-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/7-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/7-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/8-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/22/Tests/8-out.json))
+((passed 4) (total 8) (partial-score 4))
 

@@ -1,0 +1,153 @@
+(testing /course/cs4500f23/ta/23SwDev/Code/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-0/0-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-0/0-out.json)
+jsexpr->player does not match JActorSpec schema [name not alphanumeric or too short] 
+ "Cheater 1"
+jsexpr->player does not match JActorSpec schema [not an array] 
+ ["Cheater 1","dag","a cheat","tile-not-owned"]
+jsexpr->string : value does not satisfy string?
+  [["Tester","dag"],["SecondTester","ldasg"],["Cheater 1","dag","a cheat","tile-not-owned"]]
+value does not match JActors schema:
+#f
+'(("Tester" "dag")
+  ("SecondTester" "ldasg")
+  ("Cheater 1" "dag" "a cheat" "tile-not-owned"))
+xgames-with-observer: invalid JSON:  JActors: see above
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((-3 (0 #hasheq((color . "green") (shape . "8star"))))))
+          (players
+           .
+           (#hasheq((name . "Tester")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "8star"))
+                      #hasheq((color . "purple") (shape . "circle")))))
+            #hasheq((name . "SecondTester")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "square"))
+                      #hasheq((color . "green") (shape . "clover")))))
+            #hasheq((name . "Cheater1")
+                    (score . 11)
+                    (tile*
+                     .
+                     (#hasheq((color . "blue") (shape . "square"))
+                      #hasheq((color . "green") (shape . "circle")))))))
+          (tile* . (#hasheq((color . "purple") (shape . "8star")))))
+  (("Tester" "dag")
+   ("SecondTester" "ldasg")
+   ("Cheater 1" "dag" "a cheat" "tile-not-owned")))
+(*** expected)
+'((("Tester") ("Cheater1")))
+(*** but received)
+'(((plain fast with-newline plain-unicode)
+   ("xgames-with-observer: things went wrong")))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+(testing /course/cs4500f23/ta/23SwDev/Code/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-1/1-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-1/1-out.json)
+((/course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-1/1-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-1/1-out.json))
+((passed 1) (total 1) (partial-score 1))
+(testing /course/cs4500f23/ta/23SwDev/Code/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-2/2-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-2/2-out.json)
+((/course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-2/2-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-2/2-out.json))
+((passed 1) (total 1) (partial-score 1))
+(testing /course/cs4500f23/ta/23SwDev/Code/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-3/3-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-3/3-out.json)
+((/course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-3/3-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-3/3-out.json))
+((passed 1) (total 1) (partial-score 1))
+(testing /course/cs4500f23/ta/23SwDev/Code/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-4/4-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-4/4-out.json)
+((/course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-4/4-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-4/4-out.json))
+((passed 1) (total 1) (partial-score 1))
+(testing /course/cs4500f23/ta/23SwDev/Code/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-5/5-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-5/5-out.json)
+((/course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-5/5-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-5/5-out.json))
+((passed 1) (total 1) (partial-score 1))
+(testing /course/cs4500f23/ta/23SwDev/Code/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-6/6-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-6/6-out.json)
+((/course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-6/6-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-6/6-out.json))
+((passed 1) (total 1) (partial-score 1))
+(testing /course/cs4500f23/ta/23SwDev/Code/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-7/7-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-7/7-out.json)
+((/course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-7/7-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-7/7-out.json))
+((passed 1) (total 1) (partial-score 1))
+(testing /course/cs4500f23/ta/23SwDev/Code/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-8/8-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-8/8-out.json)
+names differ:
+ state players (Tester SecondTester Cheater1)
+ given players (Tester Cheater1 SecondTester)
+illegal state: set-ref-state-players: contract violation;
+ same order of names
+      s: '#s(state #hash((#s(coordinate -3 0) . #s(tile 8star blue))) (#s(sop 0 (#s(tile 8star red) #s(tile circle purple)) "Tester") #s(sop 0 (#s(tile square orange) #s(tile clover green)) "SecondTester") #s(sop 11 (#s(tile square blue)) "Cheater1")) (#s(tile 8...
+      lop: (list (object:tile-not-owned% ...) (object:tile-not-owned% ...) (object:take-turn% ...))
+  in: (->i
+       ((s state?)
+        (lop (listof (instanceof/c player%/c))))
+       #:pre/name
+       (s lop)
+       "same number of player representations and player objects expected"
+       (= (length (state-players s)) (length lop))
+       #:pre/name
+       (lop)
+       "distinct external names"
+       (distinct? (map (λ (p) (send p name)) lop))
+       #:pre/name
+       (s lop)
+       "same order of names"
+       (or (dont-double-check-names)
+           (same-order-of-names
+            (state-players s)
+            lop))
+       (r state?))
+  contract from: 
+      <pkgs>/Qwirkle/Referee/ref-state.rkt
+  blaming: <pkgs>/Qwirkle/Referee/referee.rkt
+   (assuming the contract is correct)
+  at: <pkgs>/Qwirkle/Referee/ref-state.rkt:73:3jsexpr->bytes: expected argument of type <legal JSON value>; given: #<void>
+  context...:
+   /proj/racket/plt-released/recent/collects/json/main.rkt:94:0: write-json*
+   /proj/racket/plt-released/recent/collects/json/main.rkt:516:0: jsexpr->bytes
+   /course/cs4500f23/ta/SwDev/Testing/communication.rkt:67:4
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((-3 (0 #hasheq((color . "blue") (shape . "8star"))))))
+          (players
+           .
+           (#hasheq((name . "Tester")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "red") (shape . "8star"))
+                      #hasheq((color . "purple") (shape . "circle")))))
+            #hasheq((name . "SecondTester")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "orange") (shape . "square"))
+                      #hasheq((color . "green") (shape . "clover")))))
+            #hasheq((name . "Cheater1")
+                    (score . 11)
+                    (tile* . (#hasheq((color . "blue") (shape . "square")))))))
+          (tile* . (#hasheq((color . "purple") (shape . "8star")))))
+  (("Tester" "dag" "a cheat" "tile-not-owned")
+   ("Cheater1" "dag" "a cheat" "tile-not-owned")
+   ("SecondTester" "dag" "take-turn")))
+(*** expected)
+'((() ("Tester" "SecondTester" "Cheater1")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+()
+((passed 0) (total 1) (partial-score 0))
+(testing /course/cs4500f23/ta/23SwDev/Code/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-9/9-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-9/9-out.json)
+((/course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-9/9-in.json /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/Tests-9/9-out.json))
+((passed 1) (total 1) (partial-score 1))
