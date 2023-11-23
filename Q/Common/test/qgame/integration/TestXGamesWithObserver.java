@@ -79,7 +79,7 @@ public class TestXGamesWithObserver {
 
     @Test
     public void runIndividualTest() throws FileNotFoundException {
-        performTest(1, 0);
+        performTest(36, 4);
     }
     
     public void performTest(int dir, int testNum) throws FileNotFoundException {

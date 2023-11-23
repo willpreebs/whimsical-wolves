@@ -89,7 +89,7 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
         return mapWithPlacements;
     }
 
-    private Optional<Placement> getBestMoveExtension(IPlayerGameState state, List<Placement> move) {
+    private Optional<Placement> getBestTilePlacement(IPlayerGameState state, List<Placement> move) {
 
         IMap mapWithPlacements = getMapWithPlacements(state.getBoard(), move);
         
@@ -101,18 +101,19 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
             if (placements.isEmpty()) {
                 continue;
             }
-            placements = placements.stream()
-            .filter(p -> moveRule.canAddPlacementToMove(p, move))
-            .toList();
+            // placements = placements.stream()
+            // .filter(p -> moveRule.canAddPlacementToMove(p, move))
+            // .toList();
 
-            if (placements.isEmpty()) {
-                continue;
-            }
-            else {
-                List<Posn> posns = placements
+            // if (placements.isEmpty()) {
+            //     continue;
+            // }
+            List<Posn> posns = placements
                 .stream().map(p -> p.posn()).toList();
                 return Optional.of(getBestPlacement(state, move, posns, t));
-            }
+            // else {
+                
+            // }
         }
         return Optional.empty();
     }
@@ -123,13 +124,19 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
         boolean canAddToMove = true;
 
         while (canAddToMove) {
-            Optional<Placement> p = getBestMoveExtension(state, move);
+            Optional<Placement> p = getBestTilePlacement(state, move);
 
             if (p.isEmpty()) {
                 canAddToMove = false;
             }
             else {
-                move.add(p.get());
+                Placement pl = p.get();
+                if (moveRule.canAddPlacementToMove(pl, move)) {
+                    move.add(pl);
+                }
+                else {
+                    break;
+                }
             }
         }
         return move;
