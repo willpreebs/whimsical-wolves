@@ -8,7 +8,7 @@ do
     filepath_in=$dir/$a-in.json
     filepath_out=$dir/$a-out.json
 	if test -f $filepath_in; then
-        ./xbaddies < $filepath_in | python ../helperScripts/jsonEquals - $filepath_out
+        ./xbaddies < $filepath_in | python3 ../helperScripts/jsonEquals - $filepath_out
     fi
 	# increment the value
 	a=`expr $a + 1`
