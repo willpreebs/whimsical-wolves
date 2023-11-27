@@ -55,6 +55,15 @@ public class RuleUtil {
     return new MultiScoringRule(rules);
   }
 
+  public static ScoringRule createScoreRules(int qBonus, int fBonus) {
+    List<ScoringRule> rules = List.of(
+      new PointPerTileRule(POINTS_PER_TILE),
+      new QRule(qBonus),
+      new PointPerContiguousSequenceRule(POINTS_PER_CONTIGUOUS_TILE),
+      new PlaceAllOwnedTiles(fBonus));
+    return new MultiScoringRule(rules);
+  }
+
   public static ScoringRule createScoreRules(int pointsPerTile, int qBonus, int pointsPerContiguousTile, int allTilesBonus) {
     List<ScoringRule> rules = List.of(
       new PointPerTileRule(pointsPerTile),

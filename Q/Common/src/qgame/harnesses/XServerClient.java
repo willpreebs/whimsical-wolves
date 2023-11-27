@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 
+import qgame.json.JsonConverter;
 import qgame.server.Client;
 import qgame.server.Server;
 
@@ -26,14 +27,14 @@ public class XServerClient {
 
         
 
-        // switch (args[0]) {
-        //     case "xserver":
-        //         Server s = new Server(port, config);
-        //         runServer(s);
-        //         break;
-        //     case "xclient":
-        //         Client c = new Client(null, null)
-        // }
+        switch (args[0]) {
+            case "xserver":
+                Server s = JsonConverter.parseServerConfig(port, config);
+                runServer(s);
+                break;
+            case "xclient":
+                Client c = new Client(null, null)
+        }
 
     }
 

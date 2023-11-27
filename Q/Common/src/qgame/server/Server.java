@@ -21,6 +21,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonStreamParser;
 
@@ -50,13 +51,13 @@ public class Server implements Runnable {
     private ServerSocket server;
 
     // Waiting period for client signup in milliseconds
-    private final int WAITING_PERIOD = 20000;
+    private final int WAITING_PERIOD;
 
     // Allowed time between a client connection to the socket and their name submission
     // in milliseconds
-    private final int TIMEOUT_FOR_NAME_SUBMISSION = 3000;
+    private final int TIMEOUT_FOR_NAME_SUBMISSION;
 
-    private final int NUMBER_WAITING_PERIODS = 2;
+    private final int NUMBER_WAITING_PERIODS;
 
     private final int MINIMUM_CLIENTS = 2;
     private final int MAXIMUM_CLIENTS = 4;
@@ -66,11 +67,23 @@ public class Server implements Runnable {
     public Server(int tcpPort) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
         this.server = new ServerSocket(tcpPort);
+
+        WAITING_PERIOD = 20000;
+
+        // Allowed time between a client connection to the socket and their name submission
+        // in milliseconds
+        TIMEOUT_FOR_NAME_SUBMISSION = 3000;
+
+        NUMBER_WAITING_PERIODS = 2;
     }
 
-    public Server(int tcpPort, JsonElement refConfig) throws IOException {
+    public Server(int tcpPort, int serverTries, int serverWait, int waitForSignup, boolean quiet, JsonElement refConfig) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
         this.server = new ServerSocket(tcpPort);
+        
+        WAITING_PERIOD = serverWait * 1000;
+        TIMEOUT_FOR_NAME_SUBMISSION = waitForSignup * 1000;
+        NUMBER_WAITING_PERIODS = serverTries;
 
         this.refConfig = refConfig;
     }

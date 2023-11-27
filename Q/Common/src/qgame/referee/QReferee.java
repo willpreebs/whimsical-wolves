@@ -14,12 +14,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import qgame.action.ExchangeAction;
 import qgame.action.PassAction;
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
+import qgame.json.JsonConverter;
 import qgame.observer.IGameObserver;
+import qgame.observer.QGameObserver;
 import qgame.state.Bag;
 import qgame.state.QStateBuilder;
 import qgame.state.map.Posn;
@@ -69,10 +72,11 @@ public class QReferee implements IReferee {
 
   private List<IGameObserver> observers;
 
+
+  private IGameState startState;
+
   public QReferee() {
-    this.placementRules = new MultiPlacementRule(new MatchTraitRule(),
-      new ExtendSameLineRule(),
-      new ExtendsBoardRule(), new CorrectPlayerTilesRule());
+    this.placementRules = RuleUtil.createPlaceRules();
     
     this.scoringRules = RuleUtil.createScoreRules();
 
@@ -83,17 +87,30 @@ public class QReferee implements IReferee {
   }
 
   public QReferee(JsonElement refConfig) {
-    //TODO: impl config spec
-    this.placementRules = new MultiPlacementRule(new MatchTraitRule(),
-      new ExtendSameLineRule(),
-      new ExtendsBoardRule(), new CorrectPlayerTilesRule());
-    
-    this.scoringRules = RuleUtil.createScoreRules();
 
-    this.timeOut = DEFAULT_TIMEOUT;
-    this.players = new ArrayList<>();
-    this.ruleBreakers = new ArrayList<>();
+    JsonObject config = refConfig.getAsJsonObject();
+
+    startState = JsonConverter.jStateToQGameState(config.get("state0"));
+
+    boolean quiet = config.get("quiet").getAsBoolean();
+    RefereeStateConfig rConfig = JsonConverter.parseRefereeStateConfig(config.get("config-s"));
+
+    int perTurn = config.get("per-turn").getAsInt();
+    validateArg(t -> t <= 6, perTurn, "per-turn must be less than or equal to 6");
+
+    boolean observe = config.get("observe").getAsBoolean();
     this.observers = new ArrayList<>();
+
+    if (observe) {
+      this.observers.add(new QGameObserver());
+    }
+
+
+    // TODO: make timeOut in seconds? 
+    this.timeOut = perTurn * 1000;
+
+    this.placementRules = RuleUtil.createPlaceRules();
+    this.scoringRules = RuleUtil.createScoreRules(rConfig.getqBonus(), rConfig.getfBonus());
   } 
 
   public QReferee(PlacementRule placementRules, ScoringRule scoringRules, int timeout) {
@@ -132,18 +149,21 @@ public class QReferee implements IReferee {
 
   @Override
   public GameResults playGame(List<Player> players) {
-    System.out.println("Playing game");
-    Bag<Tile> tileBag = TileUtil.getTileBag(TOTAL_TILES);
+    // System.out.println("Playing game");
 
-    List<PlayerInfo> playerInfos = getDefaultPlayerInfos(players, tileBag);
+    if (startState == null) {
+      Bag<Tile> tileBag = TileUtil.getTileBag(TOTAL_TILES);
 
-    IGameState state = new QStateBuilder()
-    .addTileBag(tileBag.getItems().toArray(new Tile[0]))
-    .placeTile(new Posn(0, 0), tileBag.removeRandomItem())
-    .addPlayerInfo(playerInfos.toArray(new PlayerInfo[0]))
-    .build();
+      List<PlayerInfo> playerInfos = getDefaultPlayerInfos(players, tileBag);
 
-    return playGame(state, players);
+      startState = new QStateBuilder()
+      .addTileBag(tileBag.getItems().toArray(new Tile[0]))
+      .placeTile(new Posn(0, 0), tileBag.removeRandomItem())
+      .addPlayerInfo(playerInfos.toArray(new PlayerInfo[0]))
+      .build();
+    }
+    
+    return playGame(startState, players);
   }
 
   public GameResults playGame(List<Player> players, int num_ref_tiles) {

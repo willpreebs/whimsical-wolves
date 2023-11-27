@@ -4,6 +4,7 @@ import static qgame.util.ValidationUtil.validateArg;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -14,7 +15,11 @@ import com.google.gson.JsonStreamParser;
 import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
 import qgame.player.Player;
+import qgame.referee.GameResults;
+import qgame.referee.IReferee;
+import qgame.referee.QReferee;
 import qgame.state.Bag;
+import qgame.state.IGameState;
 import qgame.state.IPlayerGameState;
 import qgame.state.map.Tile;
 
@@ -22,7 +27,7 @@ import qgame.state.map.Tile;
  * Represents a proxy for the Referee that exists remotely. Deserializes messages
  * sent over TCP in order to call Player methods.
  */
-public class RefereeProxy {
+public class RefereeProxy implements IReferee {
 
     private Player p;
     private JsonStreamParser parser;
@@ -166,5 +171,18 @@ public class RefereeProxy {
         validateArg(a -> a.size() == 1, args, "win takes one argument");
         this.p.win(args.getAsBoolean());
         return VOID_ELEMENT;
+    }
+
+    // TODO ???
+    @Override
+    public GameResults playGame(IGameState state, List<Player> players) throws IllegalStateException {
+        QReferee ref = new QReferee();
+        return ref.playGame(state, players);
+    }
+
+    @Override
+    public GameResults playGame(List<Player> players) throws IllegalStateException {
+        QReferee ref = new QReferee();
+        return ref.playGame(players);
     }
 }

@@ -1,6 +1,8 @@
 package qgame.json;
 
 import com.google.gson.*;
+
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -19,9 +21,11 @@ import qgame.player.CheatingAIPlayer;
 import qgame.player.DummyAIPlayer;
 import qgame.player.LoopingAIPlayer;
 import qgame.referee.GameResults;
+import qgame.referee.RefereeStateConfig;
 import qgame.rule.placement.PlacementRule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.move.MoveRule;
+import qgame.server.Server;
 import qgame.state.Bag;
 import qgame.state.QPlayerGameState;
 import qgame.state.QGameState;
@@ -539,5 +543,31 @@ public class JsonConverter {
       case "place" -> new PlaceAction(placementsFromJPlacements(element));
       default -> throw new IllegalArgumentException("Illegal TurnAction type");
     };
+  }
+
+
+  public static RefereeStateConfig parseRefereeStateConfig(JsonElement element) {
+    // TODO validate args
+    JsonObject obj = element.getAsJsonObject();
+
+    int qbo = obj.get("qbo").getAsInt();
+    int fbo = obj.get("fbo").getAsInt();
+
+    return new RefereeStateConfig(qbo, fbo);
+  }
+
+  public static Server parseServerConfig(int tcpPort, JsonElement element) throws IOException {
+    
+    JsonObject obj = element.getAsJsonObject();
+
+    // int port = obj.get("port").getAsInt();
+    int serverTries = obj.get("server-tries").getAsInt();
+    int serverWait = obj.get("server-wait").getAsInt();
+    int waitForSignup = obj.get("wait-for-signup").getAsInt();
+    boolean quiet = obj.get("quiet").getAsBoolean();
+
+    JsonElement refSpec = obj.get("ref-spec");
+
+    return new Server(tcpPort, serverTries, serverWait, waitForSignup, quiet, refSpec);
   }
 }
