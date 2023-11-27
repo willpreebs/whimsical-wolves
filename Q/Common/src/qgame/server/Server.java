@@ -1,5 +1,5 @@
 package qgame.server;
-
+ 
 import static qgame.util.ValidationUtil.validateArg;
 
 import java.io.IOException;
@@ -21,7 +21,6 @@ import java.util.concurrent.TimeoutException;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonStreamParser;
 
@@ -30,6 +29,7 @@ import qgame.player.Player;
 import qgame.referee.GameResults;
 import qgame.referee.IReferee;
 import qgame.referee.QReferee;
+import qgame.referee.RefereeConfig;
 
 
 /**
@@ -60,9 +60,9 @@ public class Server implements Runnable {
     private final int NUMBER_WAITING_PERIODS;
 
     private final int MINIMUM_CLIENTS = 2;
-    private final int MAXIMUM_CLIENTS = 4;
+    private final int MAXIMUM_CLIENTS = 3;
 
-    private JsonElement refConfig = null;
+    private RefereeConfig refConfig = null;
 
     public Server(int tcpPort) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
@@ -77,39 +77,22 @@ public class Server implements Runnable {
         NUMBER_WAITING_PERIODS = 2;
     }
 
-    public Server(int tcpPort, int serverTries, int serverWait, int waitForSignup, boolean quiet, JsonElement refConfig) throws IOException {
+    public Server(int tcpPort, ServerConfig config) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
         this.server = new ServerSocket(tcpPort);
         
-        WAITING_PERIOD = serverWait * 1000;
-        TIMEOUT_FOR_NAME_SUBMISSION = waitForSignup * 1000;
-        NUMBER_WAITING_PERIODS = serverTries;
+        WAITING_PERIOD = config.getServerWait() * 1000;
+        TIMEOUT_FOR_NAME_SUBMISSION = config.getWaitForSignup() * 1000;
+        NUMBER_WAITING_PERIODS = config.getServerTries();
 
-        this.refConfig = refConfig;
+        this.refConfig = config.getRefSpec();
     }
 
     public ServerSocket getServer() {
         return this.server;
     }
 
-    /**
-     * Gets the required number of Players for a game within
-     * a number of waiting periods.
-     * @return
-     */
-    protected List<Player> getProxies() {
-
-        List<Player> proxies = new ArrayList<>();
-        int currentWaitingPeriod = 0;
-        
-        while (proxies.size() < MINIMUM_CLIENTS && currentWaitingPeriod < NUMBER_WAITING_PERIODS) {
-            getPlayerProxiesWithinTimeout(proxies);
-            currentWaitingPeriod++;
-        }
-
-        return proxies;
-    }
-
+    
     /**
      * Runs this server. Connects to several clients and either calls a Referee to play a Q game
      * with the remote players or sends an empty game result to all remote clients.
@@ -139,18 +122,55 @@ public class Server implements Runnable {
     }
 
     /**
-     * Sends an empty game result to all Players
-     * Assumes all Players in given list are PlayerProxy
-     * @param proxies
+     * Gets the required number of Players for a game within
+     * a number of waiting periods.
+     * @return
      */
-    protected void sendEmptyGameResult (List<Player> proxies) {
-        JsonArray emptyResult = new JsonArray();
-        emptyResult.add(new JsonArray());
-        emptyResult.add(new JsonArray());
-        for (Player p : proxies) {
-            PlayerProxy proxy = (PlayerProxy) p;
-            proxy.sendOverConnection(emptyResult);
+    protected List<Player> getProxies() {
+
+        List<Player> proxies = new ArrayList<>();
+        int currentWaitingPeriod = 0;
+        
+        while (proxies.size() < MINIMUM_CLIENTS && currentWaitingPeriod < NUMBER_WAITING_PERIODS) {
+            getPlayerProxiesWithinTimeout(proxies);
+            currentWaitingPeriod++;
         }
+
+        return proxies;
+    }
+
+    /**
+     * Returns a list of PlayerProxies that represent remote Players.
+     * Connects up to a maximum number of clients within a time limit
+     * specified by WAITING_PERIOD. If the time limit is reached, then
+     * returns all of the players connected so far.
+     * 
+     * The waiting period does not reset between remote connections, instead
+     * the start time is calculated and all clients must connect before
+     * the amount of time specified by WAITING_PERIOD has passed.
+     * @param proxies
+     * @return
+     */
+    protected void getPlayerProxiesWithinTimeout(List<Player> proxies) {
+
+        ThreadFactory factory = Thread.ofVirtual().factory();
+        ExecutorService executor = Executors.newFixedThreadPool(1, factory);
+
+        LocalTime start = LocalTime.now();
+        while (proxies.size() < MAXIMUM_CLIENTS) {
+            // calculate the time left in the waiting period
+            LocalTime now = LocalTime.now();
+            long waitingPeriodRemaining = WAITING_PERIOD - start.until(now, ChronoUnit.MILLIS);
+
+            try {
+                Future<PlayerProxy> proxy = executor.submit(() -> connectToPlayerProxy(server));
+                PlayerProxy p = proxy.get(waitingPeriodRemaining, TimeUnit.MILLISECONDS);
+                proxies.add(p);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                // ran out of time in waiting period
+                return;
+            }
+        }        
     }
 
     /**
@@ -163,7 +183,7 @@ public class Server implements Runnable {
      * @param server
      * @return
      */
-    private PlayerProxy getPlayerProxy(ServerSocket server) {
+    private PlayerProxy connectToPlayerProxy(ServerSocket server) {
 
         ThreadFactory factory = Thread.ofVirtual().factory();
         ExecutorService executor = Executors.newFixedThreadPool(1, factory);
@@ -178,7 +198,7 @@ public class Server implements Runnable {
                 out = new PrintWriter(s.getOutputStream(), true);
                 parser = new JsonStreamParser(new InputStreamReader(s.getInputStream()));
             } catch (IOException e) {
-                // Problem connecting to client, try again
+                // Problem connecting to client, abort loop
                 continue;
             }
 
@@ -201,37 +221,17 @@ public class Server implements Runnable {
     }
 
     /**
-     * Returns a list of PlayerProxies that represent remote Players.
-     * Connects up to a maximum number of clients within a time limit
-     * specified by WAITING_PERIOD. If the time limit is reached, then
-     * returns all of the players connected so far.
-     * 
-     * The waiting period does not reset between remote connections, instead
-     * the start time is calculated and all clients must connect before
-     * the amount of time specified by WAITING_PERIOD has passed.
+     * Sends an empty game result to all Players
+     * Assumes all Players in given list are PlayerProxy
      * @param proxies
-     * @return
      */
-    protected List<Player> getPlayerProxiesWithinTimeout(List<Player> proxies) {
-
-        ThreadFactory factory = Thread.ofVirtual().factory();
-        ExecutorService executor = Executors.newFixedThreadPool(1, factory);
-
-        LocalTime start = LocalTime.now();
-        while (proxies.size() < MAXIMUM_CLIENTS) {
-            // calculate the time left in the waiting period
-            LocalTime now = LocalTime.now();
-            long waitingPeriodRemaining = WAITING_PERIOD - start.until(now, ChronoUnit.MILLIS);
-
-            try {
-                Future<PlayerProxy> proxy = executor.submit(() -> getPlayerProxy(server));
-                PlayerProxy p = proxy.get(waitingPeriodRemaining, TimeUnit.MILLISECONDS);
-                proxies.add(p);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                // ran out of time in waiting period, returning all of the proxies we have so far.
-                return proxies;
-            }
+    protected void sendEmptyGameResult (List<Player> proxies) {
+        JsonArray emptyResult = new JsonArray();
+        emptyResult.add(new JsonArray());
+        emptyResult.add(new JsonArray());
+        for (Player p : proxies) {
+            PlayerProxy proxy = (PlayerProxy) p;
+            proxy.sendOverConnection(emptyResult);
         }
-        return proxies;        
     }
 }

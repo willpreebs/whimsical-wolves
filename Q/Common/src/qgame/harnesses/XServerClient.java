@@ -4,13 +4,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonStreamParser;
 
 import qgame.json.JsonConverter;
+import qgame.player.Player;
 import qgame.server.Client;
+import qgame.server.ClientConfig;
 import qgame.server.Server;
+import qgame.server.ServerConfig;
 
 public class XServerClient {
 
@@ -23,19 +29,27 @@ public class XServerClient {
         int port = getPort(args[1]);
         
         JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(System.in));
-        JsonElement config = parser.next();
-
-        
+        JsonObject config = parser.next().getAsJsonObject();
 
         switch (args[0]) {
             case "xserver":
-                Server s = JsonConverter.parseServerConfig(port, config);
-                runServer(s);
+                handleXServer(port, config);
                 break;
             case "xclient":
-                Client c = new Client(null, null)
+                handleXClient(port, config);
+                break;
         }
+    }
 
+    private static void handleXServer(int port, JsonObject config) throws IOException {
+        Server s = new Server(port, new ServerConfig(config));
+        Thread thread = new Thread(s);
+        runServer(thread);
+    }
+
+    private static void handleXClient(int port, JsonObject config) {
+        List<Thread> threads = getClientThreads(port, config);
+        runClients(threads);
     }
 
     private static int getPort(String arg) {
@@ -51,9 +65,44 @@ public class XServerClient {
         }
     }
 
-    private static void runServer(Server s) {
+    private static List<Thread> getClientThreads(int port, JsonObject config) { 
 
-        s.run();
+        JsonObject obj = config.getAsJsonObject();
 
+        List<Player> players = JsonConverter.playersFromJActorSpecB(obj.get("players"));
+
+        List<Client> clients = getClients(players, port, config);
+
+        List<Thread> clientThreads = clients
+        .stream()
+        .map(client -> new Thread(client))
+        .toList();
+
+        return clientThreads;
+    }
+
+    private static List<Client> getClients(List<Player> players, int port, JsonObject config) {
+
+        List<Client> clients = new ArrayList<>();
+
+        for (Player p : players) {
+
+            try {
+                clients.add(new Client(port, new ClientConfig(config), p));
+            } catch (IOException e) {
+                // issue with creating socket for Client
+                continue;
+            }
+        }
+
+        return clients;
+    }
+
+    private static void runClients(List<Thread> threads) {
+        threads.forEach(t -> t.start());
+    }
+
+    private static void runServer(Thread serverThread) {
+        serverThread.start();
     }
 }

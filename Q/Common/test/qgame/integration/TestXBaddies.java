@@ -61,10 +61,11 @@ public class TestXBaddies {
         int numFails = 0;
         int numSuccess = 0;
 
-        for (int dir = -1; dir < 42; dir++) {
+        for (int dir = 0; dir < 42; dir++) {
             for (int testNum = 0; testNum < 10; testNum++) {
                 try {
                     performTest(dir, testNum);
+                    System.out.println("Test " + dir + "/" + testNum + " passed");
                     numSuccess++;
                 } catch (FileNotFoundException e) {
                     continue;

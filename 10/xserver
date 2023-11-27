@@ -1,2 +1,2 @@
 #! /bin/bash
-java -jar --enable-preview ./whimsical-wolves.jar xserver $*
+java -jar --enable-preview ../whimsical-wolves.jar xserver $*

@@ -41,6 +41,15 @@ public class Client implements Runnable {
         this.refProxy = new RefereeProxy(printer, parser, player);
     }
 
+    public Client(int port, ClientConfig config, Player player) throws IOException {
+        this.player = player;
+        this.socket = new Socket(config.getHost(), port);
+        this.parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
+        this.printer = new PrintWriter(socket.getOutputStream(), true);
+
+        this.refProxy = new RefereeProxy(printer, parser, player);
+    } 
+
     public Socket getSocket() {
         return this.socket;
     }

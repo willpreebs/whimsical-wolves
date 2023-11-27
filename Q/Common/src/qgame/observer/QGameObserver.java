@@ -47,6 +47,20 @@ public class QGameObserver implements IGameObserver {
         this.states = new ArrayList<>();
         stateFrame = new ObserverView(this, new QGameState(), REF_TILES);
         stateFrame.setVisible(true);
+
+        // TODO: clear out Tmp folder
+        clearAllFiles();
+    }
+
+    private void clearAllFiles() {
+
+        File tmp = new File(FILE_DIRECTORY);
+
+        File[] contents = tmp.listFiles();
+
+        for (File f : contents) {
+            f.delete();
+        }
     }
 
   /**

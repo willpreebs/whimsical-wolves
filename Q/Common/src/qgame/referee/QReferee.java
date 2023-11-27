@@ -86,31 +86,26 @@ public class QReferee implements IReferee {
     this.observers = new ArrayList<>();
   }
 
-  public QReferee(JsonElement refConfig) {
+  // TODO: Take in fields of config instead of parsing it here.
+  public QReferee(RefereeConfig refConfig) {
 
-    JsonObject config = refConfig.getAsJsonObject();
-
-    startState = JsonConverter.jStateToQGameState(config.get("state0"));
-
-    boolean quiet = config.get("quiet").getAsBoolean();
-    RefereeStateConfig rConfig = JsonConverter.parseRefereeStateConfig(config.get("config-s"));
-
-    int perTurn = config.get("per-turn").getAsInt();
-    validateArg(t -> t <= 6, perTurn, "per-turn must be less than or equal to 6");
-
-    boolean observe = config.get("observe").getAsBoolean();
+    
     this.observers = new ArrayList<>();
 
-    if (observe) {
+    if (refConfig.isObserve()) {
       this.observers.add(new QGameObserver());
     }
 
-
     // TODO: make timeOut in seconds? 
-    this.timeOut = perTurn * 1000;
+    this.timeOut = refConfig.getPerTurn() * 1000;
+
+    // TODO: implement logger
 
     this.placementRules = RuleUtil.createPlaceRules();
-    this.scoringRules = RuleUtil.createScoreRules(rConfig.getqBonus(), rConfig.getfBonus());
+
+    RefereeStateConfig configS = refConfig.getConfigS();
+    this.scoringRules = RuleUtil.createScoreRules(configS.getqBonus(), configS.getfBonus());
+    this.ruleBreakers = new ArrayList<>();
   } 
 
   public QReferee(PlacementRule placementRules, ScoringRule scoringRules, int timeout) {
@@ -455,7 +450,6 @@ public class QReferee implements IReferee {
     Future<T> getAction = executor.submit(
       () -> lambda.playerMethod(player, args));
     try {
-      //TODO: Use timeout
       return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
       //return getAction.get();
     }

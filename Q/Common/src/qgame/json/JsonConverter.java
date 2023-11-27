@@ -25,6 +25,7 @@ import qgame.referee.RefereeStateConfig;
 import qgame.rule.placement.PlacementRule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.move.MoveRule;
+import qgame.server.Client;
 import qgame.server.Server;
 import qgame.state.Bag;
 import qgame.state.QPlayerGameState;
@@ -554,20 +555,5 @@ public class JsonConverter {
     int fbo = obj.get("fbo").getAsInt();
 
     return new RefereeStateConfig(qbo, fbo);
-  }
-
-  public static Server parseServerConfig(int tcpPort, JsonElement element) throws IOException {
-    
-    JsonObject obj = element.getAsJsonObject();
-
-    // int port = obj.get("port").getAsInt();
-    int serverTries = obj.get("server-tries").getAsInt();
-    int serverWait = obj.get("server-wait").getAsInt();
-    int waitForSignup = obj.get("wait-for-signup").getAsInt();
-    boolean quiet = obj.get("quiet").getAsBoolean();
-
-    JsonElement refSpec = obj.get("ref-spec");
-
-    return new Server(tcpPort, serverTries, serverWait, waitForSignup, quiet, refSpec);
   }
 }
