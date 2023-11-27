@@ -4651,7 +4651,7 @@
    ("chnotal" "ldasg" "a cheat" "not-a-line")
    ("chtilen" "ldasg" "a cheat" "tile-not-owned")))
 (*** expected)
-'((() ("chnofit" "chtilen" "chnotal" "chbadas")))
+'((() ("chnofit" "chnotal" "chtilen" "chbadas")))
 (*** but received)
 '(((plain fast with-newline plain-unicode)
    ((("chbadas") ("chnofit" "chnotal" "chtilen")))))

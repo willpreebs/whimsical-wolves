@@ -1,0 +1,109 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/0-out.json)
+Exception in thread "main" java.lang.IllegalStateException: FAILURE
+	at qgame.player.DummyAIPlayer.failIfStep(DummyAIPlayer.java:30)
+	at qgame.player.DummyAIPlayer.win(DummyAIPlayer.java:58)
+	at qgame.referee.QReferee.notifyPlayers(QReferee.java:181)
+	at qgame.referee.QReferee.findWinnersAndNotifyPlayers(QReferee.java:203)
+	at qgame.referee.QReferee.getResults(QReferee.java:221)
+	at qgame.referee.QReferee.playGame(QReferee.java:107)
+	at qgame.harnesses.XGamesWithObserver.main(XGamesWithObserver.java:47)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "yellow") (shape . "clover"))))))
+          (players
+           .
+           (#hasheq((name . "A")
+                    (score . 0)
+                    (tile* . (#hasheq((color . "purple") (shape . "star")))))
+            #hasheq((name . "cheater")
+                    (score . 0)
+                    (tile* . (#hasheq((color . "purple") (shape . "star")))))
+            #hasheq((name . "Exn")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "purple") (shape . "clover")))))))
+          (tile* . ()))
+  (("A" "ldasg")
+   ("cheater" "ldasg" "a cheat" "non-adjacent-coordinate")
+   ("Exn" "ldasg" "win")))
+(*** expected)
+'((() ("cheater" "Exn")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/1-out.json)
+Exception in thread "main" java.lang.IllegalStateException: FAILURE
+	at qgame.player.DummyAIPlayer.failIfStep(DummyAIPlayer.java:30)
+	at qgame.player.DummyAIPlayer.win(DummyAIPlayer.java:58)
+	at qgame.referee.QReferee.notifyPlayers(QReferee.java:181)
+	at qgame.referee.QReferee.findWinnersAndNotifyPlayers(QReferee.java:204)
+	at qgame.referee.QReferee.getResults(QReferee.java:221)
+	at qgame.referee.QReferee.playGame(QReferee.java:107)
+	at qgame.harnesses.XGamesWithObserver.main(XGamesWithObserver.java:47)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "yellow") (shape . "clover"))))))
+          (players
+           .
+           (#hasheq((name . "A")
+                    (score . 0)
+                    (tile* . (#hasheq((color . "purple") (shape . "clover")))))
+            #hasheq((name . "cheater")
+                    (score . 0)
+                    (tile* . (#hasheq((color . "purple") (shape . "star")))))
+            #hasheq((name . "Exn")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "purple") (shape . "clover")))))))
+          (tile* . ()))
+  (("A" "ldasg")
+   ("cheater" "ldasg" "a cheat" "non-adjacent-coordinate")
+   ("Exn" "ldasg" "win")))
+(*** expected)
+'((("A") ("Exn")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ()))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/5-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/5-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/6-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/6-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/9-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "green") (shape . "clover"))))))
+          (players
+           .
+           (#hasheq((name . "A")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "green") (shape . "clover"))
+                      #hasheq((color . "green") (shape . "clover"))
+                      #hasheq((color . "green") (shape . "clover")))))
+            #hasheq((name . "B")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "green") (shape . "clover")))))))
+          (tile*
+           .
+           (#hasheq((color . "blue") (shape . "square"))
+            #hasheq((color . "green") (shape . "clover"))
+            #hasheq((color . "green") (shape . "clover")))))
+  (("A" "ldasg" "a cheat" "tile-not-owned") ("B" "ldasg" "new-tiles")))
+(*** expected)
+'((("B") ("A")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ((() ("A" "B")))))
+
+
+((/course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/5-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/5-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/6-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/41/Tests/6-out.json))
+((passed 2) (total 5) (partial-score 2))
+

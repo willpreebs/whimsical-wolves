@@ -1,0 +1,74 @@
+(testing /course/cs4500f23/ta/tedium-workdir/github/whimsical-wolves/8/xgames-with-observer)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/2/Tests/0-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/2/Tests/0-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "orange") (shape . "8star"))))))
+          (players
+           .
+           (#hasheq((name . "A")
+                    (score . 0)
+                    (tile* . (#hasheq((color . "blue") (shape . "star")))))
+            #hasheq((name . "B")
+                    (score . 0)
+                    (tile* . (#hasheq((color . "blue") (shape . "star")))))))
+          (tile* . ()))
+  (("A" "dag") ("B" "dag" "setup")))
+(*** expected)
+'((("A") ("B")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ((("A") ("A")))))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/2/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/2/Tests/1-out.json)
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/2/Tests/7-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/2/Tests/7-out.json)
+---------------------------------
+(*** score 0)
+(*** on)
+'(#hasheq((map . ((0 (0 #hasheq((color . "yellow") (shape . "8star"))))))
+          (players
+           .
+           (#hasheq((name . "A")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "green") (shape . "8star"))
+                      #hasheq((color . "orange") (shape . "diamond"))
+                      #hasheq((color . "red") (shape . "square")))))
+            #hasheq((name . "B")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "purple") (shape . "diamond"))
+                      #hasheq((color . "blue") (shape . "diamond")))))
+            #hasheq((name . "C")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "green") (shape . "star"))
+                      #hasheq((color . "green") (shape . "diamond")))))
+            #hasheq((name . "D")
+                    (score . 0)
+                    (tile*
+                     .
+                     (#hasheq((color . "green") (shape . "star"))
+                      #hasheq((color . "green") (shape . "diamond")))))))
+          (tile*
+           .
+           (#hasheq((color . "green") (shape . "8star"))
+            #hasheq((color . "orange") (shape . "diamond"))
+            #hasheq((color . "red") (shape . "square")))))
+  (("A" "ldasg" "setup")
+   ("B" "dag" "take-turn")
+   ("C" "dag" "new-tiles")
+   ("D" "dag" "win")))
+(*** expected)
+'((() ("A" "B" "C" "D")))
+(*** but received)
+'(((plain fast with-newline plain-unicode) ((("A") ("A" "C" "D")))))
+
+
+(testing /course/cs4500f23/ta/tedium-workdir/testfest-results/8/2/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/2/Tests/9-out.json)
+((/course/cs4500f23/ta/tedium-workdir/testfest-results/8/2/Tests/1-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/2/Tests/1-out.json) (/course/cs4500f23/ta/tedium-workdir/testfest-results/8/2/Tests/9-in.json /course/cs4500f23/ta/tedium-workdir/testfest-results/8/2/Tests/9-out.json))
+((passed 2) (total 4) (partial-score 2))
+
