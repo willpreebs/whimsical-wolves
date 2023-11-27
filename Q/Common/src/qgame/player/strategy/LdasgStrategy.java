@@ -13,7 +13,12 @@ import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.util.PosnUtil;
 
-public class LdasgStrategy extends SmallestRowColumnTileStrategy {
+/**
+ * Represents a Strategy that chooses the most constrained Placement, as in the Placement
+ * with the most neighbors on the board. Breaks the tie using row-column order. 
+ * See PosnUtil.rowColumnCompare
+ */
+public class LdasgStrategy extends SmallestTileStrategy {
 
     public LdasgStrategy(BoardRule boardRule, MoveRule moveRule) {
         super(boardRule, moveRule);

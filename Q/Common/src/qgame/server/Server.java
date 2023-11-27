@@ -61,9 +61,18 @@ public class Server implements Runnable {
     private final int MINIMUM_CLIENTS = 2;
     private final int MAXIMUM_CLIENTS = 4;
 
+    private JsonElement refConfig = null;
+
     public Server(int tcpPort) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
         this.server = new ServerSocket(tcpPort);
+    }
+
+    public Server(int tcpPort, JsonElement refConfig) throws IOException {
+        validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
+        this.server = new ServerSocket(tcpPort);
+
+        this.refConfig = refConfig;
     }
 
     public ServerSocket getServer() {
@@ -102,7 +111,9 @@ public class Server implements Runnable {
             return;
         }
 
-        IReferee ref = new QReferee();
+        IReferee ref = this.refConfig == null ?
+        new QReferee() : new QReferee(this.refConfig);
+        
         GameResults r = ref.playGame(proxies);
         System.out.println(JsonConverter.jResultsFromGameResults(r));
 

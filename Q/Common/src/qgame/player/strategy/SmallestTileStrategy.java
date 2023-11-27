@@ -21,13 +21,19 @@ import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.util.TileUtil;
 
-public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
+/**
+ * Represents a TurnStrategy that considers the 'smallest' tiles first for adding to a move.
+ * 
+ * Tiles are sorted in shape-color order to determine their 'size'.
+ * see TileUtil.smallestTile
+ */
+public abstract class SmallestTileStrategy implements TurnStrategy {
 
     // private StateRule stateRule;
     private BoardRule boardRule;
     private MoveRule moveRule;
     
-    public SmallestRowColumnTileStrategy(BoardRule boardRule, MoveRule moveRule) {
+    public SmallestTileStrategy(BoardRule boardRule, MoveRule moveRule) {
         // this.stateRule = stateRule;
         this.boardRule = boardRule;
         this.moveRule = moveRule;
@@ -54,6 +60,7 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
     }
 
     private boolean canPlaceTile(IMap board, Tile tile) {
+        // TODO: can optimize
         return !boardRule.getValidPlacements(tile, board).isEmpty();
     }
 
@@ -69,26 +76,55 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
         .anyMatch(tile -> canPlaceTile(board, tile));
     }
 
-    private List<Tile> removeTilesFromList(List<Tile> tiles, List<Tile> moveTiles) {
-        ArrayList<Tile> ts = new ArrayList<>(tiles);
-        for (Tile t : moveTiles) {
-            ts.remove(t);
-        }
-        return ts;
-    }
-
+    /**
+     * Returns a list of tiles containing the current player's tiles after each tile contained
+     * in the given move is removed.
+     * 
+     * Assumes that the current player's tiles includes every tile contained in the move.
+     * @param state
+     * @param move
+     * @return
+     */
     private List<Tile> getTilesLeft(IPlayerGameState state, List<Placement> move) {
         List<Tile> tilesLeft = new ArrayList<>(state.getCurrentPlayerTiles().getItems());
         List<Tile> moveTiles = move.stream().map(p -> p.tile()).toList();
-        return removeTilesFromList(tilesLeft, moveTiles);
+
+        ArrayList<Tile> ts = new ArrayList<>(tilesLeft);
+
+        for (Tile t : moveTiles) {
+            ts.remove(t);
+        }
+        
+        return ts;
     }
 
+    /**
+     * Returns an IMap that is the given IMap with
+     * every placement in the given list placed on it.
+     * 
+     * Assumes that every Placement in move is legal when
+     * placed on the board in order.
+     * @param start
+     * @param move
+     * @return
+     */
     private IMap getMapWithPlacements(IMap start, List<Placement> move) {
         IMap mapWithPlacements = new QMap(start.getBoardState());
         move.forEach(p -> mapWithPlacements.placeTile(p));
         return mapWithPlacements;
     }
 
+    /**
+     * Gets the best Placement considering the current player's remaining tiles.
+     * 
+     * Returns an Optional that is either:
+     * - A Placement if a Placement is found that is legal on the board updated with the
+     * placements contained in the given move.
+     * - Empty if none of the current player's remaining tiles can be placed.
+     * @param state
+     * @param move
+     * @return
+     */
     private Optional<Placement> getBestTilePlacement(IPlayerGameState state, List<Placement> move) {
 
         IMap mapWithPlacements = getMapWithPlacements(state.getBoard(), move);
@@ -101,23 +137,21 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
             if (placements.isEmpty()) {
                 continue;
             }
-            // placements = placements.stream()
-            // .filter(p -> moveRule.canAddPlacementToMove(p, move))
-            // .toList();
-
-            // if (placements.isEmpty()) {
-            //     continue;
-            // }
             List<Posn> posns = placements
                 .stream().map(p -> p.posn()).toList();
-                return Optional.of(getBestPlacement(state, move, posns, t));
-            // else {
-                
-            // }
+            return Optional.of(getBestPlacement(state, move, posns, t));
         }
         return Optional.empty();
     }
     
+    /**
+     * Returns the optimal list of placements for this player according to this
+     * strategy.
+     * Iterates and adds to a list of placements until the strategy propses a Placement
+     * that does not fit with the rest of the placements in the move.
+     * @param state
+     * @return
+     */
     private List<Placement> getBestMove(IPlayerGameState state) {
 
         List<Placement> move = new ArrayList<>();
@@ -142,8 +176,19 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
         return move;
     }   
 
+/**
+   * Decide what to do for the current player's turn, and return that as a TurnAction.
+   * 
+   * If the current player can place on the board, then a PlaceAction is returned containing
+   * the best move according to this strategy. Otherwise an ExchangeAction is returned representing
+   * a player's decision to trade their tiles. If the referee doesn't have enough tiles to honor
+   * the trade, then a PassAction is returned representing a pass.
+   * @param state The game state to determine an action for
+   * @return The action the strategy decides to take for this state.
+   */
     @Override
     public TurnAction chooseAction(IPlayerGameState state) {
+        // TODO: Don't need to double check if you can place on the board (optimization)
         if (!canPlaceAnyOnBoard(state.getBoard(), state.getCurrentPlayerTiles())) {
             if (state.getNumberRemainingTiles() < state.getCurrentPlayerTiles().size()) {
                 return new PassAction();
@@ -152,5 +197,4 @@ public abstract class SmallestRowColumnTileStrategy implements TurnStrategy {
         }
         return new PlaceAction(getBestMove(state));
     }
-
 }

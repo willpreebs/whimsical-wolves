@@ -13,6 +13,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.google.gson.JsonElement;
+
 import qgame.action.ExchangeAction;
 import qgame.action.PassAction;
 import qgame.action.PlaceAction;
@@ -79,6 +81,20 @@ public class QReferee implements IReferee {
     this.ruleBreakers = new ArrayList<>();
     this.observers = new ArrayList<>();
   }
+
+  public QReferee(JsonElement refConfig) {
+    //TODO: impl config spec
+    this.placementRules = new MultiPlacementRule(new MatchTraitRule(),
+      new ExtendSameLineRule(),
+      new ExtendsBoardRule(), new CorrectPlayerTilesRule());
+    
+    this.scoringRules = RuleUtil.createScoreRules();
+
+    this.timeOut = DEFAULT_TIMEOUT;
+    this.players = new ArrayList<>();
+    this.ruleBreakers = new ArrayList<>();
+    this.observers = new ArrayList<>();
+  } 
 
   public QReferee(PlacementRule placementRules, ScoringRule scoringRules, int timeout) {
     this.placementRules = placementRules;

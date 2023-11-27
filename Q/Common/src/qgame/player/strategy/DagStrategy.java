@@ -14,7 +14,11 @@ import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.util.PosnUtil;
 
-public class DagStrategy extends SmallestRowColumnTileStrategy {
+/**
+ * Represents a Strategy that finds a Placement that is first in row-column order.
+ * See PosnUtil.rowColumnCompare
+ */
+public class DagStrategy extends SmallestTileStrategy {
 
     public DagStrategy(BoardRule boardRule, MoveRule moveRule) {
         super(boardRule, moveRule);
