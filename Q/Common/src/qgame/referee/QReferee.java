@@ -71,9 +71,9 @@ public class QReferee implements IReferee {
   private List<String> ruleBreakers;
 
   private List<IGameObserver> observers;
-
-
   private IGameState startState;
+
+  // private boolean useConfiguration = false;
 
   public QReferee() {
     this.placementRules = RuleUtil.createPlaceRules();
@@ -88,7 +88,7 @@ public class QReferee implements IReferee {
 
   // TODO: Take in fields of config instead of parsing it here.
   public QReferee(RefereeConfig refConfig) {
-
+    // useConfiguration = true;
     
     this.observers = new ArrayList<>();
 
@@ -104,6 +104,9 @@ public class QReferee implements IReferee {
     this.placementRules = RuleUtil.createPlaceRules();
 
     RefereeStateConfig configS = refConfig.getConfigS();
+  
+    this.startState = refConfig.getState();
+
     this.scoringRules = RuleUtil.createScoreRules(configS.getqBonus(), configS.getfBonus());
     this.ruleBreakers = new ArrayList<>();
   } 

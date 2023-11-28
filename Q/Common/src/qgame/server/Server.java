@@ -4,6 +4,7 @@ import static qgame.util.ValidationUtil.validateArg;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -64,6 +65,8 @@ public class Server implements Runnable {
 
     private RefereeConfig refConfig = null;
 
+    private PrintStream resultsStream = System.out;
+
     public Server(int tcpPort) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
         this.server = new ServerSocket(tcpPort);
@@ -92,6 +95,10 @@ public class Server implements Runnable {
         return this.server;
     }
 
+    public void setResultStream(PrintStream s) {
+        this.resultsStream = s;
+    }
+
     
     /**
      * Runs this server. Connects to several clients and either calls a Referee to play a Q game
@@ -111,7 +118,7 @@ public class Server implements Runnable {
         new QReferee() : new QReferee(this.refConfig);
         
         GameResults r = ref.playGame(proxies);
-        System.out.println(JsonConverter.jResultsFromGameResults(r));
+        resultsStream.println(JsonConverter.jResultsFromGameResults(r));
 
         try {
             server.close();

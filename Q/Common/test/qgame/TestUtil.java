@@ -57,6 +57,17 @@ public class TestUtil {
       return getJsonElementsFromFile(f);
   }
 
+  public static List<JsonElement> getJsonServerConfig(String directory, int testNum) throws FileNotFoundException {
+      File f = new File(directory + testNum + "-server-config.json");
+      return getJsonElementsFromFile(f);
+  }
+
+  public static List<JsonElement> getJsonClientConfig(String directory, int testNum) throws FileNotFoundException {
+      File f = new File(directory + testNum + "-client-config.json");
+      return getJsonElementsFromFile(f);
+  }
+
+
   public static JsonElement getJsonTestResult(String directory, int testNum) throws FileNotFoundException {
       File f = new File(directory + testNum + "-out.json");
       return getJsonElementsFromFile(f).get(0);
