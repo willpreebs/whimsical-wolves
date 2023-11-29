@@ -24,8 +24,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonStreamParser;
+import com.google.gson.stream.JsonWriter;
 
 import qgame.json.JsonConverter;
+import qgame.json.JsonPrintWriter;
 import qgame.player.Player;
 import qgame.referee.GameResults;
 import qgame.referee.IReferee;
@@ -177,9 +179,13 @@ public class Server implements Runnable {
                 Future<PlayerProxy> proxy = executor.submit(() -> connectToPlayerProxy(serverSocket));
                 PlayerProxy p = proxy.get(waitingPeriodRemaining, TimeUnit.MILLISECONDS);
                 proxies.add(p);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            } catch (InterruptedException | TimeoutException e) {
                 // ran out of time in waiting period or an error occurred while connecting to a client
                 return;
+            }
+            catch (ExecutionException e) {
+                // A player failed to deliver their name in time, or some other error.
+                continue;
             }
         }        
     }
@@ -199,43 +205,22 @@ public class Server implements Runnable {
      * @param server
      * @return
      */
-    private PlayerProxy connectToPlayerProxy(ServerSocket server) {
+    private PlayerProxy connectToPlayerProxy(ServerSocket server) throws IOException, ExecutionException {
 
         ThreadFactory factory = Thread.ofVirtual().factory();
         ExecutorService executor = Executors.newFixedThreadPool(1, factory);
 
-        while (true) {
-            Socket s;
-            PrintWriter out;
-            JsonStreamParser parser;
+        Socket s = server.accept();
+        JsonPrintWriter out = new JsonPrintWriter(new PrintWriter(s.getOutputStream(), true));
+        JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(s.getInputStream()));
 
-            try {
-                s = server.accept();
-                out = new PrintWriter(s.getOutputStream(), true);
-                parser = new JsonStreamParser(new InputStreamReader(s.getInputStream()));
-            } catch (IOException e) {
-                // Problem connecting to client, abort loop
-                // TODO: Use logger
-                continue;
-            }
 
-            Future<JsonElement> playerNameJson = executor.submit(() -> parser.next());
-            String playerName;
-            try {
-                playerName = playerNameJson.get(TIMEOUT_FOR_NAME_SUBMISSION, TimeUnit.MILLISECONDS).getAsString();
-            } catch (InterruptedException | TimeoutException e) {
-                // PlayerName not submitted in time...
-                // TODO: Use logger
-                System.out.println("playerName not submitted in time");
-                continue;
-            } catch (JsonParseException | ExecutionException e) {
-                // playerName not formatted json...
-                // TODO: use logger
-                System.out.println("playerName not formatted json");
-                continue;
-            }
-
+        Future<JsonElement> playerNameJson = executor.submit(() -> parser.next());
+        try {
+            String playerName = playerNameJson.get(TIMEOUT_FOR_NAME_SUBMISSION, TimeUnit.MILLISECONDS).getAsString();
             return new PlayerProxy(playerName, parser, out);
+        } catch (TimeoutException | InterruptedException e) {
+            throw new ExecutionException(e);
         }
     }
 
@@ -250,7 +235,12 @@ public class Server implements Runnable {
         emptyResult.add(new JsonArray());
         for (Player p : proxies) {
             PlayerProxy proxy = (PlayerProxy) p;
-            proxy.sendOverConnection(emptyResult);
+            try {
+                proxy.sendOverConnection(emptyResult);
+            } catch (IOException e) {
+                //TODO log
+                continue;
+            }
         }
     }
 }

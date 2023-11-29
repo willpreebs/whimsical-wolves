@@ -37,8 +37,10 @@ public class Client implements Runnable {
     private RefereeProxy refProxy;
 
     // Creates a Client with a new socket instance from a given ServerSocket
+    // TODO: Construct server with internet address and port rather than socket.
     public Client(ServerSocket server, Player player) throws IOException {
         this.player = player;
+        // TODO: Handle errors on socket construction, enforce timeout?
         socket = new Socket(server.getInetAddress(), server.getLocalPort());
         parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
         printer = new PrintWriter(socket.getOutputStream(), true);  

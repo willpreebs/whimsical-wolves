@@ -1,6 +1,9 @@
 package qgame.server;
 
+import java.io.IOException;
 import java.io.PrintWriter;
+
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -10,6 +13,7 @@ import com.google.gson.JsonStreamParser;
 
 import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
+import qgame.json.JsonPrintWriter;
 import qgame.player.Player;
 import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
@@ -30,20 +34,36 @@ public class PlayerProxy implements Player {
     private String name;
 
     // out stream:
-    private PrintWriter printer;
+    private JsonPrintWriter printer;
 
     // in stream: 
     private JsonStreamParser parser;
 
-    public PlayerProxy(String name, JsonStreamParser parser, PrintWriter writer) {
+    private boolean quiet;
+
+    public PlayerProxy(String name, JsonStreamParser parser, JsonPrintWriter printer) {
         this.name = name;
         this.parser = parser;
-        this.printer = writer;
+        this.printer = printer;
+        quiet = false;
     }
-    
-    protected void sendOverConnection(JsonElement el) throws IllegalStateException {
-        System.out.println("Player proxy sending: " + el);
-        printer.println(el);
+
+    public PlayerProxy(String name, JsonStreamParser parser, JsonPrintWriter printer, boolean quiet) {
+        this.name = name;
+        this.parser = parser;
+        this.printer = printer;
+        this.quiet = quiet;
+    }
+
+    protected void sendOverConnection(JsonElement el) throws IOException {
+        log("Sending " + el);
+        printer.sendJson(el);
+    }
+
+    public void log(Object message) {
+        if (!quiet) {
+            System.out.println("Player proxy of: " + this.name + ": " + message);
+        }
     }
 
     /**
@@ -59,7 +79,7 @@ public class PlayerProxy implements Player {
             throw new IllegalStateException("Remote player must communicate with well-formed JSON. "
              + e.getLocalizedMessage());
         }
-        System.out.println("Player proxy receive: " + element);
+        log("Receive " + element);
         return element;
     }
 
@@ -71,6 +91,7 @@ public class PlayerProxy implements Player {
     private void assertVoidReturn(JsonElement e) throws IllegalStateException {
         String v = JsonConverter.getAsString(e);
         if (!v.equals("void")) {
+            log("Expected void but received " + e);
             throw new IllegalStateException("Client must return \"void\"");
         }
     }
@@ -115,7 +136,12 @@ public class PlayerProxy implements Player {
     public TurnAction takeTurn(IPlayerGameState state) throws IllegalStateException {
         JsonArray args = buildArgArray(JsonConverter.playerStateToJPub(state));
         JsonElement e = buildFunctionCallJson("take-turn", args);
-        sendOverConnection(e);
+        try {
+            sendOverConnection(e);
+        } catch (IOException ex) {
+            log("Encountered problem while sending: " + e);
+            throw new IllegalStateException(ex);
+        }
         JsonElement r = receive();
         return JsonConverter.jChoiceToTurnAction(r);
     }
@@ -126,10 +152,14 @@ public class PlayerProxy implements Player {
      */
     @Override
     public void setup(IPlayerGameState state, Bag<Tile> tiles) throws IllegalStateException {
-        System.out.println("PlayerProxy: setup called");
         JsonArray a = buildArgArray(JsonConverter.playerStateToJPub(state), 
             JsonConverter.jTilesFromTiles(tiles.getItems()));
-        sendOverConnection(buildFunctionCallJson("setup", a));
+        try {
+            sendOverConnection(buildFunctionCallJson("setup", a));
+        } catch (IOException e) {
+            log("Encountered problem while sending: " + e);
+            throw new IllegalStateException(e);
+        }
         JsonElement e = receive();
         assertVoidReturn(e);
     }
@@ -141,7 +171,12 @@ public class PlayerProxy implements Player {
     @Override
     public void newTiles(Bag<Tile> tiles) throws IllegalStateException {
         JsonArray a = buildArgArray(JsonConverter.jTilesFromTiles(tiles.getItems()));
-        sendOverConnection(buildFunctionCallJson("new-tiles", a));
+        try {
+            sendOverConnection(buildFunctionCallJson("new-tiles", a));
+        } catch (IOException e) {
+            log("Encountered problem while sending: " + e);
+            throw new IllegalStateException(e);
+        }
         JsonElement e = receive();
         assertVoidReturn(e);
     }
@@ -153,7 +188,12 @@ public class PlayerProxy implements Player {
     @Override
     public void win(boolean w) throws IllegalStateException {
         JsonArray a = buildArgArray(new JsonPrimitive(w));
-        sendOverConnection(buildFunctionCallJson("win", a));
+        try {
+            sendOverConnection(buildFunctionCallJson("win", a));
+        } catch (IOException e) {
+            log("Encountered problem while sending: " + e);            
+            throw new IllegalStateException(e);
+        }
         JsonElement e = receive();
         assertVoidReturn(e);
     }

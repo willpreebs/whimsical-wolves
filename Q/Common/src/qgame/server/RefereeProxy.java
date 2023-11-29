@@ -87,7 +87,7 @@ public class RefereeProxy {
             } catch (JsonParseException | IllegalArgumentException e) {
                 // Server sent message that is not well formed
                 // or is not the expected format.
-                // TODO: Inform server?
+                // TODO: Inform server? Shutdown?
                 e.printStackTrace(out);
                 continue;
             }
