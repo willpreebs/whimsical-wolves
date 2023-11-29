@@ -57,7 +57,7 @@ public class QPlayerGameState implements IPlayerGameState {
 
   @Override
   public Bag<Tile> getCurrentPlayerTiles() {
-    return new Bag<>(this.info.tiles());
+    return new Bag<>(this.info.getTiles());
   }
 
   /**
@@ -66,12 +66,12 @@ public class QPlayerGameState implements IPlayerGameState {
    */
   @Override
   public void makePlacement(Placement placement) {
-    this.info.tiles().remove(placement.tile());
+    this.info.getTiles().remove(placement.tile());
     this.board.placeTile(placement);
   }
 
   @Override
   public String getPlayerName() {
-    return this.info.name();
+    return this.info.getName();
   }
 }

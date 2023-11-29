@@ -28,9 +28,9 @@ public class PlayerTilesPanel extends JPanel {
     JLabel panelLabel = new JLabel("Player Tiles");
     this.add(panelLabel);
     for(int i = 0; i < playerInfoList.size(); i++){
-        Bag<Tile> playerTiles = playerInfoList.get(i).tiles();
+        Bag<Tile> playerTiles = playerInfoList.get(i).getTiles();
         JPanel tilePanel = new TilesPanel(playerTiles, playerTiles.size());
-        JLabel playerLabel = new JLabel(playerInfoList.get(i).name() + ":");
+        JLabel playerLabel = new JLabel(playerInfoList.get(i).getName() + ":");
         this.add(playerLabel);
         this.add(tilePanel);
     }

@@ -52,8 +52,8 @@ public class CheatingAIPlayer implements Player {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof CheatingAIPlayer) {
-            return this.name().equals(((CheatingAIPlayer) o).name());
+        if (o instanceof Player) {
+            return this.name().equals(((Player) o).name());
         }
         else {
             return false;

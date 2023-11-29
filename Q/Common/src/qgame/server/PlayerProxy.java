@@ -90,7 +90,7 @@ public class PlayerProxy implements Player {
     }
   
     /**
-     * From an array of JsonElements, returns a JsonArray containing all of them.
+     * From an array of JsonElements, returns a JsonArray containing all elements.
      * @param elements
      * @return
      */

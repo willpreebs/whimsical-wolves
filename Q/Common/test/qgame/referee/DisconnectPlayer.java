@@ -40,8 +40,8 @@ public class DisconnectPlayer implements Player {
 
   @Override
   public boolean equals(Object o) {
-      if (o instanceof DisconnectPlayer) {
-          return this.name().equals(((DisconnectPlayer) o).name());
+      if (o instanceof Player) {
+          return this.name().equals(((Player) o).name());
       }
       else {
           return false;

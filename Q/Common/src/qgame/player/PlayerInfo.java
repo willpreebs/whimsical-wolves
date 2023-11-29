@@ -4,8 +4,11 @@ import java.util.Collection;
 import qgame.state.Bag;
 import qgame.state.map.Tile;
 
-import static qgame.util.ValidationUtil.nonNullObj;
-
+/**
+ * Represents a Player's information relating to the state of the game.
+ * Includes their score and their tiles as well as their name as a unique
+ * identifier of the player.
+ */
 public class PlayerInfo {
 
   private int score;
@@ -19,12 +22,11 @@ public class PlayerInfo {
     this.name = name;
   }
 
-
-  public int score() {
+  public int getScore() {
     return this.score;
   }
 
-  public String name() {
+  public String getName() {
     return this.name;
   }
 
@@ -32,12 +34,11 @@ public class PlayerInfo {
     this.score += amount;
   }
 
-  public Bag<Tile> tiles() {
+  public Bag<Tile> getTiles() {
     return new Bag<>(this.tiles);
   }
 
   public void setTiles(Bag<Tile> tiles) {
     this.tiles = (new Bag<>(tiles));
   }
-
 }

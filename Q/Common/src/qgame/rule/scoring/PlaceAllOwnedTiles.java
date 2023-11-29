@@ -20,7 +20,7 @@ public class PlaceAllOwnedTiles implements ScoringRule {
   
   @Override
   public int pointsFor(List<Placement> placements, IGameState state) {
-    int numPlayerTiles = state.getCurrentPlayerInfo().tiles().size();
+    int numPlayerTiles = state.getCurrentPlayerInfo().getTiles().size();
     return placements.size() == numPlayerTiles ? ALL_TILES_BONUS : 0;
   }
 }

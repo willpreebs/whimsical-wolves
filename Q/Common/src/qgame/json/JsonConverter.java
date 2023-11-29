@@ -484,9 +484,9 @@ public class JsonConverter {
 
   private static JsonElement jPlayerFromPlayerInfo(PlayerInfo info) {
     JsonObject object = new JsonObject();
-    object.add("score", new JsonPrimitive(info.score()));
-    object.add("name", new JsonPrimitive(info.name()));
-    object.add("tile*", jTilesFromTiles(info.tiles().getItems()));
+    object.add("score", new JsonPrimitive(info.getScore()));
+    object.add("name", new JsonPrimitive(info.getName()));
+    object.add("tile*", jTilesFromTiles(info.getTiles().getItems()));
     return object;
   }
   public static JsonElement jStateFromQGameState(IGameState state) {
@@ -514,11 +514,11 @@ public class JsonConverter {
       for (int i = 0; i < oldInfos.size(); i++) {
         PlayerInfo info = oldInfos.get(i);
         Player p = players.get(i);
-        if (verifyNames && !info.name().equals(p.name())) {
+        if (verifyNames && !info.getName().equals(p.name())) {
           throw new IllegalArgumentException("List of players must be given in original order.");
         }
         // System.out.println("Adding player with name: " + p.name());
-        newInfos.add(new PlayerInfo(info.score(), info.tiles().getItems(), players.get(i).name()));
+        newInfos.add(new PlayerInfo(info.getScore(), info.getTiles().getItems(), players.get(i).name()));
       }
       
       return new QGameState(state.getBoard(), state.getRefereeTiles(), newInfos);

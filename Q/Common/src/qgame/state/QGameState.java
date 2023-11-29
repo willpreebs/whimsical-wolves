@@ -83,7 +83,7 @@ public class QGameState implements IGameState {
     List<PlayerInfo> copy = new ArrayList<>();
 
     for (PlayerInfo i : this.playerInformation) {
-      copy.add(new PlayerInfo(i.score(), new Bag<>(i.tiles()).getItems(), i.name()));
+      copy.add(new PlayerInfo(i.getScore(), new Bag<>(i.getTiles()).getItems(), i.getName()));
     }
 
     return copy;
@@ -111,7 +111,7 @@ public class QGameState implements IGameState {
   private List<Integer> allScores() {
     return new ArrayList<>(this.playerInformation
       .stream()
-      .map(PlayerInfo::score)
+      .map(PlayerInfo::getScore)
       .toList());
   }
   @Override
@@ -119,8 +119,8 @@ public class QGameState implements IGameState {
     List<Integer> scores = allScores();
     IMap boardState = getBoard();
     int tileCount = getRefereeTiles().size();
-    Bag<Tile> playerTile = getCurrentPlayerInfo().tiles();
-    String playerName = getCurrentPlayerInfo().name();
+    Bag<Tile> playerTile = getCurrentPlayerInfo().getTiles();
+    String playerName = getCurrentPlayerInfo().getName();
     return new QPlayerGameState(scores, boardState, tileCount, playerTile, playerName);
   }
 
@@ -140,7 +140,7 @@ public class QGameState implements IGameState {
   public void removeCurrentPlayer() {
     validateGameHasPlayers();
     PlayerInfo removed = this.playerInformation.remove(0);
-    Bag<Tile> removedPlayerTiles = removed.tiles();
+    Bag<Tile> removedPlayerTiles = removed.getTiles();
     this.refereeTiles.addAll(removedPlayerTiles);
   }
 

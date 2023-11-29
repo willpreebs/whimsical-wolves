@@ -103,6 +103,13 @@ public class TileUtil {
     return colors.length * shapes.length;
   }
 
+  /**
+   * Returns a Bag of Tiles containing the given number of tiles
+   * evenly distributed among all of the different tiles and randomized
+   * using Collections.shuffle
+   * @param numTiles
+   * @return
+   */
   public static Bag<Tile> getTileBag(int numTiles) {
   
     // List<Tile> bag = new ArrayList<>(numTiles);

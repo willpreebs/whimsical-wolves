@@ -39,8 +39,8 @@ public class ScorePanel extends JPanel {
     for(int i = 0; i<playerInfoList.size(); i++){
         c.gridy = i + 1;
 
-      int pScore = playerInfoList.get(i).score();
-      String name = playerInfoList.get(i).name();
+      int pScore = playerInfoList.get(i).getScore();
+      String name = playerInfoList.get(i).getName();
       JLabel pScoreLabel = new JLabel(name + ": " + pScore);
 
       this.add(pScoreLabel, c);

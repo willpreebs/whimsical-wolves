@@ -18,7 +18,7 @@ public class SampleServerClient {
      */
     public static void main(String[] args) throws IOException {
         Server s = new Server(1234);
-        ServerSocket server = s.getServer();
+        ServerSocket server = s.getServerSocket();
         System.out.println(server.getInetAddress());
 
         // SimpleAIPlayer player1 = new SimpleAIPlayer("player1", new DagStrategy(RuleUtil.createPlaceRules()));

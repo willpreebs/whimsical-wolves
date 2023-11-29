@@ -6,6 +6,10 @@ import com.google.gson.JsonObject;
 
 import qgame.player.Player;
 
+/**
+ * Represents a configuration of a Client. Does not include the Player
+ * that the Client controls.
+ */
 public class ClientConfig {
     
     private int port;
@@ -44,8 +48,4 @@ public class ClientConfig {
     public boolean isQuiet() {
         return quiet;
     }
-
-    // public List<Player> getPlayers() {
-    //     return players;
-    // }
 }

@@ -52,7 +52,7 @@ public class GameStateView extends JFrame {
     if (!tiles.isEmpty()) {
       PlayerInfo info
         = new PlayerInfo(state.getPlayerScores().get(0), tiles, state.getPlayerName());
-      box.add(new TilesPanel(info.tiles(), info.tiles().size()));
+      box.add(new TilesPanel(info.getTiles(), info.getTiles().size()));
     }
     box.add(new HUDInfoPanel(state));
   }

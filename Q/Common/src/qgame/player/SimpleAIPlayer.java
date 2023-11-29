@@ -42,8 +42,8 @@ public class SimpleAIPlayer implements Player {
 
   @Override
   public boolean equals(Object o) {
-      if (o instanceof SimpleAIPlayer) {
-          return this.name().equals(((SimpleAIPlayer) o).name());
+      if (o instanceof Player) {
+          return this.name().equals(((Player) o).name());
       }
       else {
           return false;

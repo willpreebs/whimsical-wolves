@@ -1,10 +1,7 @@
 package qgame.referee;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-
-import qgame.player.Player;
 
 import static qgame.util.ValidationUtil.nonNullObj;
 /**

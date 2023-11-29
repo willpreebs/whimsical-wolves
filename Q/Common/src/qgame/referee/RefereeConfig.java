@@ -1,9 +1,6 @@
 package qgame.referee;
 
-import static qgame.util.ValidationUtil.validateArg;
-
 import com.google.gson.JsonObject;
-
 import qgame.json.JsonConverter;
 import qgame.state.IGameState;
 

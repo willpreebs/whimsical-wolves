@@ -70,7 +70,7 @@ public class RemoteInteractionsTest {
 
         Client c = null;
         try {
-            c = new Client(s.getServer(), p);
+            c = new Client(s.getServerSocket(), p);
         } catch (IOException e) {
             fail();
         }
@@ -93,9 +93,9 @@ public class RemoteInteractionsTest {
 
         String playerName = "testPlayer";
 
-        Client c = new Client(s.getServer(), new QPlayer(playerName));
+        Client c = new Client(s.getServerSocket(), new QPlayer(playerName));
 
-        ServerSocket server = s.getServer();
+        ServerSocket server = s.getServerSocket();
 
         PlayerProxy p = makePlayerProxy(server, playerName);
         RefereeProxy rp = c.getRefereeProxy();
@@ -128,8 +128,8 @@ public class RemoteInteractionsTest {
     @Test
     public void testGetTwoProxies() throws IOException {
 
-        Client c1 = new Client(s.getServer(), new SimpleAIPlayer("testplayer1", new DagStrategy(RuleUtil.createPlaceRules())));
-        Client c2 = new Client(s.getServer(), new SimpleAIPlayer("testplayer2", new LdasgStrategy(RuleUtil.createPlaceRules())));
+        Client c1 = new Client(s.getServerSocket(), new SimpleAIPlayer("testplayer1", new DagStrategy(RuleUtil.createPlaceRules())));
+        Client c2 = new Client(s.getServerSocket(), new SimpleAIPlayer("testplayer2", new LdasgStrategy(RuleUtil.createPlaceRules())));
 
         Thread t1 = new Thread(c1);
         Thread t2 = new Thread(c2);

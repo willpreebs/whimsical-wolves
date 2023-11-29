@@ -133,11 +133,15 @@ public class QReferee implements IReferee {
     return getResults();
   }
 
+  /**
+   * Plays a game with a list of players. Assigns the player tiles
+   * and places the first 
+   */
   @Override
   public GameResults playGame(List<Player> players) {
-    // System.out.println("Playing game");
 
     if (startState == null) {
+
       Bag<Tile> tileBag = TileUtil.getTileBag(TOTAL_TILES);
 
       List<PlayerInfo> playerInfos = getDefaultPlayerInfos(players, tileBag);
@@ -167,9 +171,10 @@ public class QReferee implements IReferee {
   }
 
   /**
-   * Creates player infos for the given list of players at the start of a game
+   * Creates player infos for the given list of players at the start of a game.
+   * Pulls from the given bag of tiles to give to each player.
    * @param players
-   * @param tileBag The Referee's Bag of tiles to 
+   * @param tileBag The Referee's Bag of tiles 
    * @return
    */
   private List<PlayerInfo> getDefaultPlayerInfos(List<Player> players, Bag<Tile> tileBag) {
@@ -178,7 +183,6 @@ public class QReferee implements IReferee {
 
     for (Player p : players) {
       Collection<Tile> playerTiles = tileBag.removeFirstNItems(this.NUM_PLAYER_TILES);
-      // tileBag.removeAll(playerTiles);
       PlayerInfo info = new PlayerInfo(0, playerTiles, p.name());
       infos.add(info);
     }
@@ -213,7 +217,7 @@ public class QReferee implements IReferee {
     return
       playerInfos
       .stream()
-      .mapToInt(PlayerInfo::score)
+      .mapToInt(PlayerInfo::getScore)
       .max()
       .orElse(0);
   }
@@ -259,7 +263,7 @@ public class QReferee implements IReferee {
 
     for (int i = 0; i < infos.size(); i++) {
       Player player = players.get(i);
-      if (infos.get(i).score() == highestScore) {
+      if (infos.get(i).getScore() == highestScore) {
         winners.add(player.name());
         winnerPlayers.add(player);
       }
@@ -321,7 +325,7 @@ public class QReferee implements IReferee {
   }
 
   private void removeCurrentPlayer() {
-    ruleBreakers.add(this.currentGameState.getCurrentPlayerInfo().name());
+    ruleBreakers.add(this.currentGameState.getCurrentPlayerInfo().getName());
     this.currentGameState.removeCurrentPlayer();
   }
 

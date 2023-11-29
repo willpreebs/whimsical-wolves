@@ -49,15 +49,15 @@ import qgame.referee.RefereeConfig;
  */
 public class Server implements Runnable {
 
-    private ServerSocket server;
+    private ServerSocket serverSocket;
 
     // Waiting period for client signup in milliseconds
     private final int WAITING_PERIOD;
 
     // Allowed time between a client connection to the socket and their name submission
-    // in milliseconds
+    // In milliseconds
     private final int TIMEOUT_FOR_NAME_SUBMISSION;
-
+    
     // Number of times a server will have a waiting period to connect to clients
     private final int NUMBER_WAITING_PERIODS;
 
@@ -70,7 +70,7 @@ public class Server implements Runnable {
 
     public Server(int tcpPort) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
-        this.server = new ServerSocket(tcpPort);
+        this.serverSocket = new ServerSocket(tcpPort);
 
         WAITING_PERIOD = 20000;
         TIMEOUT_FOR_NAME_SUBMISSION = 3000;
@@ -80,7 +80,7 @@ public class Server implements Runnable {
 
     public Server(int tcpPort, ServerConfig config) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
-        this.server = new ServerSocket(tcpPort);
+        this.serverSocket = new ServerSocket(tcpPort);
         
         WAITING_PERIOD = config.getServerWait() * 1000;
         TIMEOUT_FOR_NAME_SUBMISSION = config.getWaitForSignup() * 1000;
@@ -89,10 +89,15 @@ public class Server implements Runnable {
         this.refConfig = config.getRefSpec();
     }
 
-    public ServerSocket getServer() {
-        return this.server;
+    public ServerSocket getServerSocket() {
+        return this.serverSocket;
     }
 
+    /**
+     * Enables the options of setting a PrintStream to get
+     * the results of a game.
+     * @param s
+     */
     public void setResultStream(PrintStream s) {
         this.resultsStream = s;
     }
@@ -120,9 +125,8 @@ public class Server implements Runnable {
         resultsStream.println(JsonConverter.jResultsFromGameResults(r));
 
         try {
-            server.close();
+            serverSocket.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -147,6 +151,8 @@ public class Server implements Runnable {
     }
 
     /**
+     * Appends the given list with the connected Players
+     * 
      * Connects up to a maximum number of clients within a time limit
      * specified by WAITING_PERIOD and adds them to the given list.
      * 
@@ -168,7 +174,7 @@ public class Server implements Runnable {
             long waitingPeriodRemaining = WAITING_PERIOD - start.until(now, ChronoUnit.MILLIS);
 
             try {
-                Future<PlayerProxy> proxy = executor.submit(() -> connectToPlayerProxy(server));
+                Future<PlayerProxy> proxy = executor.submit(() -> connectToPlayerProxy(serverSocket));
                 PlayerProxy p = proxy.get(waitingPeriodRemaining, TimeUnit.MILLISECONDS);
                 proxies.add(p);
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -209,6 +215,7 @@ public class Server implements Runnable {
                 parser = new JsonStreamParser(new InputStreamReader(s.getInputStream()));
             } catch (IOException e) {
                 // Problem connecting to client, abort loop
+                // TODO: Use logger
                 continue;
             }
 
@@ -218,10 +225,12 @@ public class Server implements Runnable {
                 playerName = playerNameJson.get(TIMEOUT_FOR_NAME_SUBMISSION, TimeUnit.MILLISECONDS).getAsString();
             } catch (InterruptedException | TimeoutException e) {
                 // PlayerName not submitted in time...
+                // TODO: Use logger
                 System.out.println("playerName not submitted in time");
                 continue;
             } catch (JsonParseException | ExecutionException e) {
                 // playerName not formatted json...
+                // TODO: use logger
                 System.out.println("playerName not formatted json");
                 continue;
             }

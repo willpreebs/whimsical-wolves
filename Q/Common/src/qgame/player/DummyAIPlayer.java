@@ -11,7 +11,6 @@ public class DummyAIPlayer implements Player{
   public enum FailStep {NONE, SETUP, TAKE_TURN, NEW_TILES, WIN}
 
   private final SimpleAIPlayer player;
-  private final TurnStrategy strategy;
   private final FailStep failStep;
 
   public DummyAIPlayer(String name, TurnStrategy strat) {
@@ -20,7 +19,6 @@ public class DummyAIPlayer implements Player{
 
   public DummyAIPlayer(String name, TurnStrategy strat, FailStep step) {
     player = new SimpleAIPlayer(name, strat);
-    this.strategy = strat;
     failStep = step;
   }
 
@@ -61,8 +59,8 @@ public class DummyAIPlayer implements Player{
 
   @Override
   public boolean equals(Object o) {
-      if (o instanceof DummyAIPlayer) {
-          return this.name().equals(((DummyAIPlayer) o).name());
+      if (o instanceof Player) {
+          return this.name().equals(((Player) o).name());
       }
       else {
           return false;

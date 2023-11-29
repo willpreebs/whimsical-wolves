@@ -18,6 +18,10 @@ import qgame.player.Player;
  * Contains a Referee Proxy that receives messages over a socket connection
  * and calls the Player methods determined by the message.
  * 
+ * A Client may be run as a seperate thread, which calls run() upon starting
+ * the thread.
+ * 
+ * TODO: Add logger
  */
 public class Client implements Runnable {
 
@@ -77,6 +81,7 @@ public class Client implements Runnable {
     protected void sendPlayerName() {
         printer.println(new JsonPrimitive(this.player.name()));
     }
+
     /**
      * Runs this Client including sending its player's name and starting the RefereeProxy
      * so it can handle incoming messages.

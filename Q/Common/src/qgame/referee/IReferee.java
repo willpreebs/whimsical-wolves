@@ -2,7 +2,6 @@ package qgame.referee;
 
 import java.util.List;
 
-import qgame.observer.IGameObserver;
 import qgame.player.Player;
 import qgame.state.IGameState;
 
