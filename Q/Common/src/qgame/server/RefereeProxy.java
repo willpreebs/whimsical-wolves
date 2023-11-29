@@ -4,7 +4,6 @@ import static qgame.util.ValidationUtil.validateArg;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -15,11 +14,7 @@ import com.google.gson.JsonStreamParser;
 import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
 import qgame.player.Player;
-import qgame.referee.GameResults;
-import qgame.referee.IReferee;
-import qgame.referee.QReferee;
 import qgame.state.Bag;
-import qgame.state.IGameState;
 import qgame.state.IPlayerGameState;
 import qgame.state.map.Tile;
 

@@ -1,5 +1,7 @@
 package qgame.referee;
 
+import static qgame.util.ValidationUtil.validateArg;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -13,38 +15,25 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import qgame.action.ExchangeAction;
 import qgame.action.PassAction;
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
-import qgame.json.JsonConverter;
 import qgame.observer.IGameObserver;
 import qgame.observer.QGameObserver;
-import qgame.state.Bag;
-import qgame.state.QStateBuilder;
-import qgame.state.map.Posn;
-import qgame.state.map.IMap;
-import qgame.state.map.Tile;
-import qgame.util.TileUtil;
 import qgame.player.Player;
 import qgame.player.PlayerInfo;
-import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.PlacementRule;
-import qgame.rule.placement.board.ExtendsBoardRule;
-import qgame.rule.placement.board.MatchTraitRule;
-import qgame.rule.placement.move.ExtendSameLineRule;
-import qgame.rule.placement.state.CorrectPlayerTilesRule;
 import qgame.rule.scoring.ScoringRule;
-import qgame.state.Placement;
-import qgame.state.IPlayerGameState;
+import qgame.state.Bag;
 import qgame.state.IGameState;
-
+import qgame.state.IPlayerGameState;
+import qgame.state.Placement;
+import qgame.state.QStateBuilder;
+import qgame.state.map.Posn;
+import qgame.state.map.Tile;
 import qgame.util.RuleUtil;
-
-import static qgame.util.ValidationUtil.validateArg;
+import qgame.util.TileUtil;
 /**
  * Represents the referee of the Q-Game, which acts as a turn-by-turn executor of the game
  * by prompting players for actions, updating the gameState to reflect said actions, and making
@@ -86,7 +75,6 @@ public class QReferee implements IReferee {
     this.observers = new ArrayList<>();
   }
 
-  // TODO: Take in fields of config instead of parsing it here.
   public QReferee(RefereeConfig refConfig) {
     // useConfiguration = true;
     

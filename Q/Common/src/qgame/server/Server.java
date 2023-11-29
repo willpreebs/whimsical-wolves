@@ -58,10 +58,11 @@ public class Server implements Runnable {
     // in milliseconds
     private final int TIMEOUT_FOR_NAME_SUBMISSION;
 
+    // Number of times a server will have a waiting period to connect to clients
     private final int NUMBER_WAITING_PERIODS;
 
     private final int MINIMUM_CLIENTS = 2;
-    private final int MAXIMUM_CLIENTS = 3;
+    private final int MAXIMUM_CLIENTS = 4;
 
     private RefereeConfig refConfig = null;
 
@@ -72,9 +73,6 @@ public class Server implements Runnable {
         this.server = new ServerSocket(tcpPort);
 
         WAITING_PERIOD = 20000;
-
-        // Allowed time between a client connection to the socket and their name submission
-        // in milliseconds
         TIMEOUT_FOR_NAME_SUBMISSION = 3000;
 
         NUMBER_WAITING_PERIODS = 2;
@@ -102,7 +100,8 @@ public class Server implements Runnable {
     
     /**
      * Runs this server. Connects to several clients and either calls a Referee to play a Q game
-     * with the remote players or sends an empty game result to all remote clients.
+     * with the remote players or sends an empty game result to all remote clients if the minimum
+     * number of clients hasn't been reached
      */
     @Override
     public void run() {
@@ -136,21 +135,20 @@ public class Server implements Runnable {
     protected List<Player> getProxies() {
 
         List<Player> proxies = new ArrayList<>();
-        int currentWaitingPeriod = 0;
-        
-        while (proxies.size() < MINIMUM_CLIENTS && currentWaitingPeriod < NUMBER_WAITING_PERIODS) {
+
+        for (int i = 0; i < NUMBER_WAITING_PERIODS; i++) {
             getPlayerProxiesWithinTimeout(proxies);
-            currentWaitingPeriod++;
+            if (proxies.size() >= MINIMUM_CLIENTS) {
+                break;
+            }
         }
 
         return proxies;
     }
 
     /**
-     * Returns a list of PlayerProxies that represent remote Players.
      * Connects up to a maximum number of clients within a time limit
-     * specified by WAITING_PERIOD. If the time limit is reached, then
-     * returns all of the players connected so far.
+     * specified by WAITING_PERIOD and adds them to the given list.
      * 
      * The waiting period does not reset between remote connections, instead
      * the start time is calculated and all clients must connect before
@@ -174,7 +172,7 @@ public class Server implements Runnable {
                 PlayerProxy p = proxy.get(waitingPeriodRemaining, TimeUnit.MILLISECONDS);
                 proxies.add(p);
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                // ran out of time in waiting period
+                // ran out of time in waiting period or an error occurred while connecting to a client
                 return;
             }
         }        
@@ -187,6 +185,11 @@ public class Server implements Runnable {
      * 
      * Between the socket connection being established and the client sending
      * a name, there is a time limit specified by TIMEOUT_FOR_NAME_SUBMISSION.
+     * 
+     * This method may run in a never ending loop if it does not receive a player
+     * name from a client. It is assumed that the caller of this method will
+     * interrupt it at some point if this happens.
+     *
      * @param server
      * @return
      */
