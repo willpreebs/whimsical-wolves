@@ -36,6 +36,8 @@ public class Client implements Runnable {
 
     private RefereeProxy refProxy;
 
+    private boolean quiet = false;
+
     // Creates a Client with a new socket instance from a given ServerSocket
     // TODO: Construct server with internet address and port rather than socket.
     public Client(ServerSocket server, Player player) throws IOException {
@@ -54,6 +56,7 @@ public class Client implements Runnable {
         this.printer = new PrintWriter(socket.getOutputStream(), true);
 
         this.refProxy = new RefereeProxy(printer, parser, player);
+        this.quiet = config.isQuiet();
     } 
 
     public Socket getSocket() {
@@ -81,7 +84,14 @@ public class Client implements Runnable {
      *  to the server so it can start the game
      */
     protected void sendPlayerName() {
+        log("Sending " + this.player.name());
         printer.println(new JsonPrimitive(this.player.name()));
+    }
+
+    public void log(Object message) {
+        if (!quiet) {
+            System.out.println("Client of " + player.name() + ": " + message);
+        }
     }
 
     /**

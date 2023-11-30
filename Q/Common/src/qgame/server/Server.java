@@ -70,6 +70,10 @@ public class Server implements Runnable {
 
     private PrintStream resultsStream = System.out;
 
+    private List<Socket> sockets = new ArrayList<>();
+
+    private boolean quiet = false;
+
     public Server(int tcpPort) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
         this.serverSocket = new ServerSocket(tcpPort);
@@ -89,6 +93,7 @@ public class Server implements Runnable {
         NUMBER_WAITING_PERIODS = config.getServerTries();
 
         this.refConfig = config.getRefSpec();
+        this.quiet = config.isQuiet();
     }
 
     public ServerSocket getServerSocket() {
@@ -102,6 +107,12 @@ public class Server implements Runnable {
      */
     public void setResultStream(PrintStream s) {
         this.resultsStream = s;
+    }
+
+    public void log(Object message) {
+        if (!quiet) {
+            System.out.println("Server: " + message);
+        }
     }
 
     
@@ -218,6 +229,8 @@ public class Server implements Runnable {
         Future<JsonElement> playerNameJson = executor.submit(() -> parser.next());
         try {
             String playerName = playerNameJson.get(TIMEOUT_FOR_NAME_SUBMISSION, TimeUnit.MILLISECONDS).getAsString();
+            log("get player name: " + playerName);
+            sockets.add(s);
             return new PlayerProxy(playerName, parser, out);
         } catch (TimeoutException | InterruptedException e) {
             throw new ExecutionException(e);
@@ -233,6 +246,7 @@ public class Server implements Runnable {
         JsonArray emptyResult = new JsonArray();
         emptyResult.add(new JsonArray());
         emptyResult.add(new JsonArray());
+        log("Sending: " + emptyResult);
         for (Player p : proxies) {
             PlayerProxy proxy = (PlayerProxy) p;
             try {

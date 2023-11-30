@@ -28,6 +28,8 @@ public class RefereeProxy {
     private JsonStreamParser parser;
     private PrintWriter out;
 
+    private boolean quiet;
+
     private final JsonElement VOID_ELEMENT = new JsonPrimitive("void");
 
     public RefereeProxy(PrintWriter out, JsonStreamParser parser, Player p) {
@@ -48,6 +50,12 @@ public class RefereeProxy {
         return this.p;
     }
 
+    public void log(Object message) {
+        if (!quiet) {
+            System.out.println("Referee proxy of " + this.p.name() + ": " + message);
+        }
+    }
+
     private String getMethodName(JsonElement e) {
         JsonElement[] a = JsonConverter.getAsElementArray(e);
         return JsonConverter.getAsString(a[0]);
@@ -59,7 +67,7 @@ public class RefereeProxy {
     }
 
     private void sendOverConnection(JsonElement e) throws IOException {
-        System.out.println("Ref proxy sending: " + e);
+        log("Sending " + e);
         out.println(e.toString());
     }
 
@@ -81,6 +89,7 @@ public class RefereeProxy {
             JsonArray args = null;
             try {
                 JsonElement element = parser.next();
+                log("Receive " + element);
                 methodName = getMethodName(element);
                 args = getArgs(element);
                 // System.out.println("Ref proxy receive: " + element);

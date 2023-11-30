@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import com.google.gson.JsonStreamParser;
 
+import qgame.json.JsonPrintWriter;
 import qgame.player.Player;
 import qgame.player.QPlayer;
 import qgame.player.SimpleAIPlayer;
@@ -46,12 +47,12 @@ public class RemoteInteractionsTest {
     private PlayerProxy makePlayerProxy(ServerSocket s, String playerName) {
 
         Socket socket;
-        PrintWriter out = null;
+        JsonPrintWriter out = null;
         JsonStreamParser parser = null;
 
         try {
             socket = s.accept();
-            out = new PrintWriter(socket.getOutputStream(), true);
+            out = new JsonPrintWriter(new PrintWriter(socket.getOutputStream(), true));
             parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
             // Problem connecting to client, try again
