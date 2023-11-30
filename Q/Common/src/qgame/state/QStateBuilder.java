@@ -25,8 +25,8 @@ public class QStateBuilder implements IStateBuilder{
 
   @Override
   public IStateBuilder placeTiles(Placement... placements) {
-    for (Placement(Posn posn, Tile tile) : placements) {
-      this.board.put(posn, tile);
+    for (Placement p : placements) {
+      this.board.put(p.posn(), p.tile());
     }
     return this;
   }
