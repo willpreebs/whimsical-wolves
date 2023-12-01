@@ -14,7 +14,7 @@ public class MockRefereeProxy extends RefereeProxy {
     List<String> messages = new ArrayList<>();
 
     public MockRefereeProxy(PrintWriter out, JsonStreamParser parser, Player p) {
-        super(out, parser, p);
+        super(out, parser, p, false);
     }
 
     public List<String> getIncomingMessages() {

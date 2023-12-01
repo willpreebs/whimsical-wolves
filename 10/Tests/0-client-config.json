@@ -2,6 +2,6 @@
     "port": 1234,
     "host": "0.0.0.0",
     "wait": 5,
-    "quiet": true,
+    "quiet": false,
     "players": [["Tester","dag"],["SecondTester","ldasg"],["looper","dag","take-turn",2]]
 }

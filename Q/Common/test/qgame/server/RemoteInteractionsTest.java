@@ -59,7 +59,7 @@ public class RemoteInteractionsTest {
             fail();
         }
 
-       return new PlayerProxy(playerName, parser, out);
+       return new PlayerProxy(playerName, parser, out, 6);
     }
 
     @Test

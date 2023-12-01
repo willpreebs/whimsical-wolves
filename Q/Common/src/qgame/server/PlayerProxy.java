@@ -1,9 +1,6 @@
 package qgame.server;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -39,20 +36,26 @@ public class PlayerProxy implements Player {
     // in stream: 
     private JsonStreamParser parser;
 
-    private boolean quiet;
+    private boolean quiet = false;
 
-    public PlayerProxy(String name, JsonStreamParser parser, JsonPrintWriter printer) {
+    private final int METHOD_CALL_TIMEOUT;
+
+    private final DebugStream DEBUG_STREAM = DebugStream.DEBUG;
+
+    public PlayerProxy(String name, JsonStreamParser parser, JsonPrintWriter printer, int timeout) {
         this.name = name;
         this.parser = parser;
         this.printer = printer;
         quiet = false;
+        METHOD_CALL_TIMEOUT = timeout;
     }
 
-    public PlayerProxy(String name, JsonStreamParser parser, JsonPrintWriter printer, boolean quiet) {
+    public PlayerProxy(String name, JsonStreamParser parser, JsonPrintWriter printer, boolean quiet, int timeout) {
         this.name = name;
         this.parser = parser;
         this.printer = printer;
         this.quiet = quiet;
+        METHOD_CALL_TIMEOUT = timeout;
     }
 
     protected void sendOverConnection(JsonElement el) throws IOException {
@@ -62,7 +65,7 @@ public class PlayerProxy implements Player {
 
     public void log(Object message) {
         if (!quiet) {
-            System.out.println("Player proxy of: " + this.name + ": " + message);
+            DEBUG_STREAM.s.println("Player proxy of: " + this.name + ": " + message);
         }
     }
 

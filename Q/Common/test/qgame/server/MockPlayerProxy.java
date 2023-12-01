@@ -10,7 +10,7 @@ import qgame.json.JsonPrintWriter;
 public class MockPlayerProxy extends PlayerProxy {
 
     public MockPlayerProxy(String name, JsonStreamParser parser, JsonPrintWriter writer) {
-        super(name, parser, writer);
+        super(name, parser, writer, 6);
     }
 
     @Override

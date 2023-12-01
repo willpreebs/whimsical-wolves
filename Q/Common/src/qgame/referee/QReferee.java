@@ -25,6 +25,7 @@ import qgame.player.Player;
 import qgame.player.PlayerInfo;
 import qgame.rule.placement.PlacementRule;
 import qgame.rule.scoring.ScoringRule;
+import qgame.server.DebugStream;
 import qgame.state.Bag;
 import qgame.state.IGameState;
 import qgame.state.IPlayerGameState;
@@ -62,6 +63,9 @@ public class QReferee implements IReferee {
   private List<IGameObserver> observers;
   private IGameState startState;
 
+  private boolean quiet = false;
+  private final DebugStream DEBUG_STREAM = DebugStream.DEBUG;
+
   // private boolean useConfiguration = false;
 
   public QReferee() {
@@ -76,8 +80,7 @@ public class QReferee implements IReferee {
   }
 
   public QReferee(RefereeConfig refConfig) {
-    // useConfiguration = true;
-    
+    this.quiet = refConfig.isQuiet();
     this.observers = new ArrayList<>();
 
     if (refConfig.isObserve()) {
@@ -86,8 +89,6 @@ public class QReferee implements IReferee {
 
     // TODO: make timeOut in seconds? 
     this.timeOut = refConfig.getPerTurn() * 1000;
-
-    // TODO: implement logger
 
     this.placementRules = RuleUtil.createPlaceRules();
 
@@ -203,6 +204,7 @@ public class QReferee implements IReferee {
       boolean setupSucceeded = setup(p);
       if (!setupSucceeded) {
         this.removeCurrentPlayer();
+        log("Remove player on setup: " + p.name());
       }
       else {
         survivingPlayers.add(p);
@@ -329,12 +331,6 @@ public class QReferee implements IReferee {
     this.currentGameState.removeCurrentPlayer();
   }
 
-  // private void removePlayer(Player p) {
-  //   String playerName = p.name();
-  //   ruleBreakers.add(playerName);
-  //   this.currentGameState.removePlayer(playerName);
-  // }
-
   /**
    * Referee attempts to play a single round of the game. It goes through
    * each active player in the round, playing each player's turn. Removes players
@@ -375,6 +371,7 @@ public class QReferee implements IReferee {
       // Step 5: Prepare for next round
       // If current player broke the rules or caused an exception, remove them
       if (removePlayer) {
+        log("Removing player " + currentPlayer.name());
         this.removeCurrentPlayer();
       }
       else {
@@ -407,11 +404,6 @@ public class QReferee implements IReferee {
    * @return True if currentPlayer has not been removed
    */
   private boolean givePlayerNewTiles(TurnAction action, Player currentPlayer) {
-
-    // if (action instanceof PlaceAction) {  
-    //   System.out.println("Player: " + currentPlayer.name() + " has move " + ((PlaceAction) action).placements().toString());
-    // }
-
     return switch (action) {
       case PassAction ignored -> true;
       case ExchangeAction ignored -> newTiles(currentPlayer);
@@ -423,7 +415,7 @@ public class QReferee implements IReferee {
   /**
    * Represents a method call on a given Player with a given array of arguments
    */
-  public interface PlayerLambda {
+  private interface PlayerLambda {
     public <T> T playerMethod(Player p, Object... args);
   }
 
@@ -470,7 +462,7 @@ public class QReferee implements IReferee {
     try {
       return Optional.of(callPlayerMethodWithTimeout(l, player, currentGameState.getCurrentPlayerState()));
     } catch (ExecutionException | InterruptedException | TimeoutException e) {
-      // e.printStackTrace(System.out);
+      log("Problem with calling takeTurn on " + player.name());
       return Optional.empty();
     }
   }
@@ -498,6 +490,7 @@ public class QReferee implements IReferee {
       return true;
     } 
     catch (ExecutionException | InterruptedException | TimeoutException e) {
+      log("Problem with calling setup on " + player.name());
       return false;
     }
   }
@@ -522,6 +515,7 @@ public class QReferee implements IReferee {
       return true;
     }
     catch (IllegalStateException | ExecutionException | InterruptedException | TimeoutException e) {
+      log("Problem with calling newTiles on " + player.name());
       return false;
     }
   }
@@ -538,6 +532,7 @@ public class QReferee implements IReferee {
       callPlayerMethodWithTimeout(l, player, value);
       return true;
     } catch (IllegalStateException | ExecutionException | InterruptedException | TimeoutException e) {
+      log("Problem with calling win on " + player.name());
       return false;
     }
   }
@@ -632,12 +627,8 @@ public class QReferee implements IReferee {
    * @return
    */
   private boolean isValidPlaceAction(PlaceAction place) {
-    // System.out.println("Testing placement of player: " + state.getCurrentPlayer().name());
     boolean validPlacements = this.placementRules.isPlacementListLegal(
             place.placements(), currentGameState.getCurrentPlayerState());
-    if (!validPlacements) {
-      // System.out.println("Player: " + state.getCurrentPlayer().name() + " broke the rules");
-    }
     return validPlacements;
   }
 
@@ -689,7 +680,9 @@ public class QReferee implements IReferee {
     return currentGameState.getCurrentPlayerState().getCurrentPlayerTiles();
   }
 
-  // private Bag<Tile> getPlayerTiles(Player player) {
-  //   return currentGameState.getPlayerInfo(player.name()).tiles();
-  // }
+  private void log(Object message) {
+    if (!quiet) {
+      DEBUG_STREAM.s.println("QReferee: " + message);
+    }
+  }
 }

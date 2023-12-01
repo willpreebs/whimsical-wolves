@@ -3,7 +3,15 @@ package qgame.server;
 import static qgame.util.ValidationUtil.validateArg;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -28,14 +36,19 @@ public class RefereeProxy {
     private JsonStreamParser parser;
     private PrintWriter out;
 
-    private boolean quiet;
+    private boolean quiet = false;
+
+    private final int TIMEOUT_FOR_MESSAGES = 10000;
 
     private final JsonElement VOID_ELEMENT = new JsonPrimitive("void");
 
-    public RefereeProxy(PrintWriter out, JsonStreamParser parser, Player p) {
+    private final DebugStream DEBUG_STREAM = DebugStream.DEBUG;
+
+    public RefereeProxy(PrintWriter out, JsonStreamParser parser, Player p, boolean quiet) {
         this.out = out;
         this.parser = parser;
         this.p = p;
+        this.quiet = quiet;
     }
 
     public JsonStreamParser getParser() {
@@ -51,8 +64,9 @@ public class RefereeProxy {
     }
 
     public void log(Object message) {
+
         if (!quiet) {
-            System.out.println("Referee proxy of " + this.p.name() + ": " + message);
+            DEBUG_STREAM.s.println("Referee proxy of " + this.p.name() + ": " + message);
         }
     }
 
@@ -83,29 +97,63 @@ public class RefereeProxy {
      */
     public void listenForMessages() throws IOException {
 
+        log("Start listening for messages");
+        
+
         boolean gameOver = false;
+        boolean enforceTimeout = false;
         while (!gameOver) {
             String methodName = null;
             JsonArray args = null;
             try {
-                JsonElement element = parser.next();
+                JsonElement element = receiveMessage(enforceTimeout);
+                if (!enforceTimeout) {
+                    enforceTimeout = true;
+                }
+
                 log("Receive " + element);
                 methodName = getMethodName(element);
                 args = getArgs(element);
-                // System.out.println("Ref proxy receive: " + element);
-            } catch (JsonParseException | IllegalArgumentException e) {
-                // Server sent message that is not well formed
-                // or is not the expected format.
-                // TODO: Inform server? Shutdown?
-                e.printStackTrace(out);
-                continue;
+
+                if (methodName.equals("win")) {
+                    log("Received win, game is over");
+                    gameOver = true;
+                }
             }
-            if (methodName.equals("win")) {
-                gameOver = true;
+            catch (JsonParseException | IllegalArgumentException | ExecutionException e) {
+                log("Received unexpected or badly formed message from server. Shutting down");
+                break;
             }
+            catch (TimeoutException e) {
+                log("Time limit reached for getting message from server. Shutting down");
+                break;
+            }
+            catch (InterruptedException e) {
+                log("Thread for getting message from server interrupted. Shutting down");
+                break;
+            }
+            
             JsonElement result = makeMethodCall(methodName, args);
             sendOverConnection(result);
         }
+    }
+
+    private JsonElement receiveMessage(boolean enforceTimeout) throws 
+    InterruptedException, ExecutionException, TimeoutException, JsonParseException {
+        ThreadFactory factory = Thread.ofVirtual().factory();
+        ExecutorService executor = Executors.newFixedThreadPool(1, factory);
+
+        JsonElement element;
+        if (enforceTimeout) {
+            log("Expecting a message within the timeout");
+            Future<JsonElement> futureMessage = executor.submit(() -> parser.next());
+            element = futureMessage.get(TIMEOUT_FOR_MESSAGES, TimeUnit.MILLISECONDS);
+        }
+        else {
+            element = parser.next();
+        }
+
+        return element;
     }
 
     /**

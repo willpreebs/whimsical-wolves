@@ -39,6 +39,7 @@ public class XServerClient {
                 handleXClient(port, config);
                 break;
         }
+        // System.exit(0);
     }
 
     private static void handleXServer(int port, JsonObject config) throws IOException {
@@ -47,7 +48,7 @@ public class XServerClient {
         runServer(thread);
     }
 
-    private static void handleXClient(int port, JsonObject config) {
+    private static void handleXClient(int port, JsonObject config) throws IOException {
         List<Thread> threads = getClientThreads(port, config);
         runClients(threads);
     }
@@ -65,7 +66,7 @@ public class XServerClient {
         }
     }
 
-    private static List<Thread> getClientThreads(int port, JsonObject config) { 
+    private static List<Thread> getClientThreads(int port, JsonObject config) throws IOException { 
 
         JsonObject obj = config.getAsJsonObject();
 
@@ -81,7 +82,7 @@ public class XServerClient {
         return clientThreads;
     }
 
-    private static List<Client> getClients(List<Player> players, int port, JsonObject config) {
+    private static List<Client> getClients(List<Player> players, int port, JsonObject config) throws IOException {
 
         List<Client> clients = new ArrayList<>();
 
@@ -90,8 +91,8 @@ public class XServerClient {
             try {
                 clients.add(new Client(port, new ClientConfig(config), p));
             } catch (IOException e) {
-                // issue with creating socket for Client
-                continue;
+                System.out.println("Issue constructing Client");
+                throw e;
             }
         }
 

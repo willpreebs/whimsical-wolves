@@ -73,6 +73,7 @@ public class Server implements Runnable {
     private List<Socket> sockets = new ArrayList<>();
 
     private boolean quiet = false;
+    private final DebugStream DEBUG_STREAM = DebugStream.DEBUG;
 
     public Server(int tcpPort) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
@@ -87,13 +88,12 @@ public class Server implements Runnable {
     public Server(int tcpPort, ServerConfig config) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
         this.serverSocket = new ServerSocket(tcpPort);
-        
+        this.quiet = config.isQuiet();
         WAITING_PERIOD = config.getServerWait() * 1000;
         TIMEOUT_FOR_NAME_SUBMISSION = config.getWaitForSignup() * 1000;
         NUMBER_WAITING_PERIODS = config.getServerTries();
 
         this.refConfig = config.getRefSpec();
-        this.quiet = config.isQuiet();
     }
 
     public ServerSocket getServerSocket() {
@@ -111,7 +111,7 @@ public class Server implements Runnable {
 
     public void log(Object message) {
         if (!quiet) {
-            System.out.println("Server: " + message);
+            DEBUG_STREAM.s.println("Server: " + message);
         }
     }
 
@@ -137,10 +137,25 @@ public class Server implements Runnable {
         GameResults r = ref.playGame(proxies);
         resultsStream.println(JsonConverter.jResultsFromGameResults(r));
 
+        closeSocketConnections();
+        log("Closed all client sockets");
         try {
             serverSocket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log("Error while closing server socket");
+        }
+        log("Closed server socket. Shutting down");
+        System.exit(0);
+    }
+
+    public void closeSocketConnections() {
+        for (Socket s : this.sockets) {
+            try {
+                log("Closing");
+                s.close();
+            } catch (IOException e) {
+                log("Error while closing socket");
+            }
         }
     }
 
@@ -231,7 +246,7 @@ public class Server implements Runnable {
             String playerName = playerNameJson.get(TIMEOUT_FOR_NAME_SUBMISSION, TimeUnit.MILLISECONDS).getAsString();
             log("get player name: " + playerName);
             sockets.add(s);
-            return new PlayerProxy(playerName, parser, out);
+            return new PlayerProxy(playerName, parser, out, this.quiet, refConfig.getPerTurn());
         } catch (TimeoutException | InterruptedException e) {
             throw new ExecutionException(e);
         }

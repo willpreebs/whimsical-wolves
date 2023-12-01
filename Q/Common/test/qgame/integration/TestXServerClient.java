@@ -57,8 +57,6 @@ public class TestXServerClient {
         JsonElement testResults = startXServer(port, sConfig);
 
         return testResults;
-
-
     }
 
     private static JsonElement startXServer(int port, ServerConfig config) throws IOException {

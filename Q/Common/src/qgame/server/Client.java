@@ -1,8 +1,11 @@
 package qgame.server;
 
+import static qgame.util.ValidationUtil.validateArg;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -21,7 +24,8 @@ import qgame.player.Player;
  * A Client may be run as a seperate thread, which calls run() upon starting
  * the thread.
  * 
- * TODO: Add logger
+ * On construction, if a Client fails to create a socket after a certain number of 
+ * attempts, it throws an IOException
  */
 public class Client implements Runnable {
 
@@ -36,28 +40,53 @@ public class Client implements Runnable {
 
     private RefereeProxy refProxy;
 
-    private boolean quiet = false;
+    
 
-    // Creates a Client with a new socket instance from a given ServerSocket
-    // TODO: Construct server with internet address and port rather than socket.
+    private final int SOCKET_RETRIES = 3;
+    private final int TIME_BETWEEN_RETRIES = 2000;
+
+    private boolean quiet = false;
+    private final DebugStream DEBUG_STREAM = DebugStream.DEBUG;
+
     public Client(ServerSocket server, Player player) throws IOException {
         this.player = player;
-        // TODO: Handle errors on socket construction, enforce timeout?
-        socket = new Socket(server.getInetAddress(), server.getLocalPort());
+        createSocket(server.getInetAddress().getHostName(), server.getLocalPort());
         parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
         printer = new PrintWriter(socket.getOutputStream(), true);  
-        this.refProxy = new RefereeProxy(printer, parser, player);
+        this.refProxy = new RefereeProxy(printer, parser, player, this.quiet);
     }
 
     public Client(int port, ClientConfig config, Player player) throws IOException {
+        this.quiet = config.isQuiet();
         this.player = player;
-        this.socket = new Socket(config.getHost(), port);
+        createSocket(config.getHost(), port);
         this.parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
         this.printer = new PrintWriter(socket.getOutputStream(), true);
+        this.refProxy = new RefereeProxy(printer, parser, player, this.quiet);
+    }
 
-        this.refProxy = new RefereeProxy(printer, parser, player);
-        this.quiet = config.isQuiet();
-    } 
+    private void createSocket(String addr, int port) throws IOException {
+
+        for (int retry = 0; retry < SOCKET_RETRIES; retry++) {
+            try {
+                this.socket = new Socket(addr, port);
+                log("Socket successfully created");
+                break;
+            } 
+            catch (IOException e) {
+                log("Socket creation failed, trying again in " + TIME_BETWEEN_RETRIES + " milliseconds");
+                try {
+                    Thread.sleep(this.TIME_BETWEEN_RETRIES);
+                } catch (InterruptedException e1) {
+                    throw new IOException(
+                        "Client thread interrupted while pausing between socket connection tries");
+                }
+            }
+        }
+        if (this.socket == null) {
+            throw new IOException("Unable to create socket");
+        }
+    }
 
     public Socket getSocket() {
         return this.socket;
@@ -90,7 +119,7 @@ public class Client implements Runnable {
 
     public void log(Object message) {
         if (!quiet) {
-            System.out.println("Client of " + player.name() + ": " + message);
+            DEBUG_STREAM.s.println("Client of " + player.name() + ": " + message);
         }
     }
 
@@ -106,8 +135,15 @@ public class Client implements Runnable {
         try {
             refProxy.listenForMessages();
         } catch (IOException e) {
-            System.out.println("Ref proxy threw error");
+            log("Encountered error in ref proxy");
             e.printStackTrace();
         }
+        try {
+            socket.close();
+        } catch (IOException e) {
+            log("Error while closing socket");
+        }
+        log("Shutting down.");
+        System.exit(0);
     }
 }
