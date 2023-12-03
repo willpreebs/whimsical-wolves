@@ -73,7 +73,7 @@ public class Server implements Runnable {
     private List<Socket> sockets = new ArrayList<>();
 
     private boolean quiet = false;
-    private final DebugStream DEBUG_STREAM = DebugStream.DEBUG;
+    private final DebugStream DEBUG_STREAM = DebugStream.ERROR;
 
     public Server(int tcpPort) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");

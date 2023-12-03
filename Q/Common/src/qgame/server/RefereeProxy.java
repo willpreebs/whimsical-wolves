@@ -42,7 +42,7 @@ public class RefereeProxy {
 
     private final JsonElement VOID_ELEMENT = new JsonPrimitive("void");
 
-    private final DebugStream DEBUG_STREAM = DebugStream.DEBUG;
+    private final DebugStream DEBUG_STREAM = DebugStream.ERROR;
 
     public RefereeProxy(PrintWriter out, JsonStreamParser parser, Player p, boolean quiet) {
         this.out = out;

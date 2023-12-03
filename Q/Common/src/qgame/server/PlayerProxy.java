@@ -40,7 +40,7 @@ public class PlayerProxy implements Player {
 
     private final int METHOD_CALL_TIMEOUT;
 
-    private final DebugStream DEBUG_STREAM = DebugStream.DEBUG;
+    private final DebugStream DEBUG_STREAM = DebugStream.ERROR;
 
     public PlayerProxy(String name, JsonStreamParser parser, JsonPrintWriter printer, int timeout) {
         this.name = name;

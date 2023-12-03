@@ -64,7 +64,7 @@ public class QReferee implements IReferee {
   private IGameState startState;
 
   private boolean quiet = false;
-  private final DebugStream DEBUG_STREAM = DebugStream.DEBUG;
+  private final DebugStream DEBUG_STREAM = DebugStream.ERROR;
 
   // private boolean useConfiguration = false;
 

@@ -46,7 +46,7 @@ public class Client implements Runnable {
     private final int TIME_BETWEEN_RETRIES = 2000;
 
     private boolean quiet = false;
-    private final DebugStream DEBUG_STREAM = DebugStream.DEBUG;
+    private final DebugStream DEBUG_STREAM = DebugStream.ERROR;
 
     public Client(ServerSocket server, Player player) throws IOException {
         this.player = player;

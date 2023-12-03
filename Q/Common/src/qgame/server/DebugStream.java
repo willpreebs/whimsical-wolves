@@ -6,7 +6,7 @@ public enum DebugStream {
     ERROR(System.err),
     DEBUG(System.out);
 
-    PrintStream s;
+    public PrintStream s;
 
     private DebugStream(PrintStream s) {
         this.s = s;

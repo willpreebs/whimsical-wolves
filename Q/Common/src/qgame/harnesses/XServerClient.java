@@ -42,15 +42,17 @@ public class XServerClient {
         // System.exit(0);
     }
 
-    private static void handleXServer(int port, JsonObject config) throws IOException {
-        Server s = new Server(port, new ServerConfig(config));
+    private static void handleXServer(int port, JsonObject configObj) throws IOException {
+        Server s = new Server(port, new ServerConfig(configObj));
         Thread thread = new Thread(s);
         runServer(thread);
     }
 
-    private static void handleXClient(int port, JsonObject config) throws IOException {
-        List<Thread> threads = getClientThreads(port, config);
-        runClients(threads);
+    private static void handleXClient(int port, JsonObject configObj) throws IOException {
+        List<Player> players = JsonConverter.playersFromJActorSpecB(configObj.get("players"));
+        ClientConfig config = new ClientConfig(configObj);
+        List<Thread> threads = getClientThreads(port, config, players);
+        runClients(threads, config);
     }
 
     private static int getPort(String arg) {
@@ -66,12 +68,9 @@ public class XServerClient {
         }
     }
 
-    private static List<Thread> getClientThreads(int port, JsonObject config) throws IOException { 
+    private static List<Thread> getClientThreads(int port, ClientConfig config, List<Player> players) throws IOException { 
 
-        JsonObject obj = config.getAsJsonObject();
-
-        List<Player> players = JsonConverter.playersFromJActorSpecB(obj.get("players"));
-
+        
         List<Client> clients = getClients(players, port, config);
 
         List<Thread> clientThreads = clients
@@ -82,14 +81,14 @@ public class XServerClient {
         return clientThreads;
     }
 
-    private static List<Client> getClients(List<Player> players, int port, JsonObject config) throws IOException {
+    private static List<Client> getClients(List<Player> players, int port, ClientConfig config) throws IOException {
 
         List<Client> clients = new ArrayList<>();
 
         for (Player p : players) {
 
             try {
-                clients.add(new Client(port, new ClientConfig(config), p));
+                clients.add(new Client(port, config, p));
             } catch (IOException e) {
                 System.out.println("Issue constructing Client");
                 throw e;
@@ -99,8 +98,18 @@ public class XServerClient {
         return clients;
     }
 
-    private static void runClients(List<Thread> threads) {
-        threads.forEach(t -> t.start());
+    private static void runClients(List<Thread> threads, ClientConfig config) {
+
+        int millisBetweenThreadStarts = config.getWait() * 1000;
+
+        for (Thread t : threads) {
+            t.start();
+            try {
+                Thread.sleep(millisBetweenThreadStarts);
+            } catch (InterruptedException e) {
+                System.err.println("Sleep period between Client threads interrupted");
+            }
+        } 
     }
 
     private static void runServer(Thread serverThread) {
