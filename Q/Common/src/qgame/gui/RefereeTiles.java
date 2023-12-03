@@ -1,13 +1,9 @@
 package qgame.gui;
 
-import java.awt.Dimension;
-import java.util.List;
-
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import qgame.player.PlayerInfo;
 import qgame.state.Bag;
 import qgame.state.IGameState;
 import qgame.state.map.Tile;

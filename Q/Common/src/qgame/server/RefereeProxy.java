@@ -3,15 +3,6 @@ package qgame.server;
 import static qgame.util.ValidationUtil.validateArg;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -38,8 +29,6 @@ public class RefereeProxy {
     private JsonPrintWriter out;
 
     private boolean quiet = false;
-
-    private final int TIMEOUT_FOR_MESSAGES = 10000;
 
     private final JsonElement VOID_ELEMENT = new JsonPrimitive("void");
 
@@ -100,17 +89,13 @@ public class RefereeProxy {
 
         log("Start listening for messages");
         
-
         boolean gameOver = false;
-        boolean enforceTimeout = false;
+        
         while (!gameOver) {
             String methodName = null;
             JsonArray args = null;
             try {
-                JsonElement element = receiveMessage(enforceTimeout);
-                if (!enforceTimeout) {
-                    enforceTimeout = true;
-                }
+                JsonElement element = receiveMessage();
 
                 log("Receive " + element);
                 methodName = getMethodName(element);
@@ -121,16 +106,8 @@ public class RefereeProxy {
                     gameOver = true;
                 }
             }
-            catch (JsonParseException | IllegalArgumentException | ExecutionException e) {
+            catch (JsonParseException | IllegalArgumentException e) {
                 log("Received unexpected or badly formed message from server. Shutting down");
-                break;
-            }
-            catch (TimeoutException e) {
-                log("Time limit reached for getting message from server. Shutting down");
-                break;
-            }
-            catch (InterruptedException e) {
-                log("Thread for getting message from server interrupted. Shutting down");
                 break;
             }
             
@@ -139,21 +116,9 @@ public class RefereeProxy {
         }
     }
 
-    private JsonElement receiveMessage(boolean enforceTimeout) throws 
-    InterruptedException, ExecutionException, TimeoutException, JsonParseException {
-        ThreadFactory factory = Thread.ofVirtual().factory();
-        ExecutorService executor = Executors.newFixedThreadPool(1, factory);
+    private JsonElement receiveMessage() throws JsonParseException {
 
-        JsonElement element;
-        if (enforceTimeout) {
-            log("Expecting a message within the timeout");
-            Future<JsonElement> futureMessage = executor.submit(() -> parser.next());
-            element = futureMessage.get(TIMEOUT_FOR_MESSAGES, TimeUnit.MILLISECONDS);
-        }
-        else {
-            element = parser.next();
-        }
-
+        JsonElement element = parser.next();
         return element;
     }
 

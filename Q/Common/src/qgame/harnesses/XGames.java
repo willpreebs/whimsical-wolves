@@ -11,7 +11,7 @@ import qgame.player.Player;
 import qgame.referee.QReferee;
 import qgame.referee.GameResults;
 import qgame.referee.IReferee;
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.IGameState;
 import qgame.util.RuleUtil;
@@ -21,7 +21,7 @@ public class XGames {
     JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(System.in));
     JsonElement jState = parser.next();
     JsonElement jActors = parser.next();
-    PlacementRule placementRules = RuleUtil.createPlaceRules();
+    IPlacementRule placementRules = RuleUtil.createPlaceRules();
     ScoringRule scoringRules = RuleUtil.createOldScoreRules();
     IGameState state = JsonConverter.jStateToOldQGameState(jState);
     List<Player> players = JsonConverter.playersFromJActors(jActors, placementRules);

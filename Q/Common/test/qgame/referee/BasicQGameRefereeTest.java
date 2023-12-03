@@ -27,7 +27,7 @@ import qgame.player.Player;
 import qgame.player.PlayerInfo;
 import qgame.player.DummyAIPlayer;
 import qgame.rule.placement.MultiPlacementRule;
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.rule.placement.board.ExtendsBoardRule;
 import qgame.rule.placement.board.MatchTraitRule;
 import qgame.rule.placement.move.ExtendSameLineRule;
@@ -58,7 +58,7 @@ public class BasicQGameRefereeTest {
   Tile.Shape star = Tile.Shape.STAR;
   Tile.Shape eightStar = Tile.Shape.EIGHT_STAR;
 
-  PlacementRule placementRules;
+  IPlacementRule placementRules;
   Player player1;
   Player player2;
   Player badMove;

@@ -1,13 +1,10 @@
 package qgame.player;
 
-import java.util.List;
-
 import qgame.action.TurnAction;
 import qgame.player.strategy.TurnStrategy;
 import qgame.state.Bag;
-import qgame.state.map.IMap;
-import qgame.state.map.Tile;
 import qgame.state.IPlayerGameState;
+import qgame.state.map.Tile;
 
 
 public class SimpleAIPlayer implements Player {

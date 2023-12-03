@@ -18,7 +18,7 @@ import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.state.map.QTile;
 import qgame.rule.placement.MultiPlacementRule;
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.rule.placement.board.ExtendsBoardRule;
 import qgame.rule.placement.board.MatchTraitRule;
 import qgame.rule.placement.move.ExtendSameLineRule;
@@ -54,7 +54,7 @@ public class PlayerTest {
 
   @Before
   public void init() {
-    PlacementRule rule = new MultiPlacementRule(new MatchTraitRule(), new ExtendSameLineRule(),
+    IPlacementRule rule = new MultiPlacementRule(new MatchTraitRule(), new ExtendSameLineRule(),
       new ExtendsBoardRule(), new CorrectPlayerTilesRule());
     player1 = new SimpleAIPlayer("bob", new DagStrategy(rule));
     player2 = new SimpleAIPlayer("timmy", new LdasgStrategy(rule));

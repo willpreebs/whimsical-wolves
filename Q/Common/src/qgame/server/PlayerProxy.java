@@ -76,6 +76,7 @@ public class PlayerProxy implements Player {
         try {
             element = parser.next();
         } catch (JsonParseException e) {
+            log("Player proxy got weird message from client. Throwing exception");
             throw new IllegalStateException("Remote player must communicate with well-formed JSON. "
              + e.getLocalizedMessage());
         }

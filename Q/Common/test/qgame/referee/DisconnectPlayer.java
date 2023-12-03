@@ -2,10 +2,10 @@ package qgame.referee;
 
 
 import qgame.action.TurnAction;
-import qgame.state.Bag;
-import qgame.state.map.Tile;
 import qgame.player.Player;
+import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
+import qgame.state.map.Tile;
 
 public class DisconnectPlayer implements Player {
 

@@ -1,14 +1,11 @@
 package qgame.referee;
 
-import java.util.List;
-
 import qgame.action.PassAction;
 import qgame.action.TurnAction;
-import qgame.state.Bag;
-import qgame.state.map.IMap;
-import qgame.state.map.Tile;
 import qgame.player.Player;
+import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
+import qgame.state.map.Tile;
 
 class TimeOutPlayer implements Player {
 

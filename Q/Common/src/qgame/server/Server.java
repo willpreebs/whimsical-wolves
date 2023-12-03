@@ -22,9 +22,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonStreamParser;
-import com.google.gson.stream.JsonWriter;
 
 import qgame.json.JsonConverter;
 import qgame.json.JsonPrintWriter;
@@ -66,7 +64,7 @@ public class Server implements Runnable {
     private final int MINIMUM_CLIENTS = 2;
     private final int MAXIMUM_CLIENTS = 4;
 
-    private RefereeConfig refConfig = null;
+    private RefereeConfig refConfig;
 
     private PrintStream resultsStream = System.out;
 
@@ -115,11 +113,24 @@ public class Server implements Runnable {
         }
     }
 
+    private void printOutResults(GameResults r) {
+        resultsStream.println(JsonConverter.jResultsFromGameResults(r));
+    }
     
     /**
      * Runs this server. Connects to several clients and either calls a Referee to play a Q game
      * with the remote players or sends an empty game result to all remote clients if the minimum
-     * number of clients hasn't been reached
+     * number of clients hasn't been reached.
+     * 
+     * Steps:
+     * 1. Connect to Clients to get Players for a game
+     * 2. Sends empty game result if the minimum number of players isn't enough.
+     * 3. Create a QReferee to run the game
+     * 4. Call playGame on the Referee
+     * 5. Print out the results of the game
+     * 6. Close the socket connections
+     * 7. Close the server socket
+     * 8. Use System.exit to kill any child processes that might still be running
      */
     @Override
     public void run() {
@@ -135,7 +146,7 @@ public class Server implements Runnable {
         new QReferee() : new QReferee(this.refConfig);
         
         GameResults r = ref.playGame(proxies);
-        resultsStream.println(JsonConverter.jResultsFromGameResults(r));
+        printOutResults(r);
 
         closeSocketConnections();
         log("Closed all client sockets");
@@ -148,10 +159,12 @@ public class Server implements Runnable {
         System.exit(0);
     }
 
+    /**
+     * Closes all connections to sockets.
+     */
     public void closeSocketConnections() {
         for (Socket s : this.sockets) {
             try {
-                log("Closing");
                 s.close();
             } catch (IOException e) {
                 log("Error while closing socket");
@@ -212,6 +225,7 @@ public class Server implements Runnable {
             }
             catch (ExecutionException e) {
                 // A player failed to deliver their name in time, or some other error.
+                log("Encountered error while connecting to a client");
                 continue;
             }
         }        
@@ -225,10 +239,8 @@ public class Server implements Runnable {
      * Between the socket connection being established and the client sending
      * a name, there is a time limit specified by TIMEOUT_FOR_NAME_SUBMISSION.
      * 
-     * This method may run in a never ending loop if it does not receive a player
-     * name from a client. It is assumed that the caller of this method will
-     * interrupt it at some point if this happens.
-     *
+     *  
+     * 
      * @param server
      * @return
      */

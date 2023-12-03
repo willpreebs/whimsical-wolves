@@ -1,24 +1,23 @@
 package qgame.rule.scoring;
 
-import org.junit.Before;
-import org.junit.Test;
+import static junit.framework.TestCase.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import qgame.observer.IGameObserver;
+import org.junit.Before;
+import org.junit.Test;
+
 import qgame.state.IGameState;
 import qgame.state.Placement;
 import qgame.state.QGameState;
-import qgame.state.map.Posn;
 import qgame.state.map.IMap;
+import qgame.state.map.Posn;
 import qgame.state.map.QMap;
-import qgame.state.map.Tile;
 import qgame.state.map.QTile;
-
-import static junit.framework.TestCase.assertEquals;
+import qgame.state.map.Tile;
 
 
 public class RuleTests {

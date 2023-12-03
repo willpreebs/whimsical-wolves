@@ -1,20 +1,18 @@
 package qgame.rule.placement.board;
 
+import static qgame.util.PosnUtil.neighbors;
+
 import java.util.List;
 import java.util.function.BiPredicate;
 
-import qgame.state.map.Posn;
-import qgame.state.map.IMap;
-import qgame.state.map.Tile;
 import qgame.rule.placement.move.EmptyMoveRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.state.Placement;
+import qgame.state.map.IMap;
+import qgame.state.map.Posn;
+import qgame.state.map.Tile;
 import qgame.util.PosnUtil;
 import qgame.util.TileUtil;
-
-import static qgame.util.PosnUtil.neighbors;
-import static qgame.util.PosnUtil.sameCol;
-import static qgame.util.PosnUtil.sameRow;
 
 /**
  * Rule that checks whether a proposed placement tile matches in one trait (shape or color)

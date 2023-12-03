@@ -3,10 +3,9 @@ package qgame.state;
 import java.util.Collection;
 import java.util.List;
 
+import qgame.player.PlayerInfo;
 import qgame.state.map.IMap;
 import qgame.state.map.Tile;
-import qgame.player.Player;
-import qgame.player.PlayerInfo;
 
 /**
  * Contains all the information about the state of the Q Game that the referee knows.

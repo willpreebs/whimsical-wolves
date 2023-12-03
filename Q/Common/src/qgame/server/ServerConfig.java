@@ -1,6 +1,5 @@
 package qgame.server;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import qgame.referee.RefereeConfig;

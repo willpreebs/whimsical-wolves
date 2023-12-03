@@ -1,15 +1,14 @@
 package qgame.player.strategy;
 
-import com.google.gson.JsonElement;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
+import com.google.gson.JsonElement;
+
 import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
-import qgame.player.strategy.TurnStrategy;
 import qgame.state.IPlayerGameState;
 
 

@@ -12,7 +12,7 @@ import qgame.state.IPlayerGameState;
 /**
  * Represents a rule about placements on a IPlayerGameState.
  */
-public interface PlacementRule {
+public interface IPlacementRule {
 
   /**
    * Tests if a series of placements satisfies the rule on the given IPlayerGameState
@@ -33,8 +33,20 @@ public interface PlacementRule {
    */
   List<Posn> validPositionsForTile(Tile t, IPlayerGameState gameState);
 
+  /**
+   * Gets this rule as a BoardRule if it is a BoardRule, otherwise returns
+   * an EmptyBoardRule. If this is a MultiRule, returns a new MultiBoardRule
+   * containing all of the BoardRules within this Rule
+   * @return
+   */
   BoardRule getBoardRule();
 
+  /**
+   * Gets this rule as a MoveRule if it is a MoveRule, otherwise returns
+   * an EmptyMoveRule. If this is a MultiRule, returns a new MultiMoveRule
+   * containing all of the MoveRules within this Rule
+   * @return
+   */
   MoveRule getMoveRule();
   
 }

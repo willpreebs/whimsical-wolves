@@ -11,7 +11,7 @@ import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
 import qgame.player.CheatingAIPlayer.Cheat;
 import qgame.rule.placement.MultiPlacementRule;
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
 import qgame.state.Placement;
@@ -31,11 +31,11 @@ public class CheatStrategy implements TurnStrategy {
         this.backupStrategy = backupStrategy;
     }
 
-    public PlacementRule getPlacementRule() {
+    public IPlacementRule getPlacementRule() {
         return backupStrategy.getPlacementRule();
     }
     
-    private PlacementRule getBoardPlacementRule() {
+    private IPlacementRule getBoardPlacementRule() {
         return ((MultiPlacementRule) backupStrategy.getPlacementRule()).getBoardRules();
     }
 

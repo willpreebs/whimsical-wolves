@@ -1,49 +1,55 @@
 package qgame.json;
 
-import com.google.gson.*;
+import static java.util.Arrays.stream;
+import static qgame.util.ValidationUtil.nonNullObj;
+import static qgame.util.ValidationUtil.validateArg;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Stream;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import qgame.action.ExchangeAction;
 import qgame.action.PassAction;
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
+import qgame.player.CheatingAIPlayer;
+import qgame.player.DummyAIPlayer;
+import qgame.player.LoopingAIPlayer;
 import qgame.player.Player;
 import qgame.player.PlayerInfo;
 import qgame.player.strategy.DagStrategy;
 import qgame.player.strategy.LdasgStrategy;
-import qgame.player.strategy.DagStrategy;
-import qgame.player.strategy.LdasgStrategy;
 import qgame.player.strategy.TurnStrategy;
-import qgame.player.CheatingAIPlayer;
-import qgame.player.DummyAIPlayer;
-import qgame.player.LoopingAIPlayer;
 import qgame.referee.GameResults;
 import qgame.referee.RefereeStateConfig;
-import qgame.rule.placement.PlacementRule;
-import qgame.rule.placement.board.BoardRule;
-import qgame.rule.placement.move.MoveRule;
-import qgame.server.Client;
-import qgame.server.Server;
+import qgame.rule.placement.IPlacementRule;
 import qgame.state.Bag;
-import qgame.state.QPlayerGameState;
-import qgame.state.QGameState;
-import qgame.state.Placement;
-import qgame.state.IPlayerGameState;
 import qgame.state.IGameState;
-import qgame.state.map.Posn;
+import qgame.state.IPlayerGameState;
+import qgame.state.Placement;
+import qgame.state.QGameState;
+import qgame.state.QPlayerGameState;
 import qgame.state.map.IMap;
+import qgame.state.map.Posn;
 import qgame.state.map.QMap;
-import qgame.state.map.Tile;
 import qgame.state.map.QTile;
+import qgame.state.map.Tile;
 import qgame.util.PosnUtil;
 import qgame.util.RuleUtil;
-
-import static java.util.Arrays.stream;
-import static qgame.util.ValidationUtil.nonNullObj;
-import static qgame.util.ValidationUtil.validateArg;
 
 /**
  * Supports reading in a JMap and creating it to a QGameMap, reading in a JTile and converting it
@@ -334,7 +340,7 @@ public class JsonConverter {
     return a;
   }
 
-  public static TurnStrategy jStrategyToStrategy(JsonElement element, PlacementRule rule) {
+  public static TurnStrategy jStrategyToStrategy(JsonElement element, IPlacementRule rule) {
     String type = getAsString(element);
     return switch (type) {
       case "dag" -> new DagStrategy(rule);
@@ -401,7 +407,7 @@ public class JsonConverter {
     };
   }
 
-  private static Player playerFromJActorSpec(JsonElement element, PlacementRule rule) {
+  private static Player playerFromJActorSpec(JsonElement element, IPlacementRule rule) {
     JsonElement[] spec = getAsElementArray(element);
     validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
     String name = getAsString(spec[0]);
@@ -423,7 +429,7 @@ public class JsonConverter {
     validateArg(size -> size >= 2, spec.length, "Spec needs at least 2 elements");
     String name = getAsString(spec[0]);
     validateArg(size -> size <= 20, name.length(), "Name must be at most 20 characters");
-    PlacementRule rules = RuleUtil.createPlaceRules();
+    IPlacementRule rules = RuleUtil.createPlaceRules();
     TurnStrategy strat = jStrategyToStrategy(spec[1], rules);
 
     DummyAIPlayer.FailStep step = DummyAIPlayer.FailStep.NONE;
@@ -452,7 +458,7 @@ public class JsonConverter {
     }
   }
 
-  public static List<Player> playersFromJActors(JsonElement element, PlacementRule rule) {
+  public static List<Player> playersFromJActors(JsonElement element, IPlacementRule rule) {
     JsonElement[] players = getAsElementArray(element);
     return new ArrayList<>(stream(players).map(spec -> playerFromJActorSpec(spec, rule)).toList());
   }

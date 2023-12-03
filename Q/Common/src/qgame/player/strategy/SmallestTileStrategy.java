@@ -9,7 +9,7 @@ import qgame.action.PassAction;
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
 import qgame.rule.placement.MultiPlacementRule;
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.state.Bag;
@@ -54,7 +54,7 @@ public abstract class SmallestTileStrategy implements TurnStrategy {
     public abstract Placement getBestPlacement(IPlayerGameState state, List<Placement> move, List<Posn> posns, Tile t);
     
     @Override
-    public PlacementRule getPlacementRule() {
+    public IPlacementRule getPlacementRule() {
         // return new MultiPlacementRule(stateRule, boardRule, moveRule); 
         return new MultiPlacementRule(boardRule, moveRule); 
     }

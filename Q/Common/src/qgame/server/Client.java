@@ -1,11 +1,10 @@
 package qgame.server;
 
-import static qgame.util.ValidationUtil.validateArg;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -49,24 +48,28 @@ public class Client implements Runnable {
     private boolean quiet = false;
     private final DebugStream DEBUG_STREAM = DebugStream.ERROR;
 
-    public Client(ServerSocket server, Player player) throws IOException {
+    public Client(ServerSocket server, Player player) {
         this.player = player;
         this.host = server.getInetAddress().getHostName();
         this.port = server.getLocalPort();
     }
 
-    public Client(int port, ClientConfig config, Player player) throws IOException {
+    public Client(int port, ClientConfig config, Player player) {
         this.quiet = config.isQuiet();
         this.player = player;
         this.host = config.getHost();
         this.port = port;
-        // createSocket(config.getHost(), port);
-        // this.parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
-        // this.printer = new PrintWriter(socket.getOutputStream(), true);
-        // this.refProxy = new RefereeProxy(printer, parser, player, this.quiet);
     }
 
-    private void createSocket() throws IOException {
+    /**
+     * Instantiates this.socket
+     * 
+     * If the socket creation fails, retries for a certain number of times set
+     * by SOCKET_RETRIES and sleeps for a time specified by TIME_BETWEEN_RETRIES
+     * between attempts.
+     * @throws IOException If all the attempts failed.
+     */
+    public void createSocket() throws IOException {
 
         for (int retry = 0; retry < SOCKET_RETRIES; retry++) {
             try {
@@ -89,22 +92,16 @@ public class Client implements Runnable {
         }
     }
 
-    private void createStreams() throws IOException {
+    /**
+     * Initializes the in and out streams from the socket.
+     * Assumes this.socket is not null.
+     * @throws IOException
+     */
+    public void createStreams() throws IOException {
+        assertNotNull(this.socket);
         this.parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
         this.printer = new JsonPrintWriter(new PrintWriter(socket.getOutputStream(), true));
     }
-
-    // public Socket getSocket() {
-    //     return this.socket;
-    // }
-
-    // public JsonStreamParser getParser() {
-    //     return this.parser;
-    // }
-
-    // public PrintWriter getPrinter() {
-    //     return this.printer;
-    // }
 
     public Player getPlayer() {
         return this.player;
@@ -114,13 +111,9 @@ public class Client implements Runnable {
      * Sends the name of the player this Client controls
      *  to the server so it can start the game
      */
-    protected void sendPlayerName() {
+    protected void sendPlayerName() throws IOException {
         log("Sending " + this.player.name());
-        try {
-            printer.sendJson(new JsonPrimitive(this.player.name()));
-        } catch (IOException e) {
-            log("IOException. Failed to send player name");
-        }
+        printer.sendJson(new JsonPrimitive(this.player.name()));
     }
 
     public void log(Object message) {
@@ -130,8 +123,16 @@ public class Client implements Runnable {
     }
 
     /**
-     * Runs this Client including sending its player's name and starting the RefereeProxy
-     * so it can handle incoming messages.
+     * Runs this Client
+     * Steps:
+     * 1. Create socket
+     * 2. Create streams from socket
+     * 3. send Players name over connection
+     * 4. Create a RefereeProxy
+     * 5. Make the RefereeProxy listen to incoming messages
+     * 6. When RefereeProxy stops listening, close the socket
+     * 7. System.exit() to kill all child threads that might still
+     * be running 
      */
     @Override
     public void run() {
@@ -144,7 +145,12 @@ public class Client implements Runnable {
             System.exit(1);
         }
 
-        sendPlayerName();
+        try {
+            sendPlayerName();
+        } catch (IOException e) {
+            log("IOException. Failed to send player name. Shutting down");
+            System.exit(1);
+        }
 
         RefereeProxy refProxy = new RefereeProxy(printer, parser, player, this.quiet);
 

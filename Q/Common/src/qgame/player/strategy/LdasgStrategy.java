@@ -3,7 +3,7 @@ package qgame.player.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.state.IPlayerGameState;
@@ -24,7 +24,7 @@ public class LdasgStrategy extends SmallestTileStrategy {
         super(boardRule, moveRule);
     }
 
-    public LdasgStrategy(PlacementRule rule) {
+    public LdasgStrategy(IPlacementRule rule) {
         super(rule.getBoardRule(), rule.getMoveRule());
     }
 

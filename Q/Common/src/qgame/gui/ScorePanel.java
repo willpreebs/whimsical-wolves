@@ -5,14 +5,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import qgame.observer.IGameObserver;
 import qgame.player.PlayerInfo;
 import qgame.state.IGameState;
-import qgame.state.IPlayerGameState;
 
 public class ScorePanel extends JPanel {
     

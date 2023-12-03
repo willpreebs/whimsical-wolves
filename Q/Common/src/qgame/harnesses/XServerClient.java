@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonStreamParser;
 
@@ -39,7 +38,6 @@ public class XServerClient {
                 handleXClient(port, config);
                 break;
         }
-        // System.exit(0);
     }
 
     private static void handleXServer(int port, JsonObject configObj) throws IOException {
@@ -86,13 +84,7 @@ public class XServerClient {
         List<Client> clients = new ArrayList<>();
 
         for (Player p : players) {
-
-            try {
-                clients.add(new Client(port, config, p));
-            } catch (IOException e) {
-                System.out.println("Issue constructing Client");
-                throw e;
-            }
+            clients.add(new Client(port, config, p));
         }
 
         return clients;

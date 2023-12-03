@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import com.google.gson.JsonElement;
 import qgame.gui.ObserverView;
 import qgame.json.JsonConverter;
 import qgame.state.IGameState;
-import qgame.state.IPlayerGameState;
 import qgame.state.QGameState;
 
 /**

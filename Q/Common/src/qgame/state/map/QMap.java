@@ -1,13 +1,17 @@
 package qgame.state.map;
-import java.util.*;
+import static qgame.util.ValidationUtil.validateArg;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import qgame.state.Placement;
 import qgame.util.PosnUtil;
 import qgame.util.ValidationUtil;
-
-import static qgame.util.ValidationUtil.validateArg;
 
 /**
  * An implementation of QGameMap. Supports checking if there is a tile at a given position,
@@ -68,13 +72,6 @@ public class QMap implements IMap {
   public Tile getTileAtPosn(Posn posn) throws IllegalArgumentException {
     validateArg(this::posnHasTile, posn, "Position does not have a tile.");
     return tileMap.get(posn);
-  }
-
-
-  private boolean isNextToTile(Posn posn) {
-    ValidationUtil.nonNullObj(posn, "Posn cannot be null");
-    List<Posn> neighbors = PosnUtil.neighbors(posn);
-    return neighbors.stream().anyMatch(this::posnHasTile);
   }
 
   @Override

@@ -5,7 +5,7 @@ import static qgame.util.ValidationUtil.validateArg;
 import java.util.ArrayList;
 import java.util.List;
 
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.state.IPlayerGameState;
@@ -24,7 +24,7 @@ public class DagStrategy extends SmallestTileStrategy {
         super(boardRule, moveRule);
     }
 
-    public DagStrategy(PlacementRule rule) {
+    public DagStrategy(IPlacementRule rule) {
         super(rule.getBoardRule(), rule.getMoveRule());
     }
 

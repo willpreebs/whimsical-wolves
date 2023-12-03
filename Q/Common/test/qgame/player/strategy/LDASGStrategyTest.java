@@ -17,7 +17,7 @@ import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.state.map.QTile;
 import qgame.rule.placement.MultiPlacementRule;
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.rule.placement.board.ExtendsBoardRule;
 import qgame.rule.placement.board.MatchTraitRule;
 import qgame.rule.placement.move.ExtendSameLineRule;
@@ -44,7 +44,7 @@ public class LDASGStrategyTest {
   Tile.Shape star = Tile.Shape.STAR;
   Tile.Shape eightStar = Tile.Shape.EIGHT_STAR;
 
-  PlacementRule rules = new MultiPlacementRule(new MatchTraitRule(), new ExtendSameLineRule(),
+  IPlacementRule rules = new MultiPlacementRule(new MatchTraitRule(), new ExtendSameLineRule(),
       new ExtendsBoardRule(), new CorrectPlayerTilesRule());
   TurnStrategy ldasg = new LdasgStrategy(rules);
 

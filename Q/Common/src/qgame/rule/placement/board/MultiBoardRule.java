@@ -7,7 +7,6 @@ import qgame.rule.placement.move.EmptyMoveRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.state.Placement;
 import qgame.state.map.IMap;
-import qgame.state.map.Tile;
 
 public class MultiBoardRule extends BoardRule {
 

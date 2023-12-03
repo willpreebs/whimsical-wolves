@@ -1,17 +1,19 @@
 package qgame.state;
 
-import java.util.*;
+import static qgame.util.ValidationUtil.nonNull;
+import static qgame.util.ValidationUtil.validateState;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.function.Predicate;
 
-import qgame.player.Player;
 import qgame.player.PlayerInfo;
 import qgame.state.map.IMap;
 import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.util.ValidationUtil;
-
-import static qgame.util.ValidationUtil.nonNull;
-import static qgame.util.ValidationUtil.validateState;
 
 /**
  * Represents an implementation of the Game State interface that uses the 

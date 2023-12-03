@@ -3,7 +3,6 @@ package qgame.rule.scoring;
 import java.util.ArrayList;
 import java.util.List;
 
-import qgame.state.map.IMap;
 import qgame.state.IGameState;
 import qgame.state.Placement;
 

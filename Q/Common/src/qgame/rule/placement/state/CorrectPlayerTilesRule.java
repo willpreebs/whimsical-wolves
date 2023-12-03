@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import qgame.state.Placement;
-import qgame.rule.placement.ARule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.board.EmptyBoardRule;
 import qgame.rule.placement.move.EmptyMoveRule;
@@ -18,7 +17,10 @@ import qgame.util.TileUtil;
 /**
  * Given a list of placements and a map, checks
  * whether the player's hand contains all the tiles made in the
- * placement.
+ * placement. 
+ * 
+ * Note: Not currently used in strategies, however it is useful
+ * for tests that confirm the correctness of the strategy.
  */
 public class CorrectPlayerTilesRule extends StateRule {
 

@@ -1,16 +1,15 @@
 package qgame.rule.placement.board;
 
-import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
+import qgame.rule.placement.ARule;
+import qgame.state.IPlayerGameState;
+import qgame.state.Placement;
 import qgame.state.map.IMap;
 import qgame.state.map.Posn;
 import qgame.state.map.QMap;
 import qgame.state.map.Tile;
-import qgame.state.Placement;
-import qgame.rule.placement.ARule;
-import qgame.state.IPlayerGameState;
 
 /**
  * Abstract class that extends ARule, for placement rules that specifically

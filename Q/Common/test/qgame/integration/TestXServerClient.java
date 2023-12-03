@@ -2,12 +2,9 @@ package qgame.integration;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +19,10 @@ import com.google.gson.JsonStreamParser;
 import qgame.TestUtil;
 import qgame.json.JsonConverter;
 import qgame.player.Player;
-import qgame.referee.GameResults;
-import qgame.referee.QReferee;
 import qgame.server.Client;
 import qgame.server.ClientConfig;
 import qgame.server.Server;
 import qgame.server.ServerConfig;
-import qgame.state.IGameState;
 
 public class TestXServerClient {
     
@@ -102,13 +96,7 @@ public class TestXServerClient {
         List<Client> clients = new ArrayList<>();
 
         for (Player p : players) {
-
-            try {
-                clients.add(new Client(port, config, p));
-            } catch (IOException e) {
-                // issue with creating socket for Client
-                continue;
-            }
+            clients.add(new Client(port, config, p));
         }
 
         return clients;

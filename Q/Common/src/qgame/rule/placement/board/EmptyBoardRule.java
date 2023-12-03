@@ -5,6 +5,9 @@ import qgame.rule.placement.move.MoveRule;
 import qgame.state.Placement;
 import qgame.state.map.IMap;
 
+/**
+ * A BoardRule that always approves a Placement
+ */
 public class EmptyBoardRule extends BoardRule {
 
     @Override

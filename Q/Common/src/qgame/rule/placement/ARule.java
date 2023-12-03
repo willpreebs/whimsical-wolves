@@ -9,12 +9,16 @@ import qgame.state.Placement;
 import qgame.state.IPlayerGameState;
 
 /**
- * Abstract class for Placement Rule that abstracts the functionality
- * of filtering out from the total open neighbors Posn list all
- * the placements that don't satisfy ARule.
+ * Abstract class for Placement Rule that implements validPositionsForTile.
  */
-public abstract class ARule implements PlacementRule {
+public abstract class ARule implements IPlacementRule {
 
+  /**
+   * Returns a list of all the valid positions a tile can be placed on a given game state.
+   * @param t the tile to be placed
+   * @param gameState the current game state where the tile will be placed
+   * @return a list of posns where a tile can be placed on at a given game state
+   */
   @Override
   public List<Posn> validPositionsForTile(Tile t, IPlayerGameState gameState) {
     List<Posn> validPosns = gameState.getBoard().validPositions();

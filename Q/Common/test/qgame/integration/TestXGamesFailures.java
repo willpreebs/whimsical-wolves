@@ -17,7 +17,7 @@ import qgame.player.Player;
 import qgame.referee.GameResults;
 import qgame.referee.QReferee;
 import qgame.rule.placement.MultiPlacementRule;
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.rule.placement.state.StateRule;
@@ -27,7 +27,7 @@ import qgame.util.RuleUtil;
 
 public class TestXGamesFailures {
     
-    PlacementRule placementRules;
+    IPlacementRule placementRules;
 
     BoardRule bRule;
     MoveRule mRule;

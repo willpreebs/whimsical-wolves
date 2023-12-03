@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import qgame.rule.placement.MultiPlacementRule;
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.rule.placement.board.ExtendsBoardRule;
 import qgame.rule.placement.board.MatchTraitRule;
 import qgame.rule.placement.move.ExtendSameLineRule;
@@ -42,10 +42,10 @@ public class BasicQGameRuleSetTest {
   IPlayerGameState state;
   List<Placement> placements1;
 
-  List<PlacementRule> rules = List.of( new MultiPlacementRule(new CorrectPlayerTilesRule(),
+  List<IPlacementRule> rules = List.of( new MultiPlacementRule(new CorrectPlayerTilesRule(),
     new ExtendsBoardRule(),
     new ExtendSameLineRule(), new MatchTraitRule()));
-  PlacementRule multi = new MultiPlacementRule(rules);
+  IPlacementRule multi = new MultiPlacementRule(rules);
   @Before
   public void init() {
     Map<Posn, Tile> boardState = new HashMap<>();

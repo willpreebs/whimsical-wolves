@@ -1,12 +1,10 @@
 package qgame.server;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -69,18 +67,19 @@ public class RemoteInteractionsTest {
 
         Player p = new SimpleAIPlayer(playerName, new DagStrategy(RuleUtil.createPlaceRules()));
 
-        Client c = null;
-        try {
-            c = new Client(s.getServerSocket(), p);
-        } catch (IOException e) {
-            fail();
-        }
+        Client c = new Client(s.getServerSocket(), p);
+        
+
 
         List<Player> proxies = new ArrayList<>();
 
         Thread t = new Thread(() -> s.getPlayerProxiesWithinTimeout(proxies));
     
-        c.sendPlayerName();
+        try {
+            c.sendPlayerName();
+        } catch (IOException e) {
+            fail();
+        }
         t.start();
 
         List<Player> expectedProxies = new ArrayList<>();

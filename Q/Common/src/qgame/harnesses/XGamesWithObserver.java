@@ -13,7 +13,7 @@ import qgame.player.Player;
 import qgame.referee.QReferee;
 import qgame.referee.GameResults;
 import qgame.referee.IReferee;
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.IGameState;
 import qgame.util.RuleUtil;
@@ -22,7 +22,7 @@ public class XGamesWithObserver {
     
     public static void main(String[]args) {
 
-        PlacementRule rules = RuleUtil.createPlaceRules();
+        IPlacementRule rules = RuleUtil.createPlaceRules();
         ScoringRule scoreRules = RuleUtil.createScoreRules();
         JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(System.in));
         JsonElement jState = parser.next();

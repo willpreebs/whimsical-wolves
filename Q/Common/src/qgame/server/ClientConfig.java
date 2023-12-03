@@ -1,10 +1,6 @@
 package qgame.server;
 
-import java.util.List;
-
 import com.google.gson.JsonObject;
-
-import qgame.player.Player;
 
 /**
  * Represents a configuration of a Client. Does not include the Player

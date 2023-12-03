@@ -3,7 +3,7 @@ package qgame.util;
 import java.util.List;
 
 import qgame.rule.placement.MultiPlacementRule;
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.board.ExtendsBoardRule;
 import qgame.rule.placement.board.MatchTraitRule;
@@ -26,8 +26,8 @@ public class RuleUtil {
   private static final int POINTS_PER_TILE = 1;
   private static final int POINTS_PER_CONTIGUOUS_TILE = 1;
 
-  public static PlacementRule createPlaceRules() {
-    List<PlacementRule> rules = List.of(new CorrectPlayerTilesRule(),
+  public static IPlacementRule createPlaceRules() {
+    List<IPlacementRule> rules = List.of(new CorrectPlayerTilesRule(),
       new ExtendsBoardRule(),
       new ExtendSameLineRule(), new MatchTraitRule());
     return new MultiPlacementRule(rules);
@@ -46,6 +46,10 @@ public class RuleUtil {
     return new CorrectPlayerTilesRule();
   }
 
+  /**
+   * Creates a ScoringRule containing all of the scoring rules with default point
+   * values
+   */
   public static ScoringRule createScoreRules() {
     List<ScoringRule> rules = List.of(
       new PointPerTileRule(POINTS_PER_TILE),

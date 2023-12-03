@@ -1,7 +1,7 @@
 package qgame.player.strategy;
 
 import qgame.action.TurnAction;
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.state.IPlayerGameState;
 
 /**
@@ -18,5 +18,5 @@ public interface TurnStrategy {
    */
   TurnAction chooseAction(IPlayerGameState state);
 
-  PlacementRule getPlacementRule();
+  IPlacementRule getPlacementRule();
 }

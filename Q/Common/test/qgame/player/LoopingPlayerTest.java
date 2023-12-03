@@ -2,7 +2,6 @@ package qgame.player;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,7 +10,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.gson.JsonElement;
@@ -24,7 +22,6 @@ import qgame.referee.GameResults;
 import qgame.referee.IReferee;
 import qgame.referee.QReferee;
 import qgame.state.IGameState;
-import qgame.state.QGameState;
 import qgame.util.RuleUtil;
 import qgame.util.ValidationUtil;
 

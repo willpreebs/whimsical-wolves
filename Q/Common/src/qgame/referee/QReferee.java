@@ -23,7 +23,7 @@ import qgame.observer.IGameObserver;
 import qgame.observer.QGameObserver;
 import qgame.player.Player;
 import qgame.player.PlayerInfo;
-import qgame.rule.placement.PlacementRule;
+import qgame.rule.placement.IPlacementRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.server.DebugStream;
 import qgame.state.Bag;
@@ -41,7 +41,7 @@ import qgame.util.TileUtil;
  * sure that the rules of the game are enforced throughout the game.
  */
 public class QReferee implements IReferee {
-  private final PlacementRule placementRules;
+  private final IPlacementRule placementRules;
   private final ScoringRule scoringRules;
 
   // The amount of time given to Players to respond before they are kicked out, in milliseconds
@@ -50,7 +50,7 @@ public class QReferee implements IReferee {
   // timeout is in milliseconds
   private final int DEFAULT_TIMEOUT = 6000;
 
-  private final int TOTAL_TILES = 300;
+  private final int TOTAL_TILES = 1080;
   private final int NUM_PLAYER_TILES = 6;
 
   private IGameState currentGameState;
@@ -100,7 +100,7 @@ public class QReferee implements IReferee {
     this.ruleBreakers = new ArrayList<>();
   } 
 
-  public QReferee(PlacementRule placementRules, ScoringRule scoringRules, int timeout) {
+  public QReferee(IPlacementRule placementRules, ScoringRule scoringRules, int timeout) {
     this.placementRules = placementRules;
     this.scoringRules = scoringRules;
     validateArg(num -> num > 0, timeout, "Timeout must be positive.");
@@ -110,7 +110,7 @@ public class QReferee implements IReferee {
     this.observers = new ArrayList<>();
   }
 
-  public QReferee(PlacementRule placementRules, ScoringRule scoringRules,
+  public QReferee(IPlacementRule placementRules, ScoringRule scoringRules,
                   int timeout, List<IGameObserver> observers) {
     this.placementRules = placementRules;
     this.scoringRules = scoringRules;
