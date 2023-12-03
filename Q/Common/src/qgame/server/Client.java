@@ -43,8 +43,8 @@ public class Client implements Runnable {
     private int port;
     
 
-    private final int SOCKET_RETRIES = 10;
-    private final int TIME_BETWEEN_RETRIES = 500;
+    private final int SOCKET_RETRIES = 20;
+    private final int TIME_BETWEEN_RETRIES = 250;
 
     private boolean quiet = false;
     private final DebugStream DEBUG_STREAM = DebugStream.ERROR;

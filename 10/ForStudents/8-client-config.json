@@ -27,6 +27,6 @@
         ]
     ],
     "port": 45703,
-    "quiet": true,
+    "quiet": false,
     "wait": 2
 }
