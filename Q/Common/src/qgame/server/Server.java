@@ -200,13 +200,14 @@ public class Server implements Runnable {
             // calculate the time left in the waiting period
             LocalTime now = LocalTime.now();
             long waitingPeriodRemaining = WAITING_PERIOD - start.until(now, ChronoUnit.MILLIS);
-
+            log("Waiting period remaining: " + waitingPeriodRemaining);
             try {
                 Future<PlayerProxy> proxy = executor.submit(() -> connectToPlayerProxy(serverSocket));
                 PlayerProxy p = proxy.get(waitingPeriodRemaining, TimeUnit.MILLISECONDS);
                 proxies.add(p);
             } catch (InterruptedException | TimeoutException e) {
                 // ran out of time in waiting period or an error occurred while connecting to a client
+                log("Ran out of time in the waiting period");
                 return;
             }
             catch (ExecutionException e) {
@@ -237,9 +238,9 @@ public class Server implements Runnable {
         ExecutorService executor = Executors.newFixedThreadPool(1, factory);
 
         Socket s = server.accept();
+        log("Socket connection accepted for new player proxy");
         JsonPrintWriter out = new JsonPrintWriter(new PrintWriter(s.getOutputStream(), true));
         JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(s.getInputStream()));
-
 
         Future<JsonElement> playerNameJson = executor.submit(() -> parser.next());
         try {
@@ -248,6 +249,7 @@ public class Server implements Runnable {
             sockets.add(s);
             return new PlayerProxy(playerName, parser, out, this.quiet, refConfig.getPerTurn());
         } catch (TimeoutException | InterruptedException e) {
+            log("Ran out of time getting player's name");
             throw new ExecutionException(e);
         }
     }

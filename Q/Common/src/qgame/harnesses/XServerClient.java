@@ -103,6 +103,7 @@ public class XServerClient {
         int millisBetweenThreadStarts = config.getWait() * 1000;
 
         for (Thread t : threads) {
+            System.out.println("starting client thread");
             t.start();
             try {
                 Thread.sleep(millisBetweenThreadStarts);

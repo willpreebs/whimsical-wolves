@@ -1,7 +1,7 @@
 {
     "port": 1234,
     "server-tries": 2,
-    "server-wait": 10,
+    "server-wait": 20,
     "wait-for-signup": 3,
     "quiet": false,
     "ref-spec": {

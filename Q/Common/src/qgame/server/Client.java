@@ -30,16 +30,16 @@ import qgame.player.Player;
 public class Client implements Runnable {
 
     private Socket socket;
-    private Player player;
 
     // in:
     private JsonStreamParser parser;
-
     // out:
     private PrintWriter printer;
 
-    private RefereeProxy refProxy;
 
+    private Player player;
+    private String host;
+    private int port;
     
 
     private final int SOCKET_RETRIES = 3;
@@ -50,26 +50,26 @@ public class Client implements Runnable {
 
     public Client(ServerSocket server, Player player) throws IOException {
         this.player = player;
-        createSocket(server.getInetAddress().getHostName(), server.getLocalPort());
-        parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
-        printer = new PrintWriter(socket.getOutputStream(), true);  
-        this.refProxy = new RefereeProxy(printer, parser, player, this.quiet);
+        this.host = server.getInetAddress().getHostName();
+        this.port = server.getLocalPort();
     }
 
     public Client(int port, ClientConfig config, Player player) throws IOException {
         this.quiet = config.isQuiet();
         this.player = player;
-        createSocket(config.getHost(), port);
-        this.parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
-        this.printer = new PrintWriter(socket.getOutputStream(), true);
-        this.refProxy = new RefereeProxy(printer, parser, player, this.quiet);
+        this.host = config.getHost();
+        this.port = port;
+        // createSocket(config.getHost(), port);
+        // this.parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
+        // this.printer = new PrintWriter(socket.getOutputStream(), true);
+        // this.refProxy = new RefereeProxy(printer, parser, player, this.quiet);
     }
 
-    private void createSocket(String addr, int port) throws IOException {
+    private void createSocket() throws IOException {
 
         for (int retry = 0; retry < SOCKET_RETRIES; retry++) {
             try {
-                this.socket = new Socket(addr, port);
+                this.socket = new Socket(this.host, this.port);
                 log("Socket successfully created");
                 break;
             } 
@@ -88,21 +88,22 @@ public class Client implements Runnable {
         }
     }
 
-    public Socket getSocket() {
-        return this.socket;
+    private void createStreams() throws IOException {
+        this.parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
+        this.printer = new PrintWriter(socket.getOutputStream(), true);
     }
 
-    public RefereeProxy getRefereeProxy() {
-        return this.refProxy;
-    }
+    // public Socket getSocket() {
+    //     return this.socket;
+    // }
 
-    public JsonStreamParser getParser() {
-        return this.parser;
-    }
+    // public JsonStreamParser getParser() {
+    //     return this.parser;
+    // }
 
-    public PrintWriter getPrinter() {
-        return this.printer;
-    }
+    // public PrintWriter getPrinter() {
+    //     return this.printer;
+    // }
 
     public Player getPlayer() {
         return this.player;
@@ -130,7 +131,17 @@ public class Client implements Runnable {
     @Override
     public void run() {
 
+        try {
+            createSocket();
+            createStreams();
+        } catch (IOException e) {
+            log("Socket or stream creation failed. Shutting down");
+            System.exit(1);
+        }
+
         sendPlayerName();
+
+        RefereeProxy refProxy = new RefereeProxy(printer, parser, player, this.quiet);
 
         try {
             refProxy.listenForMessages();
