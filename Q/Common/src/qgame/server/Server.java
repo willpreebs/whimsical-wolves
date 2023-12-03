@@ -247,7 +247,7 @@ public class Server implements Runnable {
             String playerName = playerNameJson.get(TIMEOUT_FOR_NAME_SUBMISSION, TimeUnit.MILLISECONDS).getAsString();
             log("get player name: " + playerName);
             sockets.add(s);
-            return new PlayerProxy(playerName, parser, out, this.quiet, refConfig.getPerTurn());
+            return new PlayerProxy(playerName, parser, out, this.quiet);
         } catch (TimeoutException | InterruptedException e) {
             log("Ran out of time getting player's name");
             throw new ExecutionException(e);
@@ -269,7 +269,7 @@ public class Server implements Runnable {
             try {
                 proxy.sendOverConnection(emptyResult);
             } catch (IOException e) {
-                //TODO log
+                log("Failed to send empty game result to player");
                 continue;
             }
         }

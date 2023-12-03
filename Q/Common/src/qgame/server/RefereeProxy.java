@@ -21,6 +21,7 @@ import com.google.gson.JsonStreamParser;
 
 import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
+import qgame.json.JsonPrintWriter;
 import qgame.player.Player;
 import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
@@ -34,7 +35,7 @@ public class RefereeProxy {
 
     private Player p;
     private JsonStreamParser parser;
-    private PrintWriter out;
+    private JsonPrintWriter out;
 
     private boolean quiet = false;
 
@@ -44,7 +45,7 @@ public class RefereeProxy {
 
     private final DebugStream DEBUG_STREAM = DebugStream.ERROR;
 
-    public RefereeProxy(PrintWriter out, JsonStreamParser parser, Player p, boolean quiet) {
+    public RefereeProxy(JsonPrintWriter out, JsonStreamParser parser, Player p, boolean quiet) {
         this.out = out;
         this.parser = parser;
         this.p = p;
@@ -55,7 +56,7 @@ public class RefereeProxy {
         return this.parser;
     }
 
-    public PrintWriter getOut() {
+    public JsonPrintWriter getOut() {
         return this.out;
     }
 
@@ -82,7 +83,7 @@ public class RefereeProxy {
 
     private void sendOverConnection(JsonElement e) throws IOException {
         log("Sending " + e);
-        out.println(e.toString());
+        out.sendJson(e);
     }
 
     /**

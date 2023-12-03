@@ -12,6 +12,7 @@ import java.net.Socket;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonStreamParser;
 
+import qgame.json.JsonPrintWriter;
 import qgame.player.Player;
 
 /**
@@ -34,7 +35,7 @@ public class Client implements Runnable {
     // in:
     private JsonStreamParser parser;
     // out:
-    private PrintWriter printer;
+    private JsonPrintWriter printer;
 
 
     private Player player;
@@ -42,8 +43,8 @@ public class Client implements Runnable {
     private int port;
     
 
-    private final int SOCKET_RETRIES = 3;
-    private final int TIME_BETWEEN_RETRIES = 2000;
+    private final int SOCKET_RETRIES = 10;
+    private final int TIME_BETWEEN_RETRIES = 500;
 
     private boolean quiet = false;
     private final DebugStream DEBUG_STREAM = DebugStream.ERROR;
@@ -90,7 +91,7 @@ public class Client implements Runnable {
 
     private void createStreams() throws IOException {
         this.parser = new JsonStreamParser(new InputStreamReader(socket.getInputStream()));
-        this.printer = new PrintWriter(socket.getOutputStream(), true);
+        this.printer = new JsonPrintWriter(new PrintWriter(socket.getOutputStream(), true));
     }
 
     // public Socket getSocket() {
@@ -115,7 +116,11 @@ public class Client implements Runnable {
      */
     protected void sendPlayerName() {
         log("Sending " + this.player.name());
-        printer.println(new JsonPrimitive(this.player.name()));
+        try {
+            printer.sendJson(new JsonPrimitive(this.player.name()));
+        } catch (IOException e) {
+            log("IOException. Failed to send player name");
+        }
     }
 
     public void log(Object message) {

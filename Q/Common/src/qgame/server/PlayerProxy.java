@@ -38,8 +38,6 @@ public class PlayerProxy implements Player {
 
     private boolean quiet = false;
 
-    private final int METHOD_CALL_TIMEOUT;
-
     private final DebugStream DEBUG_STREAM = DebugStream.ERROR;
 
     public PlayerProxy(String name, JsonStreamParser parser, JsonPrintWriter printer, int timeout) {
@@ -47,15 +45,14 @@ public class PlayerProxy implements Player {
         this.parser = parser;
         this.printer = printer;
         quiet = false;
-        METHOD_CALL_TIMEOUT = timeout;
+
     }
 
-    public PlayerProxy(String name, JsonStreamParser parser, JsonPrintWriter printer, boolean quiet, int timeout) {
+    public PlayerProxy(String name, JsonStreamParser parser, JsonPrintWriter printer, boolean quiet) {
         this.name = name;
         this.parser = parser;
         this.printer = printer;
         this.quiet = quiet;
-        METHOD_CALL_TIMEOUT = timeout;
     }
 
     protected void sendOverConnection(JsonElement el) throws IOException {

@@ -7,13 +7,14 @@ import java.util.List;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 
+import qgame.json.JsonPrintWriter;
 import qgame.player.Player;
 
 public class MockRefereeProxy extends RefereeProxy {
 
     List<String> messages = new ArrayList<>();
 
-    public MockRefereeProxy(PrintWriter out, JsonStreamParser parser, Player p) {
+    public MockRefereeProxy(JsonPrintWriter out, JsonStreamParser parser, Player p) {
         super(out, parser, p, false);
     }
 
