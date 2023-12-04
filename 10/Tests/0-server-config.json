@@ -1,12 +1,12 @@
 {
-    "port": 1234,
+    "port": 12234,
     "server-tries": 2,
     "server-wait": 20,
     "wait-for-signup": 3,
-    "quiet": false,
+    "quiet": true,
     "ref-spec": {
         "state0": {"map":[[-3,[0,{"color":"green","shape":"8star"}]]],"tile*":[{"color":"purple","shape":"8star"},{"color":"green","shape":"circle"}],"players":[{"score":0,"name":"Tester","tile*":[{"color":"orange","shape":"square"},{"color":"green","shape":"clover"}]},{"score":0,"name":"SecondTester","tile*":[{"color":"orange","shape":"square"},{"color":"green","shape":"clover"}]},{"score":11,"name":"looper","tile*":[{"color":"orange","shape":"square"},{"color":"green","shape":"clover"}]}]},
-        "quiet": false,
+        "quiet": true,
         "config-s": {
             "qbo": 8,
             "fbo": 4

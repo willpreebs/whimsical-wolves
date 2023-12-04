@@ -38,7 +38,7 @@ public class QGameObserver implements IGameObserver {
     Dimension dimension;
 
     private final int REF_TILES = 6;
-    private final String FILE_DIRECTORY = "Tmp";
+    private final String FILE_DIRECTORY = "../Tmp";
     private final String FILE_EXTENSION = "png";
 
     public QGameObserver() {
@@ -53,12 +53,13 @@ public class QGameObserver implements IGameObserver {
     private void clearAllFiles() {
 
         File tmp = new File(FILE_DIRECTORY);
-
-        File[] contents = tmp.listFiles();
-
-        for (File f : contents) {
-            f.delete();
-        }
+       try {
+         for (File f : tmp.listFiles()) {
+           f.delete();
+         }
+       }
+       catch(NullPointerException e){
+       }
     }
 
   /**

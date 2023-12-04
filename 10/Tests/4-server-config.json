@@ -1,0 +1,24 @@
+{
+  "port": 12234,
+  "server-tries": 2,
+  "server-wait": 20,
+  "wait-for-signup": 3,
+  "quiet": false,
+  "ref-spec": {
+    "state0": {"map":[[-3,[0,{"color":"green","shape":"8star"}]]],"tile*":[{"color":"purple","shape":"8star"},{"color":"green","shape":"circle"}],
+      "players":[{"score":0,"name":"Tester","tile*":[{"color":"orange","shape":"square"},{"color":"green","shape":"clover"}]},
+        {"score":0,"name":"SecondTester","tile*":[{"color":"orange","shape":"square"},{"color":"green","shape":"clover"}]},
+        {"score":1100,"name":"nonlooper","tile*":[{"color":"orange","shape":"square"},
+          {"color":"green","shape":"clover"}]},
+        {"score":0,"name":"Fifth","tile*":[{"color":"yellow","shape":"square"},
+          {"color":"blue","shape":"clover"}]}
+      ]},
+    "quiet": false,
+    "config-s": {
+      "qbo": 8,
+      "fbo": 4
+    },
+    "per-turn": 3,
+    "observe": true
+  }
+}
