@@ -12,6 +12,6 @@
             "fbo": 4
         },
         "per-turn": 3,
-        "observe": true
+        "observe": false
     }
 }
