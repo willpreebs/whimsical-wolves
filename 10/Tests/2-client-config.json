@@ -2,7 +2,7 @@
   "port": 12234,
   "host": "0.0.0.0",
   "wait": 5,
-  "quiet": false,
+  "quiet": true,
   "players": [["Tester","dag"],["SecondTester","ldasg"],["looper","dag","take-turn",2],
                ["Third","dag"]]
 }
