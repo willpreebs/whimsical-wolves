@@ -3,6 +3,7 @@ package qgame.server;
 import static qgame.util.ValidationUtil.validateArg;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -106,7 +107,7 @@ public class RefereeProxy {
                     gameOver = true;
                 }
             }
-            catch (JsonParseException | IllegalArgumentException e) {
+            catch (JsonParseException | IllegalArgumentException | NoSuchElementException e) {
                 log("Received unexpected or badly formed message from server. Shutting down");
                 break;
             }

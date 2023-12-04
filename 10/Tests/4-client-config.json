@@ -3,6 +3,5 @@
   "host": "0.0.0.0",
   "wait": 5,
   "quiet": true,
-  "players": [["Tester","dag"],["SecondTester","ldasg"],["looper","dag","setup",1],
-      ["nonlooper","dag"], ["Fifth", "dag"]]
+  "players": [["Tester","dag","a cheat","tile-not-owned"],["SecondTester","dag","take-turn"],["looper","dag","new-tiles",5]]
 }

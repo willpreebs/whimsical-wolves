@@ -1,0 +1,7 @@
+{
+  "port": 112380834,
+  "host": "0.0.0.0",
+  "wait": 5,
+  "quiet": true,
+  "players": [["Tester","dag","take-turn",2],["SecondTester","dag","a cheat","tile-not-owned"],["looper","dag","new-tiles",2]]
+}

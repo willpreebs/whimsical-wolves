@@ -1,0 +1,8 @@
+{
+  "port": 112380834,
+  "host": "0.0.0.0",
+  "wait": 5,
+  "quiet": true,
+  "players": [["Tester","dag"],["SecondTester","dag","take-turn",1],["looper","dag","new-tiles",1]]
+
+}
