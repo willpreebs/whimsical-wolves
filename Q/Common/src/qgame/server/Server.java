@@ -260,12 +260,10 @@ public class Server implements Runnable {
         Socket s = server.accept();
         log("Socket connection accepted for new player proxy");
         JsonPrintWriter out = new JsonPrintWriter(new PrintWriter(s.getOutputStream(), true));
-        // TODO
-        // JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(s.getInputStream()));
-        BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(s.getInputStream()));
+        // BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
-        String line = reader.readLine();
-        JsonStreamParser parser = new JsonStreamParser(line);
+        // String line = reader.readLine();
 
 
         Future<JsonElement> playerNameJson = executor.submit(() -> parser.next());
@@ -273,7 +271,7 @@ public class Server implements Runnable {
             String playerName = playerNameJson.get(TIMEOUT_FOR_NAME_SUBMISSION, TimeUnit.MILLISECONDS).getAsString();
             log("get player name: " + playerName);
             sockets.add(s);
-            return new PlayerProxy(playerName, reader, out, this.quiet);
+            return new PlayerProxy(playerName, parser, out, this.quiet);
         } catch (TimeoutException | InterruptedException e) {
             log("Ran out of time getting player's name");
             throw new ExecutionException(e);

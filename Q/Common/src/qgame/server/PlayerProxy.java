@@ -41,7 +41,7 @@ public class PlayerProxy implements Player {
     private JsonStreamParser parser;
 
     // TODO: Fix bug to avoid workaround:
-    private BufferedReader reader;
+    // private BufferedReader reader;
 
     private boolean quiet = false;
 
@@ -55,10 +55,10 @@ public class PlayerProxy implements Player {
 
     }
 
-    public PlayerProxy(String name, BufferedReader reader, JsonPrintWriter printer, boolean quiet) {
+    public PlayerProxy(String name, JsonStreamParser parser, JsonPrintWriter printer, boolean quiet) {
         this.name = name;
-        this.reader = reader;
-        // this.parser = parser;
+        // this.reader = reader;
+        this.parser = parser;
         this.printer = printer;
         this.quiet = quiet;
     }
@@ -79,17 +79,11 @@ public class PlayerProxy implements Player {
         JsonElement element = null;
         try {
             //TODO: Currently a workaround for weird bug with connection resetting on win
-            String line = reader.readLine();
-            log("Received as plain text: " + line);
-            parser = new JsonStreamParser(line);
             element = parser.next();
         } catch (JsonParseException e) {
             log("Player proxy got weird message from client. Throwing exception");
             throw new IllegalStateException("Remote player must communicate with well-formed JSON. "
              + e.getLocalizedMessage());
-        } catch (IOException e) {
-            log("Issue with reader: " + e.getMessage());
-            throw new IllegalStateException(e);
         }
         log("Receive " + element);
         return element;
@@ -103,18 +97,11 @@ public class PlayerProxy implements Player {
     private JsonElement receiveAndReturnVoidIfIOException() throws IllegalStateException {
         JsonElement element = null;
         try {
-            //TODO: Currently a workaround for weird bug with connection resetting on win
-            String line = reader.readLine();
-            log("Received as plain text: " + line);
-            parser = new JsonStreamParser(line);
+
             element = parser.next();
         } catch (JsonParseException e) {
-            log("Player proxy got weird message from client. Throwing exception");
-            throw new IllegalStateException("Remote player must communicate with well-formed JSON. "
-             + e.getLocalizedMessage());
-        } catch (IOException e) {
-            log("Issue with reader: " + e.getMessage());
-            log("Oh well :)");
+            //TODO: Currently a workaround for weird bug with connection resetting on win
+            log("Player proxy got weird message from client. Simply returning void (workaround)");
             element = new JsonPrimitive("void");
         }
         log("Receive " + element);
