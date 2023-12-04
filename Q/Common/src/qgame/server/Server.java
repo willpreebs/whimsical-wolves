@@ -139,7 +139,8 @@ public class Server implements Runnable {
         List<Player> proxies = getProxies();
 
         if (proxies.size() < MINIMUM_CLIENTS) {
-            sendEmptyGameResult(proxies);
+            JsonArray a = sendEmptyGameResult(proxies);
+            System.out.println(a);
             return;
         }
 
@@ -283,7 +284,7 @@ public class Server implements Runnable {
      * Assumes all Players in given list are PlayerProxy
      * @param proxies
      */
-    protected void sendEmptyGameResult (List<Player> proxies) {
+    protected JsonArray sendEmptyGameResult (List<Player> proxies) {
         JsonArray emptyResult = new JsonArray();
         emptyResult.add(new JsonArray());
         emptyResult.add(new JsonArray());
@@ -297,5 +298,6 @@ public class Server implements Runnable {
                 continue;
             }
         }
+        return emptyResult;
     }
 }
