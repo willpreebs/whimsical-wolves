@@ -2,6 +2,7 @@ package qgame.server;
  
 import static qgame.util.ValidationUtil.validateArg;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -148,6 +149,13 @@ public class Server implements Runnable {
         GameResults r = ref.playGame(proxies);
         printOutResults(r);
 
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            log("Interrupted period before closing sockets");
+        }
+
         closeSocketConnections();
         log("Closed all client sockets");
         try {
@@ -252,14 +260,20 @@ public class Server implements Runnable {
         Socket s = server.accept();
         log("Socket connection accepted for new player proxy");
         JsonPrintWriter out = new JsonPrintWriter(new PrintWriter(s.getOutputStream(), true));
-        JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(s.getInputStream()));
+        // TODO
+        // JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(s.getInputStream()));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
+
+        String line = reader.readLine();
+        JsonStreamParser parser = new JsonStreamParser(line);
+
 
         Future<JsonElement> playerNameJson = executor.submit(() -> parser.next());
         try {
             String playerName = playerNameJson.get(TIMEOUT_FOR_NAME_SUBMISSION, TimeUnit.MILLISECONDS).getAsString();
             log("get player name: " + playerName);
             sockets.add(s);
-            return new PlayerProxy(playerName, parser, out, this.quiet);
+            return new PlayerProxy(playerName, reader, out, this.quiet);
         } catch (TimeoutException | InterruptedException e) {
             log("Ran out of time getting player's name");
             throw new ExecutionException(e);
