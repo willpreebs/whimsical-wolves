@@ -34,7 +34,7 @@ public class XServerClient {
             case "xserver":
                 handleXServer(port, config);
                 break;
-            case "xclient":
+            case "xclients":
                 handleXClient(port, config);
                 break;
         }

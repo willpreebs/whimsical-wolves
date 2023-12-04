@@ -14,7 +14,7 @@ public class XServerClientTest {
 
         String [] serverArgs = {"xserver", "1234"};
 
-        String [] clientArgs = {"xclient", "1234"};
+        String [] clientArgs = {"xclients", "1234"};
 
 
         Thread server = new Thread(() -> {
