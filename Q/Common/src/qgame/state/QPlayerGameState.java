@@ -20,9 +20,6 @@ public class QPlayerGameState implements IPlayerGameState {
   private final int refTileCount;
   private final PlayerInfo info;
 
-  // private final Bag<Tile> playerTiles;
-  // private final String playerName;
-
   public QPlayerGameState(List<Integer> scores, IMap board, int refTileCount,
                               Collection<Tile> playerTiles, String playerName) {
     this(scores, board, refTileCount, new Bag<>(playerTiles), playerName);

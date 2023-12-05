@@ -67,7 +67,8 @@ public class RuleUtil {
       new PlaceAllOwnedTiles(fBonus));
     return new MultiScoringRule(rules);
   }
-
+ 
+  //TODO: take in config file
   public static ScoringRule createScoreRules(int pointsPerTile, int qBonus, int pointsPerContiguousTile, int allTilesBonus) {
     List<ScoringRule> rules = List.of(
       new PointPerTileRule(pointsPerTile),

@@ -28,6 +28,8 @@ import qgame.state.QGameState;
  * informed by the Referee of a QGame. This implementation
  * allows for saving a state as a JSON representation of its
  * information as well.
+ * 
+ * TODO: Guide for implementing GUI
  */
 public class QGameObserver implements IGameObserver {
 
@@ -143,7 +145,7 @@ public class QGameObserver implements IGameObserver {
    */
     @Override
     public void gameOver() {
-        // ...
+        //TODO
     }
 
     /**

@@ -136,7 +136,9 @@ public class QReferee implements IReferee {
 
   /**
    * Plays a game with a list of players. Assigns the player tiles
-   * and places the first 
+   * and places the first
+   * 
+   * TODO: check if startState has the right number of players 
    */
   @Override
   public GameResults playGame(List<Player> players) {
@@ -258,6 +260,7 @@ public class QReferee implements IReferee {
   }
 
   // Determine all winners in a list of players and return a list of their names.
+  // TODO: pipeline method - put loop in helper, 
   private List<String> findWinnersAndNotifyPlayers(List<PlayerInfo> infos, int highestScore) {
     List<String> winners = new ArrayList<>();
     List<Player> winnerPlayers = new ArrayList<>();
@@ -291,6 +294,7 @@ public class QReferee implements IReferee {
   private GameResults getResults() {
     List<PlayerInfo> playerInfo = currentGameState.getAllPlayerInformation();
     int highestScore = maxScore(playerInfo);
+
     List<String> winners = findWinnersAndNotifyPlayers(playerInfo, highestScore);
     GameResults gr = new GameResults(winners, ruleBreakers);
     return gr;
@@ -337,6 +341,8 @@ public class QReferee implements IReferee {
    * if they have broken a rule or do not respond in time.
    * @return True if a player has placed all of their tiles
    * in a move, which indicates that the game should end.
+   * 
+   * TODO: also return false if all the turns have been pass/exchange
    */
   private boolean playRound(List<TurnAction> turnsTaken) {
     List<Player> nextRound = new ArrayList<>();

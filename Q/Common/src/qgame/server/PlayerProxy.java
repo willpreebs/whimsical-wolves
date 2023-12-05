@@ -78,7 +78,6 @@ public class PlayerProxy implements Player {
     private JsonElement receive() throws IllegalStateException {
         JsonElement element = null;
         try {
-            //TODO: Currently a workaround for weird bug with connection resetting on win
             element = parser.next();
         } catch (JsonParseException e) {
             log("Player proxy got weird message from client. Throwing exception");
@@ -97,7 +96,6 @@ public class PlayerProxy implements Player {
     private JsonElement receiveAndReturnVoidIfIOException() throws IllegalStateException {
         JsonElement element = null;
         try {
-
             element = parser.next();
         } catch (JsonParseException e) {
             //TODO: Currently a workaround for weird bug with connection resetting on win

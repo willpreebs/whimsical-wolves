@@ -22,7 +22,6 @@ public class ServerConfig {
             serverWait = configElement.get("server-wait").getAsInt();
             waitForSignup = configElement.get("wait-for-signup").getAsInt();
             quiet = configElement.get("quiet").getAsBoolean();
-        
             JsonObject obj = configElement.get("ref-spec").getAsJsonObject();
             this.refSpec = new RefereeConfig(obj);
         } 

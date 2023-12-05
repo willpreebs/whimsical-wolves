@@ -150,12 +150,11 @@ public class Server implements Runnable {
         GameResults r = ref.playGame(proxies);
         printOutResults(r);
 
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            log("Interrupted period before closing sockets");
-        }
+        // try {
+        //     Thread.sleep(1000);
+        // } catch (InterruptedException e) {
+        //     log("Interrupted period before closing sockets");
+        // }
 
         closeSocketConnections();
         log("Closed all client sockets");

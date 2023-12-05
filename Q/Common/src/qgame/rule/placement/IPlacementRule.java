@@ -48,5 +48,4 @@ public interface IPlacementRule {
    * @return
    */
   MoveRule getMoveRule();
-  
 }
