@@ -29,7 +29,7 @@ import qgame.state.QGameState;
  * allows for saving a state as a JSON representation of its
  * information as well.
  * 
- * TODO: Guide for implementing GUI
+ * Guide for 
  */
 public class QGameObserver implements IGameObserver {
 
@@ -91,7 +91,6 @@ public class QGameObserver implements IGameObserver {
     public void next() {
         if (stateIndex < this.states.size() - 1) {
             stateIndex++;
-            // System.out.println("Next pressed; index set to: " + stateIndex);
         }
         renderCurrentState();
     }
@@ -102,10 +101,8 @@ public class QGameObserver implements IGameObserver {
      */
     @Override
     public void previous() {
-        // System.out.println("previous");
         if (stateIndex > 0) {
             stateIndex--;
-            // System.out.println("Previous pressed; index set to: " + stateIndex);
         }
         renderCurrentState();
     }
@@ -147,6 +144,8 @@ public class QGameObserver implements IGameObserver {
   /**
    * Alerts the observer that the game is over
    * and that there will be no more states.
+   * 
+   * Also enables the observer to shut the program down when the window is closed.
    */
     @Override
     public void gameOver() {
@@ -162,14 +161,15 @@ public class QGameObserver implements IGameObserver {
         // System.out.println("save png");
         JFrame currentFrame = new ObserverView(this, this.states.get(index), REF_TILES);
         currentFrame.setVisible(true);
+        // currentFrame.setUndecorated(true);
         BufferedImage img = new BufferedImage(currentFrame.getWidth(),
                 currentFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
         currentFrame.paintAll(g);
+        currentFrame.setVisible(false);
         File f = new File(FILE_DIRECTORY +"/" + index + "." + FILE_EXTENSION);
         try {
-            ImageIO.write(img, FILE_EXTENSION, f);
-            currentFrame.setVisible(false);
+            ImageIO.write(img, FILE_EXTENSION, f);   
         }
         catch (Exception e) {
             throw new IllegalStateException("Issue writing to file: " + e.getMessage());

@@ -38,7 +38,9 @@ public class LoopingAIPlayer extends SimpleAIPlayer {
             count++;
         }
         while (count == countLimit) {
-            //infinite loop
+            if (Thread.currentThread().isInterrupted()) {
+                break;
+            }
         }
     }
 

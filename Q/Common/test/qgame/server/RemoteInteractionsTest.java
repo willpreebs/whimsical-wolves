@@ -38,8 +38,8 @@ public class RemoteInteractionsTest {
         t.start();
     }
 
-    private MockRefereeProxy makeMockRefProxy(RefereeProxy rp) {
-        return new MockRefereeProxy(rp.getOut(), rp.getParser(), rp.getPlayer());
+    private MockRefereeProxy makeMockRefProxy(JsonStreamParser in, JsonPrintWriter out, Player p) {
+        return new MockRefereeProxy(out, in, p);
     }
 
     private PlayerProxy makePlayerProxy(ServerSocket s, String playerName) {
@@ -91,39 +91,45 @@ public class RemoteInteractionsTest {
     @Test
     public void testSendEmptyGameResult() throws IOException {
 
-        // String playerName = "testPlayer";
+        String playerName = "testPlayer";
 
-        // Client c = new Client(s.getServerSocket(), new QPlayer(playerName));
+        Player p = new QPlayer(playerName);
 
-        // ServerSocket server = s.getServerSocket();
+        Client c = new Client(s.getServerSocket(), p);
 
-        // PlayerProxy p = makePlayerProxy(server, playerName);
-        // RefereeProxy rp = c.getRefereeProxy();
-        // MockRefereeProxy r = makeMockRefProxy(rp);
+        ServerSocket server = s.getServerSocket();
 
-        // Thread t = new Thread(() -> r.listenForMessages());
-        // t.start();
+        PlayerProxy pProxy = makePlayerProxy(server, playerName);
 
-        // s.sendEmptyGameResult(List.of(p));
-        // // wait a second for message to transmit
-        // try {
-        //     Thread.sleep(500);
-        // } catch (InterruptedException e) {
-        //     // TODO Auto-generated catch block
-        //     e.printStackTrace();
-        // }
-        // t.interrupt();
+        Socket sock = new Socket(server.getInetAddress(), server.getLocalPort());
+        JsonStreamParser in = new JsonStreamParser(new InputStreamReader(sock.getInputStream()));
+        JsonPrintWriter out = new JsonPrintWriter(new PrintWriter(sock.getOutputStream()));
 
-        // List<String> expected = List.of("[[],[]]");
-        // assertEquals(expected, r.getIncomingMessages());
+        MockRefereeProxy r = makeMockRefProxy(in, out, p);
+
+        Thread t = new Thread(() -> r.listenForMessages());
+        t.start();
+
+        s.sendEmptyGameResult(List.of(pProxy));
+        // wait a second for message to transmit
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        t.interrupt();
+
+        List<String> expected = List.of("[[],[]]");
+        assertEquals(expected, r.getIncomingMessages());
     }
 
-    // @Test
-    // public void testGetOneProxy() throws IOException {
-    //     Client c1 = new Client(s.getServer(), new SimpleAIPlayer("testplayer1", new DagStrategy(RuleUtil.createPlaceRules())));
-    //     new Thread(c1).start();
-    //     s.run();
-    // }
+    @Test
+    public void testGetOneProxy() throws IOException {
+        Client c1 = new Client(s.getServerSocket(), new SimpleAIPlayer("testplayer1", new DagStrategy(RuleUtil.createPlaceRules())));
+        new Thread(c1).start();
+        s.run();
+    }
 
     @Test
     public void testGetTwoProxies() throws IOException {

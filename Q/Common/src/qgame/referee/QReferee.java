@@ -42,11 +42,39 @@ import qgame.util.TileUtil;
  * 
  * The Referee controls the QGameState which contains all of the information
  * about the current state of the game.
+ * 
+ * The Referee also contains the rules of the game, and is responsible for
+ * enorcing the rules including removing Players that break the rules or
+ * take too long to respond.
+ * 
+ * The Referee contains the following fields:
+ * 
+ * placementRules: Rules determining which placements are legal
+ * scoringRules: Rules determining how placements are scored
+ * players: A list of the players in the game in order of play
+ * ruleBreakers: A list of the Player's names that broke the rules
+ * or took too long to respond
+ * observers: A list of game observers
+ * startState: If the QReferee is constructed with a configuration,
+ * this is the value that determines the state at the beginning of
+ * the game
+ * 
  */
 public class QReferee implements IReferee {
 
   private final IPlacementRule placementRules;
   private final ScoringRule scoringRules;
+
+  // list of Players in order
+  private List<Player> players;
+
+  private List<String> ruleBreakers;
+
+  private List<IGameObserver> observers;
+
+  // May be set by the configuration file
+  private IGameState startState;
+
 
   // The amount of time given to Players to respond before they are kicked out, in
   // milliseconds
@@ -60,15 +88,6 @@ public class QReferee implements IReferee {
 
   private IGameState currentGameState;
 
-  // list of Players in order
-  private List<Player> players;
-
-  private List<String> ruleBreakers;
-
-  private List<IGameObserver> observers;
-
-  // May be set by the configuration file
-  private IGameState startState;
   private boolean quiet = false;
 
   // For printing error logs
@@ -142,7 +161,6 @@ public class QReferee implements IReferee {
   /**
    * For a Demo that plays an entire game, bypassing the startState.
    */
-  @Override
   public void demoMode() {
     demoMode = true;
     log("Running in demo mode");
@@ -313,8 +331,13 @@ public class QReferee implements IReferee {
     }
   }
 
-  // Determine all winners in a list of players and return a list of their names.
-  private List<Player> findWinnersAndNotifyPlayers(List<PlayerInfo> infos, int highestScore) {
+  /**
+   * Finds the winners and losers of the game and notifies them of the result.
+   * @param infos
+   * @param highestScore
+   * @return The List of Players that won the game.
+   */
+  private List<Player> getWinnersAndNotifyPlayers(List<PlayerInfo> infos, int highestScore) {
 
     List<Player> winnerPlayers = new ArrayList<>();
     List<Player> loserPlayers = new ArrayList<>();
@@ -334,7 +357,7 @@ public class QReferee implements IReferee {
     List<PlayerInfo> playerInfo = this.currentGameState.getAllPlayerInformation();
     int highestScore = maxScore(playerInfo);
 
-    List<Player> winners = findWinnersAndNotifyPlayers(playerInfo, highestScore);
+    List<Player> winners = getWinnersAndNotifyPlayers(playerInfo, highestScore);
 
     List<String> winnerNames = winners.stream()
         .map(p -> p.name())
@@ -351,11 +374,9 @@ public class QReferee implements IReferee {
    * for their action, and updating the game as necessary. Plays the game.
    */
   private void playGameRounds() {
-    List<TurnAction> turnsTakenInRound = new ArrayList<>();
     boolean shouldGameContinue = true;
-    while (!isGameOver(turnsTakenInRound) && shouldGameContinue) {
-      turnsTakenInRound = new ArrayList<>();
-      shouldGameContinue = playRound(turnsTakenInRound);
+    while (shouldGameContinue) {
+      shouldGameContinue = playRound();
     }
     giveObserversStateUpdate();
   }
@@ -396,8 +417,9 @@ public class QReferee implements IReferee {
    * 
    *         TODO: also return false if all the turns have been pass/exchange
    */
-  private boolean playRound(List<TurnAction> turnsTaken) {
+  private boolean playRound() {
     List<Player> nextRound = new ArrayList<>();
+    List<TurnAction> turnsTaken = new ArrayList<>();
     boolean gameContinue = true;
 
     while (!this.players.isEmpty() && gameContinue) {
@@ -440,7 +462,7 @@ public class QReferee implements IReferee {
     }
 
     players.addAll(nextRound);
-    return gameContinue;
+    return gameContinue && !checkGameOverConditions(turnsTaken);
   }
 
   /**
@@ -490,7 +512,7 @@ public class QReferee implements IReferee {
     try {
       return getAction.get(this.timeOut, TimeUnit.MILLISECONDS);
     } finally {
-      executor.shutdown();
+      executor.shutdownNow();
     }
   }
 
@@ -703,10 +725,6 @@ public class QReferee implements IReferee {
   private void scorePlacements(List<Placement> placements) {
     int score = this.scoringRules.pointsFor(placements, currentGameState);
     currentGameState.addScoreToCurrentPlayer(score);
-    // currentGameState.getBoard().printMap();
-    // System.out.println("Player: " +
-    // currentGameState.getCurrentPlayerInfo().name() + " received: " + score + "
-    // points");
   }
 
   // Returns true when a list of placements has as many elements as the current
@@ -724,7 +742,7 @@ public class QReferee implements IReferee {
    * @param players
    * @return
    */
-  private boolean isGameOver(List<TurnAction> actions) {
+  private boolean checkGameOverConditions(List<TurnAction> actions) {
     return players.isEmpty() || noPlacementsMade(actions);
   }
 

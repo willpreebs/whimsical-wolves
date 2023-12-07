@@ -151,9 +151,9 @@ public class Server implements Runnable {
             return;
         }
 
-        IReferee ref = this.refConfig == null ?
-        new QReferee() : new QReferee(this.refConfig);
-        
+        QReferee ref = this.refConfig == null ?
+            new QReferee() : new QReferee(this.refConfig);
+
         if (demoMode) {
             ref.demoMode();
         }

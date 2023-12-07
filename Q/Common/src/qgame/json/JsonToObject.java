@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -53,9 +54,24 @@ public class JsonToObject {
         Map<Posn, Tile> map = new HashMap<>();
         JsonElement[] arr = JsonConverterUtil.getAsElementArray(element);
         Stream.of(arr)
-                .forEach(ele -> JsonConverterUtil.updateRowFromJRow(map, ele));
+                .forEach(ele -> updateRowFromJRow(map, ele));
         return new QMap(map);
     }
+
+    private static void updateMapFromJCellAndRow(Map<Posn, Tile> map, JsonElement element, int yVal) {
+    JsonArray jCell = element.getAsJsonArray();
+    int xVal = JsonConverterUtil.getAsInt(jCell.get(0));
+    map.put(new Posn(yVal, xVal), JsonToObject.tileFromJTile(jCell.get(1)));
+  }
+
+  public static void updateRowFromJRow(Map<Posn, Tile> map, JsonElement element) {
+    JsonElement[] arr = JsonConverterUtil.getAsElementArray(element);
+    int yVal = JsonConverterUtil.getAsInt(arr[0]);
+    Stream.of(arr)
+      .skip(1)
+      .forEach(ele -> updateMapFromJCellAndRow(map, ele, yVal));
+  }
+
 
     /**
      * Takes in a JTile and converts it to a Tile that works with QGame.

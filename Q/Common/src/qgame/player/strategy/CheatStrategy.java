@@ -140,9 +140,10 @@ public class CheatStrategy implements TurnStrategy {
         .findFirst();
     }
 
+    // TODO: Buggy, doesn't always produce a cheating move when it should
     private TurnAction notInline(IPlayerGameState state) {
 
-        Collection<Tile> playerTiles = state.getCurrentPlayerTiles().getItems(); // .stream().toList();
+        Collection<Tile> playerTiles = state.getCurrentPlayerTiles().getItems();
 
         Optional<Placement> p1 = getFirstArbitraryValidPlacement(playerTiles, state);
 

@@ -13,6 +13,7 @@ import com.google.gson.JsonElement;
 
 import qgame.TestUtil;
 import qgame.json.JsonToObject;
+import qgame.json.ObjectToJson;
 import qgame.player.Player;
 import qgame.referee.GameResults;
 import qgame.referee.QReferee;
@@ -56,6 +57,13 @@ public class TestXGamesWithObserver {
         return ref.playGame(state, players);
     }
 
+    /**
+     * Tests using the integration tests in the 8 directory.
+     * Tests currently failing: 
+     * 21-6 Not-a-line cheat bug
+     * 25-9 Not-a-line cheat bug
+     * 36-4 Losers out of order (all throwing exceptions on win)
+     */
     @Test
     public void testAllIn8() {
         int numFails = 0;
@@ -87,6 +95,7 @@ public class TestXGamesWithObserver {
         String directory = "8/grade/" + dir + "/";
 
         GameResults r = getGameResults(directory, testNum);
+        System.out.println(ObjectToJson.jResultsFromGameResults(r));
 
         JsonElement results = TestUtil.getJsonTestResult(directory, testNum);
         

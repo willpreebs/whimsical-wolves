@@ -35,9 +35,4 @@ public interface IReferee {
    */
   GameResults playGame(List<Player> players) throws IllegalStateException;
   
-
-  /**
-   * Plays an entire game, bypassing the state given by any configuration.
-   */
-  void demoMode();
 }

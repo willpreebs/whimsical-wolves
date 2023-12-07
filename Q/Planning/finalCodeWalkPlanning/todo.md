@@ -13,7 +13,7 @@
 
 # Documentation
 - Generally go over all comments to make sure they are still accurate / lack gaps - both
-- QReferee (class and playGame) - Will
+- QReferee (class and playGame) - Will (done)
 - Readme.md with entire overview, guides for new developers, guide for running the server/client, component diagram- Ethan
 - IGameState & QGameState - Will
 - GUI and observer Docs + How can an observer interact with the game / make a GUI - Ethan
