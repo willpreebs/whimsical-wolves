@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
+import qgame.json.ObjectToJson;
 import qgame.player.Player;
 import qgame.referee.QReferee;
 import qgame.referee.GameResults;
@@ -23,12 +25,12 @@ public class XGames {
     JsonElement jActors = parser.next();
     IPlacementRule placementRules = RuleUtil.createPlaceRules();
     ScoringRule scoringRules = RuleUtil.createOldScoreRules();
-    IGameState state = JsonConverter.jStateToOldQGameState(jState);
-    List<Player> players = JsonConverter.playersFromJActors(jActors, placementRules);
-    state = JsonConverter.initializeNewStateWithNewPlayerList(state, players, false);
+    IGameState state = JsonToObject.jStateToOldQGameState(jState);
+    List<Player> players = JsonToObject.playersFromJActors(jActors, placementRules);
+    state = JsonToObject.initializeNewStateWithNewPlayerList(state, players, false);
 
     IReferee ref = new QReferee(placementRules, scoringRules, 10000);
     GameResults results = ref.playGame(state, players);
-    System.out.println(JsonConverter.jResultsFromGameResults(results));
+    System.out.println(ObjectToJson.jResultsFromGameResults(results));
   }
 }

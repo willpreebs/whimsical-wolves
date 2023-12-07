@@ -104,7 +104,7 @@ public class Server implements Runnable {
 
         IReferee ref = new QReferee();
         GameResults r = ref.playGame(proxies);
-        System.out.println(JsonConverter.jResultsFromGameResults(r));
+        System.out.println(ObjectToJson.jResultsFromGameResults(r));
 
         try {
             server.close();

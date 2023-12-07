@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 
 import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
+import qgame.json.ObjectToJson;
 import qgame.state.IPlayerGameState;
 
 
@@ -16,9 +17,9 @@ class XStrategyInputCreator {
 
   public static boolean createInput(IPlayerGameState state, TurnStrategy strategy,
                                  TurnAction expected, String path, int num) throws IOException{
-    JsonElement jPub = JsonConverter.playerStateToJPub(state);
-    JsonElement strat = JsonConverter.strategyToJson(strategy);
-    JsonElement result = JsonConverter.actionToJson(expected);
+    JsonElement jPub = ObjectToJson.playerStateToJPub(state);
+    JsonElement strat = ObjectToJson.strategyToJson(strategy);
+    JsonElement result = ObjectToJson.actionToJson(expected);
     File in = new File(String.format("%s/%d-in.json", path, num));
     File out = new File(String.format("%s/%d-out.json", path, num));
     if (!in.exists() && !in.createNewFile()) {

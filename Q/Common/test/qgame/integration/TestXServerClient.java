@@ -44,7 +44,7 @@ public class TestXServerClient {
         ServerConfig sConfig = new ServerConfig(serverConfig);
         ClientConfig cConfig = new ClientConfig(clientConfig);
 
-        List<Player> players = JsonConverter.playersFromJActorSpecB(clientConfig.get("players"));
+        List<Player> players = ObjectToJson.playersFromJActorSpecB(clientConfig.get("players"));
 
         
         startXClients(port, cConfig, players);

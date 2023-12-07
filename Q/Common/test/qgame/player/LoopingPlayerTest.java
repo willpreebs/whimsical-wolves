@@ -16,6 +16,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 
 import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
+import qgame.json.ObjectToJson;
 import qgame.player.DummyAIPlayer.FailStep;
 import qgame.player.strategy.DagStrategy;
 import qgame.referee.GameResults;
@@ -75,11 +77,11 @@ public class LoopingPlayerTest {
         SimpleAIPlayer normal2 = new SimpleAIPlayer("SecondTester", d);
 
         List<JsonElement> els = parallelizeTest(testDirectory + "0-in.json");
-        IGameState state = JsonConverter.jStateToQGameState(els.get(0));
+        IGameState state = JsonToObject.jStateToQGameState(els.get(0));
 
         List<Player> players = List.of(normal, normal2, looper);
 
-        state = JsonConverter.initializeNewStateWithNewPlayerList(state, players);
+        state = JsonToObject.initializeNewStateWithNewPlayerList(state, players);
 
         QReferee r = new QReferee();
         GameResults results = r.playGame(state, players);
@@ -98,10 +100,10 @@ public class LoopingPlayerTest {
         JsonElement jStateJson = elements.get(0);
         JsonElement jActorSpecBJson = elements.get(1);
 
-        IGameState state = JsonConverter.jStateToQGameState(jStateJson);
-        List<Player> players = JsonConverter.playersFromJActorSpecB(jActorSpecBJson);
+        IGameState state = JsonToObject.jStateToQGameState(jStateJson);
+        List<Player> players = JsonToObject.playersFromJActorSpecB(jActorSpecBJson);
 
-        state = JsonConverter.initializeNewStateWithNewPlayerList(state, players);
+        state = JsonToObject.initializeNewStateWithNewPlayerList(state, players);
 
         IReferee ref = new QReferee(RuleUtil.createPlaceRules(), RuleUtil.createScoreRules(), 20000);
         GameResults gr = ref.playGame(state, players);

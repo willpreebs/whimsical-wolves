@@ -18,6 +18,8 @@ import com.google.gson.JsonElement;
 
 import qgame.gui.ObserverView;
 import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
+import qgame.json.ObjectToJson;
 import qgame.state.IGameState;
 import qgame.state.QGameState;
 
@@ -129,7 +131,7 @@ public class QGameObserver implements IGameObserver {
 
     @Override
     public void save(String filepath) throws IllegalArgumentException{
-        JsonElement jState = JsonConverter.jStateFromQGameState(this.states.get(stateIndex));
+        JsonElement jState = ObjectToJson.jStateFromQGameState(this.states.get(stateIndex));
         try {
             FileWriter w = new FileWriter(filepath);
             w.write(jState.toString());

@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonStreamParser;
 
 import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
 import qgame.player.Player;
 import qgame.server.Client;
 import qgame.server.ClientConfig;
@@ -47,7 +48,7 @@ public class XServerClient {
     }
 
     private static void handleXClient(int port, JsonObject configObj) throws IOException {
-        List<Player> players = JsonConverter.playersFromJActorSpecB(configObj.get("players"));
+        List<Player> players = JsonToObject.playersFromJActorSpecB(configObj.get("players"));
         ClientConfig config = new ClientConfig(configObj);
         List<Thread> threads = getClientThreads(port, config, players);
         runClients(threads, config);

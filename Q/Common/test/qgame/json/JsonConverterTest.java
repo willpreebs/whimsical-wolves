@@ -14,8 +14,8 @@ import java.util.List;
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.state.map.QTile;
-import static qgame.json.JsonConverter.tileFromJTile;
-import static qgame.json.JsonConverter.jCoordsFromPosns;
+import static qgame.json.JsonToObject.tileFromJTile;
+import static qgame.json.ObjectToJson.jCoordsFromPosns;
 
 import static org.junit.Assert.*;
 

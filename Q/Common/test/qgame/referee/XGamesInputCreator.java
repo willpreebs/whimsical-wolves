@@ -11,6 +11,7 @@ import java.io.Writer;
 import java.util.List;
 
 import qgame.json.JsonConverter;
+import qgame.json.ObjectToJson;
 import qgame.player.CheatingAIPlayer;
 import qgame.player.DummyAIPlayer;
 import qgame.player.LoopingAIPlayer;
@@ -46,7 +47,7 @@ class XGamesInputCreator {
   private static JsonElement dummyPlayerToJActorSpec(DummyAIPlayer player) {
     JsonArray jActorSpec = new JsonArray();
     jActorSpec.add(player.name());
-    jActorSpec.add(JsonConverter.strategyToJson(player.strategy()));
+    jActorSpec.add(ObjectToJson.strategyToJson(player.strategy()));
     if (player.failStep() != DummyAIPlayer.FailStep.NONE) {
       jActorSpec.add(failStepToString(player.failStep()));
     }
@@ -56,7 +57,7 @@ class XGamesInputCreator {
   private static JsonElement cheatingPlayertoJActorSpecA(CheatingAIPlayer player){
     JsonArray jActorSpec = new JsonArray();
     jActorSpec.add(player.name());
-    jActorSpec.add(JsonConverter.strategyToJson(player.strategy()));
+    jActorSpec.add(ObjectToJson.strategyToJson(player.strategy()));
     if (player.getCheat() != CheatingAIPlayer.Cheat.NONE) {
       jActorSpec.add(new JsonPrimitive("a cheat"));
       jActorSpec.add(cheatToString(player.getCheat()));
@@ -67,7 +68,7 @@ class XGamesInputCreator {
   private static JsonElement loopingPlayerToJActorSpecB(LoopingAIPlayer player){
     JsonArray jActorSpec = new JsonArray();
     jActorSpec.add(player.name());
-    jActorSpec.add(JsonConverter.strategyToJson(player.strategy()));
+    jActorSpec.add(ObjectToJson.strategyToJson(player.strategy()));
     if (player.failStep() != DummyAIPlayer.FailStep.NONE) {
       jActorSpec.add(failStepToString(player.failStep()));
       jActorSpec.add(player.getCountLimit());
@@ -78,7 +79,7 @@ class XGamesInputCreator {
   private static JsonElement simpleAIPlayerToJActorSpec(SimpleAIPlayer player){
     JsonArray jActorSpec = new JsonArray();
     jActorSpec.add(player.name());
-    jActorSpec.add(JsonConverter.strategyToJson(player.strategy()));
+    jActorSpec.add(ObjectToJson.strategyToJson(player.strategy()));
     return jActorSpec;
   }
   private static JsonElement playerToJActorSpec(Player player){
@@ -113,7 +114,7 @@ class XGamesInputCreator {
   public static boolean createHarnessTest(IGameState state, List<Player> players,
                                           GameResults results, String path, int num)
           throws IOException {
-    JsonElement JState = JsonConverter.jStateFromQGameState(state);
+    JsonElement JState = ObjectToJson.jStateFromQGameState(state);
     JsonElement actors = playersToJActorsSpecs(players);
     return writeOutToJSON(JState, actors, results, path, num);
   }
@@ -148,7 +149,7 @@ class XGamesInputCreator {
     inWrite.close();
 
     Writer outWrite = new FileWriter(out);
-    outWrite.append(JsonConverter.jResultsFromGameResults(results).toString());
+    outWrite.append(ObjectToJson.jResultsFromGameResults(results).toString());
     outWrite.flush();
     outWrite.close();
     return true;

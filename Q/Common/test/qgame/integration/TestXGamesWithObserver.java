@@ -48,9 +48,9 @@ public class TestXGamesWithObserver {
     public GameResults getGameResults(String directory, int testNum) throws FileNotFoundException {
         List<JsonElement> elements = TestUtil.getJsonTestElements(directory, testNum);
 
-        IGameState state = JsonConverter.jStateToQGameState(elements.get(0));
-        List<Player> players = JsonConverter.playersFromJActorSpecA(elements.get(1));
-        state = JsonConverter.initializeNewStateWithNewPlayerList(state, players, true);
+        IGameState state = ObjectToJson.jStateToQGameState(elements.get(0));
+        List<Player> players = ObjectToJson.playersFromJActorSpecA(elements.get(1));
+        state = ObjectToJson.initializeNewStateWithNewPlayerList(state, players, true);
         QReferee ref = new QReferee(placementRules, scoreRules, 10000);
 
         return ref.playGame(state, players);

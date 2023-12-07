@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 
 import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
+import qgame.json.ObjectToJson;
 import qgame.player.strategy.TurnStrategy;
 import qgame.rule.placement.IPlacementRule;
 import qgame.state.IPlayerGameState;
@@ -18,9 +20,9 @@ public class XStrategy {
     JsonElement strat = parser.next();
     JsonElement jPub = parser.next();
     IPlacementRule rules = RuleUtil.createPlaceRules();
-    IPlayerGameState state = JsonConverter.playerGameStateFromJPub(jPub);
-    TurnStrategy strategy = JsonConverter.jStrategyToStrategy(strat, rules);
+    IPlayerGameState state = JsonToObject.playerGameStateFromJPub(jPub);
+    TurnStrategy strategy = JsonToObject.jStrategyToStrategy(strat, rules);
     TurnAction action = strategy.chooseAction(state);
-    System.out.println(JsonConverter.actionToJson(action));
+    System.out.println(ObjectToJson.actionToJson(action));
   }
 }

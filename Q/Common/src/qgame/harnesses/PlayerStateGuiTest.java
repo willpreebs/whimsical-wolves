@@ -7,6 +7,7 @@ import com.google.gson.JsonStreamParser;
 
 import qgame.gui.GameStateView;
 import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
 import qgame.state.IPlayerGameState;
 import qgame.state.Placement;
 import qgame.state.QPlayerGameState;
@@ -14,8 +15,8 @@ import qgame.state.map.IMap;
 public class PlayerStateGuiTest {
  public static void main(String[] args) {
    JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(System.in));
-   IMap map = JsonConverter.qGameMapFromJMap(parser.next());
-   List<Placement> placements = JsonConverter.placementsFromJPlacements(parser.next());
+   IMap map = JsonToObject.qGameMapFromJMap(parser.next());
+   List<Placement> placements = JsonToObject.placementsFromJPlacements(parser.next());
     renderTestPlayerState(map, placements);
  }
 

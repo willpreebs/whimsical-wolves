@@ -27,6 +27,8 @@ import com.google.gson.JsonStreamParser;
 
 import qgame.json.JsonConverter;
 import qgame.json.JsonPrintWriter;
+import qgame.json.JsonToObject;
+import qgame.json.ObjectToJson;
 import qgame.player.Player;
 import qgame.referee.GameResults;
 import qgame.referee.IReferee;
@@ -115,7 +117,7 @@ public class Server implements Runnable {
     }
 
     private void printOutResults(GameResults r) {
-        resultsStream.println(JsonConverter.jResultsFromGameResults(r));
+        resultsStream.println(ObjectToJson.jResultsFromGameResults(r));
     }
     
     /**
@@ -183,7 +185,8 @@ public class Server implements Runnable {
     /**
      * Gets the required number of Players for a game within
      * a number of waiting periods.
-     * @return
+     * @return a List of PlayerProxys as Players that have been collected in
+     * a single waiting period.
      */
     protected List<Player> getProxies() {
 

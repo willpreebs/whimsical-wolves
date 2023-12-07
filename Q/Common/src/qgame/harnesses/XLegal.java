@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
+import qgame.json.ObjectToJson;
 import qgame.rule.placement.IPlacementRule;
 import qgame.state.Placement;
 import qgame.util.RuleUtil;
@@ -18,12 +20,12 @@ public class XLegal {
     JsonElement jPub = parser.next();
     JsonElement jPlacements = parser.next();
 
-    IPlayerGameState gameState = JsonConverter.playerGameStateFromJPub(jPub);
-    List<Placement> placements = JsonConverter.placementsFromJPlacements(jPlacements);
+    IPlayerGameState gameState = JsonToObject.playerGameStateFromJPub(jPub);
+    List<Placement> placements = JsonToObject.placementsFromJPlacements(jPlacements);
     IPlacementRule rules = RuleUtil.createPlaceRules();
     if (rules.isPlacementListLegal(placements, gameState)) {
       placements.forEach(gameState::makePlacement);
-      JsonElement jMap = JsonConverter.jMapFromQGameMap(gameState.getBoard());
+      JsonElement jMap = ObjectToJson.jMapFromQGameMap(gameState.getBoard());
       System.out.println(jMap);
     }
     else {

@@ -7,6 +7,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 
 import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
+import qgame.json.ObjectToJson;
 import qgame.observer.IGameObserver;
 import qgame.observer.QGameObserver;
 import qgame.player.Player;
@@ -28,10 +30,10 @@ public class XGamesWithObserver {
         JsonElement jState = parser.next();
         JsonElement jActorSpecA = parser.next();
 
-        IGameState state = JsonConverter.jStateToQGameState(jState);
-        List<Player> players = JsonConverter.playersFromJActorSpecA(jActorSpecA);
+        IGameState state = JsonToObject.jStateToQGameState(jState);
+        List<Player> players = JsonToObject.playersFromJActorSpecA(jActorSpecA);
 
-        state = JsonConverter.initializeNewStateWithNewPlayerList(state, players);
+        state = JsonToObject.initializeNewStateWithNewPlayerList(state, players);
 
         boolean withObserver = false;
         if (args.length >= 1) {
@@ -47,6 +49,6 @@ public class XGamesWithObserver {
         }
 
         GameResults r = ref.playGame(state, players);
-        System.out.println(JsonConverter.jResultsFromGameResults(r));
+        System.out.println(ObjectToJson.jResultsFromGameResults(r));
     }
 }

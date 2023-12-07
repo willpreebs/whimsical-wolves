@@ -48,8 +48,8 @@ public class TestXScore {
     public int getTestResults(String directory, int testNum) throws FileNotFoundException {
         List<JsonElement> elements = TestUtil.getJsonTestElements(directory, testNum);
 
-        IMap boardState = JsonConverter.qGameMapFromJMap(elements.get(0));
-        List<Placement> placements = JsonConverter.placementsFromJPlacements(elements.get(1));
+        IMap boardState = ObjectToJson.qGameMapFromJMap(elements.get(0));
+        List<Placement> placements = ObjectToJson.placementsFromJPlacements(elements.get(1));
 
         ScoringRule rules = RuleUtil.createOldScoreRules();
         IGameState state = new QGameState(boardState);

@@ -13,6 +13,8 @@ import com.google.gson.JsonElement;
 
 import qgame.TestUtil;
 import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
+import qgame.json.ObjectToJson;
 import qgame.player.Player;
 import qgame.referee.GameResults;
 import qgame.referee.QReferee;
@@ -48,9 +50,9 @@ public class TestXGamesFailures {
     public GameResults getGameResults(String directory, int testNum) throws FileNotFoundException {
         List<JsonElement> elements = TestUtil.getJsonTestElements(directory, testNum);
 
-        IGameState state = JsonConverter.jStateToOldQGameState(elements.get(0));
-        List<Player> players = JsonConverter.playersFromJActors(elements.get(1), placementRules);
-        state = JsonConverter.initializeNewStateWithNewPlayerList(state, players, false);
+        IGameState state = JsonToObject.jStateToOldQGameState(elements.get(0));
+        List<Player> players = JsonToObject.playersFromJActors(elements.get(1), placementRules);
+        state = JsonToObject.initializeNewStateWithNewPlayerList(state, players, false);
         QReferee ref = new QReferee(placementRules, scoreRules, 10000);
 
         return ref.playGame(state, players);

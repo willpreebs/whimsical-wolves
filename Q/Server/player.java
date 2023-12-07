@@ -69,7 +69,7 @@ public class PlayerProxy implements Player {
      * @throws IllegalStateException
      */
     private void assertVoidReturn(JsonElement e) throws IllegalStateException {
-        String v = JsonConverter.getAsString(e);
+        String v = JsonConverterUtil.getAsString(e);
         if (!v.equals("void")) {
             throw new IllegalStateException("Client must return \"void\"");
         }
@@ -113,11 +113,11 @@ public class PlayerProxy implements Player {
      */
     @Override
     public TurnAction takeTurn(IPlayerGameState state) throws IllegalStateException {
-        JsonArray args = buildArgArray(JsonConverter.playerStateToJPub(state));
+        JsonArray args = buildArgArray(ObjectToJson.playerStateToJPub(state));
         JsonElement e = buildFunctionCallJson("take-turn", args);
         sendOverConnection(e);
         JsonElement r = receive();
-        return JsonConverter.jChoiceToTurnAction(r);
+        return ObjectToJson.jChoiceToTurnAction(r);
     }
 
     /**
@@ -127,8 +127,8 @@ public class PlayerProxy implements Player {
     @Override
     public void setup(IPlayerGameState state, Bag<Tile> tiles) throws IllegalStateException {
         System.out.println("PlayerProxy: setup called");
-        JsonArray a = buildArgArray(JsonConverter.playerStateToJPub(state), 
-            JsonConverter.jTilesFromTiles(tiles.getItems()));
+        JsonArray a = buildArgArray(ObjectToJson.playerStateToJPub(state), 
+            ObjectToJson.jTilesFromTiles(tiles.getItems()));
         sendOverConnection(buildFunctionCallJson("setup", a));
         JsonElement e = receive();
         assertVoidReturn(e);
@@ -140,7 +140,7 @@ public class PlayerProxy implements Player {
      */
     @Override
     public void newTiles(Bag<Tile> tiles) throws IllegalStateException {
-        JsonArray a = buildArgArray(JsonConverter.jTilesFromTiles(tiles.getItems()));
+        JsonArray a = buildArgArray(ObjectToJson.jTilesFromTiles(tiles.getItems()));
         sendOverConnection(buildFunctionCallJson("new-tiles", a));
         JsonElement e = receive();
         assertVoidReturn(e);

@@ -14,7 +14,10 @@ import com.google.gson.JsonStreamParser;
 
 import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
+import qgame.json.JsonConverterUtil;
 import qgame.json.JsonPrintWriter;
+import qgame.json.JsonToObject;
+import qgame.json.ObjectToJson;
 import qgame.player.Player;
 import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
@@ -112,7 +115,7 @@ public class PlayerProxy implements Player {
      * @throws IllegalStateException
      */
     private void assertVoidReturn(JsonElement e) throws IllegalStateException {
-        String v = JsonConverter.getAsString(e);
+        String v = JsonConverterUtil.getAsString(e);
         if (!v.equals("void")) {
             log("Expected void but received " + e);
             throw new IllegalStateException("Client must return \"void\"");
@@ -157,7 +160,7 @@ public class PlayerProxy implements Player {
      */
     @Override
     public TurnAction takeTurn(IPlayerGameState state) throws IllegalStateException {
-        JsonArray args = buildArgArray(JsonConverter.playerStateToJPub(state));
+        JsonArray args = buildArgArray(ObjectToJson.playerStateToJPub(state));
         JsonElement e = buildFunctionCallJson("take-turn", args);
         try {
             sendOverConnection(e);
@@ -166,7 +169,7 @@ public class PlayerProxy implements Player {
             throw new IllegalStateException(ex);
         }
         JsonElement r = receive();
-        return JsonConverter.jChoiceToTurnAction(r);
+        return JsonToObject.jChoiceToTurnAction(r);
     }
 
     /**
@@ -175,8 +178,8 @@ public class PlayerProxy implements Player {
      */
     @Override
     public void setup(IPlayerGameState state, Bag<Tile> tiles) throws IllegalStateException {
-        JsonArray a = buildArgArray(JsonConverter.playerStateToJPub(state), 
-            JsonConverter.jTilesFromTiles(tiles.getItems()));
+        JsonArray a = buildArgArray(ObjectToJson.playerStateToJPub(state), 
+            ObjectToJson.jTilesFromTiles(tiles.getItems()));
         try {
             sendOverConnection(buildFunctionCallJson("setup", a));
         } catch (IOException e) {
@@ -193,7 +196,7 @@ public class PlayerProxy implements Player {
      */
     @Override
     public void newTiles(Bag<Tile> tiles) throws IllegalStateException {
-        JsonArray a = buildArgArray(JsonConverter.jTilesFromTiles(tiles.getItems()));
+        JsonArray a = buildArgArray(ObjectToJson.jTilesFromTiles(tiles.getItems()));
         try {
             sendOverConnection(buildFunctionCallJson("new-tiles", a));
         } catch (IOException e) {

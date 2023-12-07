@@ -7,6 +7,7 @@ import com.google.gson.JsonStreamParser;
 
 import qgame.gui.ObserverView;
 import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
 import qgame.observer.QGameObserver;
 import qgame.state.IGameState;
 
@@ -17,7 +18,7 @@ public class ObserverViewGuiTest {
 
         JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(System.in));
         JsonElement jstate = parser.next();
-        IGameState state = JsonConverter.jStateToQGameState(jstate);
+        IGameState state = JsonToObject.jStateToQGameState(jstate);
 
         ObserverView view = new ObserverView(new QGameObserver(), state, 6);
         view.setVisible(true);

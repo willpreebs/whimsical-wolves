@@ -1,7 +1,7 @@
 package qgame.referee;
 
 import com.google.gson.JsonObject;
-import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
 import qgame.state.IGameState;
 
 public class RefereeConfig {
@@ -14,9 +14,9 @@ public class RefereeConfig {
     
     public RefereeConfig(JsonObject config) throws IllegalArgumentException {
         try {
-            state = JsonConverter.jStateToQGameState(config.get("state0"));
+            state = JsonToObject.jStateToQGameState(config.get("state0"));
             quiet = config.get("quiet").getAsBoolean();
-            configS = JsonConverter.parseRefereeStateConfig(config.get("config-s"));
+            configS = JsonToObject.parseRefereeStateConfig(config.get("config-s"));
             perTurn = config.get("per-turn").getAsInt();
             observe = config.get("observe").getAsBoolean();
         } catch (NullPointerException | IllegalStateException | NumberFormatException | UnsupportedOperationException e) {

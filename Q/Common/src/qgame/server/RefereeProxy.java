@@ -13,7 +13,10 @@ import com.google.gson.JsonStreamParser;
 
 import qgame.action.TurnAction;
 import qgame.json.JsonConverter;
+import qgame.json.JsonConverterUtil;
 import qgame.json.JsonPrintWriter;
+import qgame.json.JsonToObject;
+import qgame.json.ObjectToJson;
 import qgame.player.Player;
 import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
@@ -62,13 +65,13 @@ public class RefereeProxy {
     }
 
     private String getMethodName(JsonElement e) {
-        JsonElement[] a = JsonConverter.getAsElementArray(e);
-        return JsonConverter.getAsString(a[0]);
+        JsonElement[] a = JsonConverterUtil.getAsElementArray(e);
+        return JsonConverterUtil.getAsString(a[0]);
     } 
 
     private JsonArray getArgs(JsonElement e) {
-        JsonElement[] a = JsonConverter.getAsElementArray(e);
-        return JsonConverter.getAsArray(a[1]);
+        JsonElement[] a = JsonConverterUtil.getAsElementArray(e);
+        return JsonConverterUtil.getAsArray(a[1]);
     }
 
     private void sendOverConnection(JsonElement e) throws IOException {
@@ -148,8 +151,8 @@ public class RefereeProxy {
      */
     private JsonElement setup(JsonArray args) {
         validateArg(a -> a.size() == 2, args, "Setup takes two arguments");
-        IPlayerGameState state = JsonConverter.playerGameStateFromJPub(args.get(0));
-        Bag<Tile> tiles = new Bag<>(JsonConverter.tilesFromJTileArray(args.get(1)));
+        IPlayerGameState state = JsonToObject.playerGameStateFromJPub(args.get(0));
+        Bag<Tile> tiles = new Bag<>(JsonToObject.tilesFromJTileArray(args.get(1)));
         this.p.setup(state, tiles);
         return VOID_ELEMENT;
     }
@@ -162,9 +165,9 @@ public class RefereeProxy {
      */
     private JsonElement takeTurn(JsonArray args) {
         validateArg(a -> a.size() == 1, args, "takeTurn takes one argument");
-        IPlayerGameState state = JsonConverter.playerGameStateFromJPub(args.get(0));
+        IPlayerGameState state = JsonToObject.playerGameStateFromJPub(args.get(0));
         TurnAction t = this.p.takeTurn(state);
-        return JsonConverter.actionToJChoice(t);
+        return ObjectToJson.actionToJChoice(t);
     }
 
     /**
@@ -175,7 +178,7 @@ public class RefereeProxy {
      */
     private JsonElement newTiles(JsonArray args) {
         validateArg(a -> a.size() == 1, args, "takeTurn takes one argument");
-        Bag<Tile> tiles = new Bag<>(JsonConverter.tilesFromJTileArray(args.get(0)));
+        Bag<Tile> tiles = new Bag<>(JsonToObject.tilesFromJTileArray(args.get(0)));
         this.p.newTiles(tiles);
         return VOID_ELEMENT;
     }
