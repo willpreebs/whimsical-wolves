@@ -8,7 +8,6 @@ import java.io.Writer;
 import com.google.gson.JsonElement;
 
 import qgame.action.TurnAction;
-import qgame.json.JsonConverter;
 import qgame.json.ObjectToJson;
 import qgame.state.IPlayerGameState;
 

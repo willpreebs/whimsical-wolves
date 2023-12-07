@@ -42,19 +42,4 @@ public class JsonConverterUtil {
     return res;
   }
 
-  private static void updateMapFromJCellAndRow(Map<Posn, Tile> map, JsonElement element, int yVal) {
-    JsonArray jCell = element.getAsJsonArray();
-    int xVal = getAsInt(jCell.get(0));
-    map.put(new Posn(yVal, xVal), JsonToObject.tileFromJTile(jCell.get(1)));
-  }
-
-  public static void updateRowFromJRow(Map<Posn, Tile> map, JsonElement element) {
-    JsonElement[] arr = getAsElementArray(element);
-    int yVal = getAsInt(arr[0]);
-    Stream.of(arr)
-      .skip(1)
-      .forEach(ele -> updateMapFromJCellAndRow(map, ele, yVal));
-  }
-
-
 }

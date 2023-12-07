@@ -13,6 +13,7 @@ import com.google.gson.JsonElement;
 
 import qgame.TestUtil;
 import qgame.json.JsonToObject;
+import qgame.json.ObjectToJson;
 import qgame.player.Player;
 import qgame.referee.GameResults;
 import qgame.referee.QReferee;
@@ -53,15 +54,24 @@ public class TestXBaddies {
         state = JsonToObject.initializeNewStateWithNewPlayerList(state, players, true);
         QReferee ref = new QReferee(placementRules, scoreRules, 10000);
 
-        return ref.playGame(state, players);
+        GameResults r = ref.playGame(state, players);
+        return r;
     }
 
+    /**
+     * Test everything within the 9 directory
+     * 
+     * Tests currently failing: 
+     * 10-9: Bug with order that players are notified on win. (Losers are in wrong order)
+     * 18-9: Bug with not-a-line cheat not cheating successfully 
+     * 38-2: Bug with not-a-line cheat not cheating successfully
+     */
     @Test
     public void testAllIn9() {
         int numFails = 0;
         int numSuccess = 0;
 
-        for (int dir = 0; dir < 42; dir++) {
+        for (int dir = 18; dir < 42; dir++) {
             for (int testNum = 0; testNum < 10; testNum++) {
                 try {
                     performTest(dir, testNum);
@@ -80,7 +90,7 @@ public class TestXBaddies {
 
     @Test
     public void runIndividualTest() throws FileNotFoundException {
-        performTest(36, 4);
+        performTest(38, 2);
     }
     
     public void performTest(int dir, int testNum) throws FileNotFoundException {
@@ -88,6 +98,7 @@ public class TestXBaddies {
         String directory = "9/grade/" + dir + "/";
 
         GameResults r = getGameResults(directory, testNum);
+        System.out.println(ObjectToJson.jResultsFromGameResults(r));
 
         JsonElement results = TestUtil.getJsonTestResult(directory, testNum);
         

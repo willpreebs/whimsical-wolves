@@ -1,18 +1,17 @@
 package qgame.harnesses;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonStreamParser;
-
 import java.io.InputStreamReader;
 import java.util.List;
 
-import qgame.json.JsonConverter;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonStreamParser;
+
 import qgame.json.JsonToObject;
 import qgame.json.ObjectToJson;
 import qgame.player.Player;
-import qgame.referee.QReferee;
 import qgame.referee.GameResults;
 import qgame.referee.IReferee;
+import qgame.referee.QReferee;
 import qgame.rule.placement.IPlacementRule;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.IGameState;

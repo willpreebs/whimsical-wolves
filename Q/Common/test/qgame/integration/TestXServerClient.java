@@ -17,7 +17,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonStreamParser;
 
 import qgame.TestUtil;
-import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
 import qgame.player.Player;
 import qgame.server.Client;
 import qgame.server.ClientConfig;
@@ -44,7 +44,7 @@ public class TestXServerClient {
         ServerConfig sConfig = new ServerConfig(serverConfig);
         ClientConfig cConfig = new ClientConfig(clientConfig);
 
-        List<Player> players = ObjectToJson.playersFromJActorSpecB(clientConfig.get("players"));
+        List<Player> players = JsonToObject.playersFromJActorSpecB(clientConfig.get("players"));
 
         
         startXClients(port, cConfig, players);

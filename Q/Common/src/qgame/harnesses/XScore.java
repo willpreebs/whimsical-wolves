@@ -1,19 +1,18 @@
 package qgame.harnesses;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonStreamParser;
-
 import java.io.InputStreamReader;
 import java.util.List;
 
-import qgame.json.JsonConverter;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonStreamParser;
+
 import qgame.json.JsonToObject;
-import qgame.state.map.IMap;
-import qgame.util.RuleUtil;
 import qgame.rule.scoring.ScoringRule;
 import qgame.state.IGameState;
 import qgame.state.Placement;
 import qgame.state.QGameState;
+import qgame.state.map.IMap;
+import qgame.util.RuleUtil;
 
 public class XScore {
   public static void main(String[] args) {

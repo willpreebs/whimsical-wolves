@@ -10,7 +10,6 @@ import java.util.List;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonStreamParser;
 
-import qgame.json.JsonConverter;
 import qgame.json.JsonToObject;
 import qgame.player.Player;
 import qgame.server.Client;
@@ -43,6 +42,11 @@ public class XServerClient {
 
     private static void handleXServer(int port, JsonObject configObj) throws IOException {
         Server s = new Server(port, new ServerConfig(configObj));
+
+        if (configObj.get("demo-mode") != null && configObj.get("demo-mode").getAsBoolean()) {
+            s.demoMode();
+        }
+
         Thread thread = new Thread(s);
         runServer(thread);
     }

@@ -3,6 +3,7 @@ package qgame.util;
 import java.util.List;
 
 import qgame.rule.placement.MultiPlacementRule;
+import qgame.referee.RefereeStateConfig;
 import qgame.rule.placement.IPlacementRule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.board.ExtendsBoardRule;
@@ -59,16 +60,15 @@ public class RuleUtil {
     return new MultiScoringRule(rules);
   }
 
-  public static ScoringRule createScoreRules(int qBonus, int fBonus) {
+  public static ScoringRule createScoreRules(RefereeStateConfig sConfig) {
     List<ScoringRule> rules = List.of(
       new PointPerTileRule(POINTS_PER_TILE),
-      new QRule(qBonus),
+      new QRule(sConfig.getqBonus()),
       new PointPerContiguousSequenceRule(POINTS_PER_CONTIGUOUS_TILE),
-      new PlaceAllOwnedTiles(fBonus));
+      new PlaceAllOwnedTiles(sConfig.getfBonus()));
     return new MultiScoringRule(rules);
   }
  
-  //TODO: take in config file
   public static ScoringRule createScoreRules(int pointsPerTile, int qBonus, int pointsPerContiguousTile, int allTilesBonus) {
     List<ScoringRule> rules = List.of(
       new PointPerTileRule(pointsPerTile),
@@ -80,7 +80,7 @@ public class RuleUtil {
 
   /**
    * For reverse compatibility
-   * Q bonus is always assumed to be 6
+   * Q bonus is 6
    * Place all owned tiles rule is omitted
    * @return
    */

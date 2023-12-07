@@ -116,6 +116,8 @@ public abstract class SmallestTileStrategy implements TurnStrategy {
 
     /**
      * Gets the best Placement considering the current player's remaining tiles.
+     * First places all of the player's tiles in their current move on the board,
+     * so the new best placements can be calculated.
      * 
      * Returns an Optional that is either:
      * - A Placement if a Placement is found that is legal on the board updated with the

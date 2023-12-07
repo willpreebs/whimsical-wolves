@@ -8,7 +8,8 @@ import qgame.state.map.IMap;
 import qgame.state.map.Tile;
 
 /**
- * Contains all the information about the state of the Q Game that the referee knows.
+ * A GameState is responsible for containing and modifying
+ * all of the data that is needed to run a Q game
  */
 public interface IGameState {
   /**
@@ -85,8 +86,15 @@ public interface IGameState {
    */
   Collection<Tile> takeOutRefTiles(int count) throws IllegalArgumentException;
 
+  /**
+   * 
+   * @param tiles
+   * @throws IllegalArgumentException
+   */
   void giveRefereeTiles(Bag<Tile> tiles) throws IllegalArgumentException;
 
   PlayerInfo getCurrentPlayerInfo();
+
+  boolean isNextPlayerToGo(String name);
 
 }

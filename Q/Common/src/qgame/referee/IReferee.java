@@ -21,10 +21,18 @@ public interface IReferee {
    * @return a GameResults object, which contains a list of players who've won the game and a list
    * of players who broke the rules. 
    * @throws IllegalStateException if the state is invalid such that
-   * running a game is not possible given the list of players.
+   * running a game is not possible given the list of players, or the 
    */
   GameResults playGame(IGameState state, List<Player> players) throws IllegalStateException;
 
+  /**
+   * Plays a game with a List of Players. Randomly generates a GameState
+   * with Player information at the start of the game.
+   * @param players
+   * @return
+   * @throws IllegalStateException if the state is invalid such that
+   * running a game is not possible given the list of players, or the 
+   */
   GameResults playGame(List<Player> players) throws IllegalStateException;
   
 }

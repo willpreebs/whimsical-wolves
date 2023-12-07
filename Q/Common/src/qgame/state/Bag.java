@@ -16,7 +16,7 @@ import static qgame.util.ValidationUtil.validateArg;
  * the bag, and these items once requested are removed from the bag.
  * @param <T>
  */
-public class Bag<T>{
+public class Bag<T> {
   private final List<T> items;
 
   public Bag() {

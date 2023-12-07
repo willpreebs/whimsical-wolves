@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.google.gson.JsonElement;
 
 import qgame.TestUtil;
-import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
 import qgame.rule.placement.IPlacementRule;
 import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.board.BoardRule;
@@ -48,8 +48,8 @@ public class TestXScore {
     public int getTestResults(String directory, int testNum) throws FileNotFoundException {
         List<JsonElement> elements = TestUtil.getJsonTestElements(directory, testNum);
 
-        IMap boardState = ObjectToJson.qGameMapFromJMap(elements.get(0));
-        List<Placement> placements = ObjectToJson.placementsFromJPlacements(elements.get(1));
+        IMap boardState = JsonToObject.qGameMapFromJMap(elements.get(0));
+        List<Placement> placements = JsonToObject.placementsFromJPlacements(elements.get(1));
 
         ScoringRule rules = RuleUtil.createOldScoreRules();
         IGameState state = new QGameState(boardState);

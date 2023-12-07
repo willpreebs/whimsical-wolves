@@ -13,5 +13,6 @@
         },
         "per-turn": 3,
         "observe": true
-    }
+    },
+    "demo-mode": true
 }

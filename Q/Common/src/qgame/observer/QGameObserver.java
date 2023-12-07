@@ -17,8 +17,6 @@ import javax.swing.JFrame;
 import com.google.gson.JsonElement;
 
 import qgame.gui.ObserverView;
-import qgame.json.JsonConverter;
-import qgame.json.JsonToObject;
 import qgame.json.ObjectToJson;
 import qgame.state.IGameState;
 import qgame.state.QGameState;
@@ -31,7 +29,7 @@ import qgame.state.QGameState;
  * allows for saving a state as a JSON representation of its
  * information as well.
  * 
- * TODO: Guide for implementing GUI
+ * Guide for 
  */
 public class QGameObserver implements IGameObserver {
 
@@ -40,6 +38,8 @@ public class QGameObserver implements IGameObserver {
 
     ObserverView stateFrame;
     Dimension dimension;
+
+    boolean isGameOver = false;
 
     private final int REF_TILES = 6;
     private final String FILE_DIRECTORY = "../Tmp";
@@ -50,10 +50,12 @@ public class QGameObserver implements IGameObserver {
         stateFrame = new ObserverView(this, new QGameState(), REF_TILES);
         stateFrame.setVisible(true);
 
-        // TODO: clear out Tmp folder
         clearAllFiles();
     }
 
+    /**
+     * Removes all Files from the directory specified by FILE_DIRECTORY.
+     */
     private void clearAllFiles() {
 
         File tmp = new File(FILE_DIRECTORY);
@@ -74,9 +76,10 @@ public class QGameObserver implements IGameObserver {
     @Override
     public void receiveState(IGameState state) {
         nonNullObj(state, "State cannot be null");
-        states.add(new QGameState(state));
-
-        saveStateAsPng(states.size() - 1);
+        if (!isGameOver) {
+            states.add(new QGameState(state));
+            saveStateAsPng(states.size() - 1);
+        }
     }
 
     /**
@@ -88,7 +91,6 @@ public class QGameObserver implements IGameObserver {
     public void next() {
         if (stateIndex < this.states.size() - 1) {
             stateIndex++;
-            // System.out.println("Next pressed; index set to: " + stateIndex);
         }
         renderCurrentState();
     }
@@ -99,10 +101,8 @@ public class QGameObserver implements IGameObserver {
      */
     @Override
     public void previous() {
-        // System.out.println("previous");
         if (stateIndex > 0) {
             stateIndex--;
-            // System.out.println("Previous pressed; index set to: " + stateIndex);
         }
         renderCurrentState();
     }
@@ -144,10 +144,13 @@ public class QGameObserver implements IGameObserver {
   /**
    * Alerts the observer that the game is over
    * and that there will be no more states.
+   * 
+   * Also enables the observer to shut the program down when the window is closed.
    */
     @Override
     public void gameOver() {
-        //TODO
+        isGameOver = true;
+        this.stateFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     /**
@@ -158,14 +161,15 @@ public class QGameObserver implements IGameObserver {
         // System.out.println("save png");
         JFrame currentFrame = new ObserverView(this, this.states.get(index), REF_TILES);
         currentFrame.setVisible(true);
+        // currentFrame.setUndecorated(true);
         BufferedImage img = new BufferedImage(currentFrame.getWidth(),
                 currentFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
         currentFrame.paintAll(g);
+        currentFrame.setVisible(false);
         File f = new File(FILE_DIRECTORY +"/" + index + "." + FILE_EXTENSION);
         try {
-            ImageIO.write(img, FILE_EXTENSION, f);
-            currentFrame.setVisible(false);
+            ImageIO.write(img, FILE_EXTENSION, f);   
         }
         catch (Exception e) {
             throw new IllegalStateException("Issue writing to file: " + e.getMessage());
