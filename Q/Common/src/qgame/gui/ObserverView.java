@@ -18,11 +18,7 @@ public class ObserverView extends JFrame {
   public ObserverView(IGameObserver observer, IGameState state, int maxRefTilesToRender) {
     super("Observer view");
     this.maxRefTilesToRender = maxRefTilesToRender;
-
-
-    // TODO: test dimensions, make fields for constants
-    // Dimension fiveByFive = new Dimension(500, 500);
-    // this.setMinimumSize(new Dimension(500, 500));
+    
     updateFrame(observer, state);
   }
 
@@ -46,11 +42,7 @@ public class ObserverView extends JFrame {
       box.add(mapAndRefTiles);
       box.add(new JScrollPane(new PlayerTilesPanel(state)));
 
-      // JScrollPane observerPane = new JScrollPane(box);
-
-      //box.setPreferredSize(fiveByFive);
       this.add(box);
-      //this.setSize(new Dimension(this.width, this.height));
       this.pack();
     }
     catch(IllegalArgumentException e){
@@ -58,9 +50,6 @@ public class ObserverView extends JFrame {
     }
   }
 
-  // public void updateFrame(IGameObserver observer, IGameState state, int height, )
-
-  // TODO: own class ?
   private Component createMapComponent(IGameState state) {
     BufferedImage image = ImageCreator.drawBoard(state.getBoard());
     JLabel mapPanel = new JLabel(new ImageIcon(image));
@@ -82,4 +71,6 @@ public class ObserverView extends JFrame {
     JOptionPane.showMessageDialog(this, "Exception thrown:" +
             e.getMessage());
   }
+
+  // public void setExitOnClose
 }

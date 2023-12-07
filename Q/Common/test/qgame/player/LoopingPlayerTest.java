@@ -15,9 +15,7 @@ import org.junit.Test;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 
-import qgame.json.JsonConverter;
 import qgame.json.JsonToObject;
-import qgame.json.ObjectToJson;
 import qgame.player.DummyAIPlayer.FailStep;
 import qgame.player.strategy.DagStrategy;
 import qgame.referee.GameResults;

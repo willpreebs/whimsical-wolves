@@ -12,14 +12,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import qgame.TestUtil;
-import qgame.json.JsonConverter;
 import qgame.json.JsonToObject;
-import qgame.json.ObjectToJson;
 import qgame.player.Player;
 import qgame.referee.GameResults;
 import qgame.referee.QReferee;
-import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.IPlacementRule;
+import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.rule.placement.state.StateRule;

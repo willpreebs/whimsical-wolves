@@ -3,13 +3,13 @@
 - Investigate and fix bugs causing test failures in 9. - If time
 
 # Design TOP PRIORITY
-- Split JsonConverter into two classes: one for converting into json and one for converting into objects - Will
-- Clean up QReferee constructors (Use RefereeConfig, abstract out initializations) - Will
-- RuleUtil.createScoringRules take in config object - Will
+- Split JsonConverter into two classes: one for converting into json and one for converting into objects - Will (Done)
+- Clean up QReferee constructors (Use RefereeConfig, abstract out initializations) - Will (done)
+- RuleUtil.createScoringRules take in config object - Will (done)
 - playGame should check that the number of players matches the number in the state and returns an empty game result otherwise. - Ethan
 - playRound should return false on all turns being pass/exchange end condition. - Ethan
 - clean up findWinnersAndNotifyPlayers call stack - Ethan
-- Implement gameOver in QGameObserver (when does the observer shut down?) - Will
+- Implement gameOver in QGameObserver (when does the observer shut down?) - Will (done)
 
 # Documentation
 - Generally go over all comments to make sure they are still accurate / lack gaps - both
@@ -26,7 +26,5 @@
 - Component diagram (for Readme.md) - Ethan
 
 # Demo
-- Prepare test to showcase server/client interaction and observer/gui - Will
-
-
+- Prepare test to showcase server/client interaction and observer/gui - Will (Done)
 

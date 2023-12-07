@@ -6,7 +6,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 
 import qgame.gui.ObserverView;
-import qgame.json.JsonConverter;
 import qgame.json.JsonToObject;
 import qgame.observer.QGameObserver;
 import qgame.state.IGameState;

@@ -96,122 +96,125 @@ public class ObjectToJson {
         obj.add("column", new JsonPrimitive(posn.x()));
         obj.add("row", new JsonPrimitive(posn.y()));
         return obj;
-      }
-
-      /**
-   * Takes in a list of positions and returns a corresponding list of jCoordinates.
-   * Sorted in row-column order because of XMap.
-   * @param posns List of positions
-   * @return Json Array of jCoordinates
-   * @throws IllegalArgumentException if passed a null posn
-   */
-  public static JsonArray jCoordsFromPosns(List<Posn> posns) throws IllegalArgumentException {
-    nonNullObj(posns, "Positions cannot be null");
-    SortedSet<Posn> set = new TreeSet<>(PosnUtil::rowColumnCompare);
-    set.addAll(posns);
-    JsonArray result = new JsonArray();
-    set.forEach(posn -> result.add(jCoordFromPosn(posn)));
-    return result;
-  }
-
-  private static JsonElement jPlayerFromPlayerState(IPlayerGameState state) {
-    JsonObject player = new JsonObject();
-    player.add("score", new JsonPrimitive(state.getPlayerScores().get(0)));
-    player.add("tile*", jTilesFromTiles(state.getCurrentPlayerTiles().getItems()));
-    return player;
-  }
-
-  public static JsonElement playerStateToJPub(IPlayerGameState state) {
-    JsonObject jPub = new JsonObject();
-    jPub.add("map", jMapFromQGameMap(state.getBoard()));
-    jPub.add("tile*", new JsonPrimitive(state.getNumberRemainingTiles()));
-    JsonArray arr = new JsonArray();
-    arr.add(jPlayerFromPlayerState(state));
-    state
-      .getPlayerScores()
-      .stream()
-      .skip(1)
-      .forEach(score -> arr.add(new JsonPrimitive(score)));
-    jPub.add("players", arr);
-    return jPub;
-  }
-
-  public static JsonElement strategyToJson(TurnStrategy strategy) {
-    return switch (strategy) {
-      case DagStrategy dag -> new JsonPrimitive("dag");
-      case LdasgStrategy ldasg -> new JsonPrimitive("ldasg");
-      default -> throw new IllegalStateException("Unexpected value: " + strategy);
-    };
-  }
-
-  public static JsonElement onePlacementFromPlacement(Placement placement) {
-    JsonObject onePlacement = new JsonObject();
-    onePlacement.add("coordinate", jCoordFromPosn(placement.posn()));
-    onePlacement.add("1tile", jTileFromTile(placement.tile()));
-    return onePlacement;
-  }
-
-  public static JsonArray jPlacementsFromPlaceAction(PlaceAction action) {
-    JsonArray a = new JsonArray();
-    for (Placement p : action.placements()) {
-      a.add(onePlacementFromPlacement(p));
     }
-    return a;
-  }
 
-  public static JsonElement actionToJson(TurnAction action) {
-    return switch (action) {
-      case PassAction pass -> new JsonPrimitive("pass");
-      case ExchangeAction exchangeAction -> new JsonPrimitive("replace");
-      case PlaceAction place -> onePlacementFromPlacement(place.placements().get(0));
-      default -> throw new IllegalStateException("Unexpected value: " + action);
-    };
-  }
+    /**
+     * Takes in a list of positions and returns a corresponding list of
+     * jCoordinates.
+     * Sorted in row-column order because of XMap.
+     * 
+     * @param posns List of positions
+     * @return Json Array of jCoordinates
+     * @throws IllegalArgumentException if passed a null posn
+     */
+    public static JsonArray jCoordsFromPosns(List<Posn> posns) throws IllegalArgumentException {
+        nonNullObj(posns, "Positions cannot be null");
+        SortedSet<Posn> set = new TreeSet<>(PosnUtil::rowColumnCompare);
+        set.addAll(posns);
+        JsonArray result = new JsonArray();
+        set.forEach(posn -> result.add(jCoordFromPosn(posn)));
+        return result;
+    }
 
-  public static JsonElement actionToJChoice(TurnAction action) {
-    return switch (action) {
-      case PassAction pass -> new JsonPrimitive("pass");
-      case ExchangeAction exchangeAction -> new JsonPrimitive("replace");
-      case PlaceAction place -> jPlacementsFromPlaceAction(place);
-      default -> throw new IllegalStateException("Unexpected value: " + action);
-    };
-  }
+    private static JsonElement jPlayerFromPlayerState(IPlayerGameState state) {
+        JsonObject player = new JsonObject();
+        player.add("score", new JsonPrimitive(state.getPlayerScores().get(0)));
+        player.add("tile*", jTilesFromTiles(state.getCurrentPlayerTiles().getItems()));
+        return player;
+    }
 
-  public static JsonElement jResultsFromGameResults(GameResults results) {
-    List<String> winners = results.getWinners();
-    List<String> ruleBreakers = results.getRuleBreakers();
-    winners.sort(Comparator.naturalOrder());
-    JsonArray winnersArray = new JsonArray();
-    JsonArray breakersArray = new JsonArray();
-    winners.forEach(winnersArray::add);
-    ruleBreakers.forEach(breakersArray::add);
+    public static JsonElement playerStateToJPub(IPlayerGameState state) {
+        JsonObject jPub = new JsonObject();
+        jPub.add("map", jMapFromQGameMap(state.getBoard()));
+        jPub.add("tile*", new JsonPrimitive(state.getNumberRemainingTiles()));
+        JsonArray arr = new JsonArray();
+        arr.add(jPlayerFromPlayerState(state));
+        state
+                .getPlayerScores()
+                .stream()
+                .skip(1)
+                .forEach(score -> arr.add(new JsonPrimitive(score)));
+        jPub.add("players", arr);
+        return jPub;
+    }
 
-    JsonArray result = new JsonArray();
-    result.add(winnersArray);
-    result.add(breakersArray);
-    return result;
-  }
+    public static JsonElement strategyToJson(TurnStrategy strategy) {
+        return switch (strategy) {
+            case DagStrategy dag -> new JsonPrimitive("dag");
+            case LdasgStrategy ldasg -> new JsonPrimitive("ldasg");
+            default -> throw new IllegalStateException("Unexpected value: " + strategy);
+        };
+    }
 
-  private static JsonElement jPlayerFromPlayerInfo(PlayerInfo info) {
-    JsonObject object = new JsonObject();
-    object.add("score", new JsonPrimitive(info.getScore()));
-    object.add("name", new JsonPrimitive(info.getName()));
-    object.add("tile*", jTilesFromTiles(info.getTiles().getItems()));
-    return object;
-  }
-  public static JsonElement jStateFromQGameState(IGameState state) {
-    JsonElement map = jMapFromQGameMap(state.getBoard());
-    JsonElement tiles = jTilesFromTiles(state.getRefereeTiles().getItems());
-    JsonArray players = new JsonArray();
-    state.getAllPlayerInformation()
-      .stream()
-      .map(ObjectToJson::jPlayerFromPlayerInfo)
-      .forEach(players::add);
-    JsonObject result = new JsonObject();
-    result.add("map", map);
-    result.add("tile*", tiles);
-    result.add("players", players);
-    return result;
-  }
+    public static JsonElement onePlacementFromPlacement(Placement placement) {
+        JsonObject onePlacement = new JsonObject();
+        onePlacement.add("coordinate", jCoordFromPosn(placement.posn()));
+        onePlacement.add("1tile", jTileFromTile(placement.tile()));
+        return onePlacement;
+    }
+
+    public static JsonArray jPlacementsFromPlaceAction(PlaceAction action) {
+        JsonArray a = new JsonArray();
+        for (Placement p : action.placements()) {
+            a.add(onePlacementFromPlacement(p));
+        }
+        return a;
+    }
+
+    public static JsonElement actionToJson(TurnAction action) {
+        return switch (action) {
+            case PassAction pass -> new JsonPrimitive("pass");
+            case ExchangeAction exchangeAction -> new JsonPrimitive("replace");
+            case PlaceAction place -> onePlacementFromPlacement(place.placements().get(0));
+            default -> throw new IllegalStateException("Unexpected value: " + action);
+        };
+    }
+
+    public static JsonElement actionToJChoice(TurnAction action) {
+        return switch (action) {
+            case PassAction pass -> new JsonPrimitive("pass");
+            case ExchangeAction exchangeAction -> new JsonPrimitive("replace");
+            case PlaceAction place -> jPlacementsFromPlaceAction(place);
+            default -> throw new IllegalStateException("Unexpected value: " + action);
+        };
+    }
+
+    public static JsonElement jResultsFromGameResults(GameResults results) {
+        List<String> winners = results.getWinners();
+        List<String> ruleBreakers = results.getRuleBreakers();
+        winners.sort(Comparator.naturalOrder());
+        JsonArray winnersArray = new JsonArray();
+        JsonArray breakersArray = new JsonArray();
+        winners.forEach(winnersArray::add);
+        ruleBreakers.forEach(breakersArray::add);
+
+        JsonArray result = new JsonArray();
+        result.add(winnersArray);
+        result.add(breakersArray);
+        return result;
+    }
+
+    private static JsonElement jPlayerFromPlayerInfo(PlayerInfo info) {
+        JsonObject object = new JsonObject();
+        object.add("score", new JsonPrimitive(info.getScore()));
+        object.add("name", new JsonPrimitive(info.getName()));
+        object.add("tile*", jTilesFromTiles(info.getTiles().getItems()));
+        return object;
+    }
+
+    public static JsonElement jStateFromQGameState(IGameState state) {
+        JsonElement map = jMapFromQGameMap(state.getBoard());
+        JsonElement tiles = jTilesFromTiles(state.getRefereeTiles().getItems());
+        JsonArray players = new JsonArray();
+        state.getAllPlayerInformation()
+                .stream()
+                .map(ObjectToJson::jPlayerFromPlayerInfo)
+                .forEach(players::add);
+        JsonObject result = new JsonObject();
+        result.add("map", map);
+        result.add("tile*", tiles);
+        result.add("players", players);
+        return result;
+    }
 
 }

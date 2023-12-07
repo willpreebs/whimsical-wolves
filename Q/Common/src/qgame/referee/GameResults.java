@@ -14,6 +14,11 @@ public class GameResults {
 
   private final List<String> ruleBreakers;
 
+  public GameResults() {
+    this.winners = new ArrayList<>();
+    this.ruleBreakers = new ArrayList<>();
+  }
+
   /**
    *
    * @param winners

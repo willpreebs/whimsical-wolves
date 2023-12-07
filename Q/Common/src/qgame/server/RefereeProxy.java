@@ -12,7 +12,6 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonStreamParser;
 
 import qgame.action.TurnAction;
-import qgame.json.JsonConverter;
 import qgame.json.JsonConverterUtil;
 import qgame.json.JsonPrintWriter;
 import qgame.json.JsonToObject;

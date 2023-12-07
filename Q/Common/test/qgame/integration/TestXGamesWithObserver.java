@@ -12,12 +12,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import qgame.TestUtil;
-import qgame.json.JsonConverter;
+import qgame.json.JsonToObject;
 import qgame.player.Player;
 import qgame.referee.GameResults;
 import qgame.referee.QReferee;
-import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.IPlacementRule;
+import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.rule.placement.state.StateRule;
@@ -48,9 +48,9 @@ public class TestXGamesWithObserver {
     public GameResults getGameResults(String directory, int testNum) throws FileNotFoundException {
         List<JsonElement> elements = TestUtil.getJsonTestElements(directory, testNum);
 
-        IGameState state = ObjectToJson.jStateToQGameState(elements.get(0));
-        List<Player> players = ObjectToJson.playersFromJActorSpecA(elements.get(1));
-        state = ObjectToJson.initializeNewStateWithNewPlayerList(state, players, true);
+        IGameState state = JsonToObject.jStateToQGameState(elements.get(0));
+        List<Player> players = JsonToObject.playersFromJActorSpecA(elements.get(1));
+        state = JsonToObject.initializeNewStateWithNewPlayerList(state, players, true);
         QReferee ref = new QReferee(placementRules, scoreRules, 10000);
 
         return ref.playGame(state, players);

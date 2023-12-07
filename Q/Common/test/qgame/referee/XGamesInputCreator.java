@@ -1,16 +1,15 @@
 package qgame.referee;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
-import qgame.json.JsonConverter;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+
 import qgame.json.ObjectToJson;
 import qgame.player.CheatingAIPlayer;
 import qgame.player.DummyAIPlayer;

@@ -16,17 +16,30 @@ import qgame.state.map.Tile;
 import qgame.util.ValidationUtil;
 
 /**
- * Represents an implementation of the Game State interface that uses the 
- * rules known as "Basic Rules". The game state updates its board 
- * and other variables like player score and turn order as per request
- * from the referee's turn visitor.
+ * The QGameState is responsible for keeping track of 
+ * a state of the game.
+ * 
+ * It contains the following data:
+ * 
+ * - IMap board: Contains all of the Tiles placed on the board
+ * - Bag<Tile> refereeTiles: Contains the Tiles not owned by any player,
+ * aka the tiles 'in the bag' not yet in play. The Bag is assumed to 
+ * be shuffled.
+ * - List<PlayerInfo> playerInformation: All of the information of the 
+ * players currently in the game, in order of their turns. The order of 
+ * this list changes after each move. See PlayerInfo
+ * 
+ * The 'current' Player refers to the first PlayerInfo in this.playerInformation.
+ * In the context of the Q game, this is the information of the next player to go. 
+ * 
+ * this.playerInformation is guaranteed by the Referee to match the order of the Players 
+ * contained in the Referee
  */
 public class QGameState implements IGameState {
 
   private IMap board;
-  private final Bag<Tile> refereeTiles;
-  private final List<PlayerInfo> playerInformation; // Players should always be kept in
-  // sequential order
+  private Bag<Tile> refereeTiles;
+  private List<PlayerInfo> playerInformation;
 
   /**
    * Constructs the initial game state at the start of the game
@@ -43,21 +56,15 @@ public class QGameState implements IGameState {
   }
 
   public QGameState(IGameState state) {
-    this.board = new QMap(state.getBoard().getBoardState());
-    this.refereeTiles = new Bag<>(state.getRefereeTiles());
-    this.playerInformation = new ArrayList<>(state.getAllPlayerInformation());
+    this(new QMap(state.getBoard().getBoardState()), state.getRefereeTiles(), state.getAllPlayerInformation());
   }
 
   public QGameState() {
-    this.board = new QMap(new HashMap<>());
-    this.refereeTiles = new Bag<>();
-    this.playerInformation = new ArrayList<>();
+    this(new QMap(new HashMap<>()), new Bag<>(), new ArrayList<>());
   }
 
   public QGameState(IMap map) {
-    this.board = map;
-    this.refereeTiles = new Bag<>();
-    this.playerInformation = new ArrayList<>();
+    this(map, new Bag<>(), new ArrayList<>());
   }
 
   /**
@@ -110,12 +117,21 @@ public class QGameState implements IGameState {
     return new Bag<>(this.refereeTiles.getItems());
   }
 
+  /**
+   * Returns a list of Scores in the current order of the players
+   * @return
+   */
   private List<Integer> allScores() {
     return new ArrayList<>(this.playerInformation
       .stream()
       .map(PlayerInfo::getScore)
       .toList());
   }
+
+  /**
+   * Returns a IPlayerGameState containing all of the data
+   * that is public knowledge and the current Player's private knowledge.
+   */
   @Override
   public IPlayerGameState getCurrentPlayerState() {
     List<Integer> scores = allScores();
@@ -138,6 +154,10 @@ public class QGameState implements IGameState {
     this.playerInformation.get(0).incrementScore(score);
   }
 
+  /**
+   * Removes the current PlayerInfo from the GameState and adds 
+   * the Player's tiles to the Bag of tiles. 
+   */
   @Override
   public void removeCurrentPlayer() {
     validateGameHasPlayers();
@@ -160,7 +180,6 @@ public class QGameState implements IGameState {
   @Override
   public Collection<Tile> takeOutRefTiles(int count) throws IllegalArgumentException {
     Collection<Tile> newTiles = this.refereeTiles.removeFirstNItems(count);
-    // this.refereeTiles.removeAll(newTiles);
     return newTiles;
   }
 
@@ -168,4 +187,10 @@ public class QGameState implements IGameState {
   public void giveRefereeTiles(Bag<Tile> tiles) throws IllegalArgumentException {
     this.refereeTiles.addAll(tiles);
   }
+
+  @Override
+  public boolean isNextPlayerToGo(String name) {
+    return this.getCurrentPlayerInfo().getName().equals(name);
+  }
+
 }

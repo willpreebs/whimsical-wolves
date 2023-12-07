@@ -2,7 +2,6 @@ package qgame.server;
  
 import static qgame.util.ValidationUtil.validateArg;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -25,9 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 
-import qgame.json.JsonConverter;
 import qgame.json.JsonPrintWriter;
-import qgame.json.JsonToObject;
 import qgame.json.ObjectToJson;
 import qgame.player.Player;
 import qgame.referee.GameResults;
@@ -76,6 +73,8 @@ public class Server implements Runnable {
     private boolean quiet = false;
     private final DebugStream DEBUG_STREAM = DebugStream.ERROR;
 
+    private boolean demoMode = false;
+
     public Server(int tcpPort) throws IOException {
         validateArg((a) -> a >= 0 && a <= 65535, tcpPort, "Port must be between 0 and 65535");
         this.serverSocket = new ServerSocket(tcpPort);
@@ -95,6 +94,11 @@ public class Server implements Runnable {
         NUMBER_WAITING_PERIODS = config.getServerTries();
 
         this.refConfig = config.getRefSpec();
+    }
+
+    public void demoMode() {
+        demoMode = true;
+        log("Running in demo mode");
     }
 
     public ServerSocket getServerSocket() {
@@ -141,23 +145,35 @@ public class Server implements Runnable {
         List<Player> proxies = getProxies();
 
         if (proxies.size() < MINIMUM_CLIENTS) {
-            JsonArray a = sendEmptyGameResult(proxies);
-            System.out.println(a);
+            sendEmptyGameResult(proxies);
+            printOutResults(new GameResults());
+            closeSocketsAndShutdown();
             return;
         }
 
         IReferee ref = this.refConfig == null ?
         new QReferee() : new QReferee(this.refConfig);
         
-        GameResults r = ref.playGame(proxies);
+        if (demoMode) {
+            ref.demoMode();
+        }
+
+        GameResults r = null;
+        
+        try {
+            r = ref.playGame(proxies);
+        } catch (IllegalStateException e) {
+            log("Ref was given false information: " + e.getMessage());
+            sendEmptyGameResult(proxies);
+            r = new GameResults();
+        }
+
         printOutResults(r);
 
-        // try {
-        //     Thread.sleep(1000);
-        // } catch (InterruptedException e) {
-        //     log("Interrupted period before closing sockets");
-        // }
+        closeSocketsAndShutdown();
+    }
 
+    private void closeSocketsAndShutdown() {
         closeSocketConnections();
         log("Closed all client sockets");
         try {
@@ -166,7 +182,10 @@ public class Server implements Runnable {
             log("Error while closing server socket");
         }
         log("Closed server socket. Shutting down");
-        System.exit(0);
+
+        if (!this.refConfig.isObserve()) {
+            System.exit(0);
+        }
     }
 
     /**
@@ -286,7 +305,7 @@ public class Server implements Runnable {
      * Assumes all Players in given list are PlayerProxy
      * @param proxies
      */
-    protected JsonArray sendEmptyGameResult (List<Player> proxies) {
+    protected void sendEmptyGameResult (List<Player> proxies) {
         JsonArray emptyResult = new JsonArray();
         emptyResult.add(new JsonArray());
         emptyResult.add(new JsonArray());
@@ -300,6 +319,5 @@ public class Server implements Runnable {
                 continue;
             }
         }
-        return emptyResult;
     }
 }

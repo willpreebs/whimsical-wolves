@@ -1,12 +1,11 @@
 package qgame.harnesses;
 
+import java.io.InputStreamReader;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 
-import java.io.InputStreamReader;
-
 import qgame.action.TurnAction;
-import qgame.json.JsonConverter;
 import qgame.json.JsonToObject;
 import qgame.json.ObjectToJson;
 import qgame.player.strategy.TurnStrategy;

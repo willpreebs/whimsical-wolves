@@ -17,8 +17,6 @@ import javax.swing.JFrame;
 import com.google.gson.JsonElement;
 
 import qgame.gui.ObserverView;
-import qgame.json.JsonConverter;
-import qgame.json.JsonToObject;
 import qgame.json.ObjectToJson;
 import qgame.state.IGameState;
 import qgame.state.QGameState;
@@ -41,6 +39,8 @@ public class QGameObserver implements IGameObserver {
     ObserverView stateFrame;
     Dimension dimension;
 
+    boolean isGameOver = false;
+
     private final int REF_TILES = 6;
     private final String FILE_DIRECTORY = "../Tmp";
     private final String FILE_EXTENSION = "png";
@@ -50,10 +50,12 @@ public class QGameObserver implements IGameObserver {
         stateFrame = new ObserverView(this, new QGameState(), REF_TILES);
         stateFrame.setVisible(true);
 
-        // TODO: clear out Tmp folder
         clearAllFiles();
     }
 
+    /**
+     * Removes all Files from the directory specified by FILE_DIRECTORY.
+     */
     private void clearAllFiles() {
 
         File tmp = new File(FILE_DIRECTORY);
@@ -74,9 +76,10 @@ public class QGameObserver implements IGameObserver {
     @Override
     public void receiveState(IGameState state) {
         nonNullObj(state, "State cannot be null");
-        states.add(new QGameState(state));
-
-        saveStateAsPng(states.size() - 1);
+        if (!isGameOver) {
+            states.add(new QGameState(state));
+            saveStateAsPng(states.size() - 1);
+        }
     }
 
     /**
@@ -147,7 +150,8 @@ public class QGameObserver implements IGameObserver {
    */
     @Override
     public void gameOver() {
-        //TODO
+        isGameOver = true;
+        this.stateFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     /**

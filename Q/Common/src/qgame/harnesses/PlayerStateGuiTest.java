@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.gson.JsonStreamParser;
 
 import qgame.gui.GameStateView;
-import qgame.json.JsonConverter;
 import qgame.json.JsonToObject;
 import qgame.state.IPlayerGameState;
 import qgame.state.Placement;

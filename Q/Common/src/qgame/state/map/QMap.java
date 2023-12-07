@@ -14,7 +14,7 @@ import qgame.util.PosnUtil;
 import qgame.util.ValidationUtil;
 
 /**
- * An implementation of QGameMap. Supports checking if there is a tile at a given position,
+ * An implementation of IMap. Supports checking if there is a tile at a given position,
  * getting the current board state, determining all the positions that extend upon previously
  * placed tiles, getting a tile at a given position, and extending the map by placing a tile next
  * to a neighbor.
