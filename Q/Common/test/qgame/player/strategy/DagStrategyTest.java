@@ -14,7 +14,7 @@ import qgame.action.PassAction;
 import qgame.action.PlaceAction;
 import qgame.action.TurnAction;
 import qgame.state.map.Posn;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.state.map.QTile;
@@ -67,7 +67,7 @@ public class DagStrategyTest {
     boardMap.put(new Posn(-1, 0), new QTile(purple, square));
     boardMap.put(new Posn(-2, 0), new QTile(purple, star));
 
-    IMap board1 = new QMap(boardMap);
+    QMap board1 = new QMap(boardMap);
     List<Integer> scores = List.of(3, 2);
     List<Tile> playerTiles = List.of(
       new QTile(purple, star), new QTile(red, eightStar), new QTile(green, star),
@@ -98,7 +98,7 @@ public class DagStrategyTest {
     boardMap.put(new Posn(-1, 0), new QTile(purple, square));
     boardMap.put(new Posn(-2, 0), new QTile(purple, star));
 
-    IMap board2 = new QMap(boardMap);
+    QMap board2 = new QMap(boardMap);
     List<Integer> scores = List.of(3, 2);
     List<Tile> playerTiles = List.of(
       new QTile(purple, star), new QTile(red, eightStar), new QTile(green, star),
@@ -132,7 +132,7 @@ public class DagStrategyTest {
     boardMap.put(new Posn(-1, 0), new QTile(purple, square));
     boardMap.put(new Posn(-2, 0), new QTile(purple, star));
 
-    IMap board = new QMap(boardMap);
+    QMap board = new QMap(boardMap);
     List<Integer> scores = List.of(3, 2);
     List<Tile> playerTiles = List.of(
       new QTile(green, circle), new QTile(yellow, eightStar), new QTile(blue, diamond),
@@ -154,7 +154,7 @@ public class DagStrategyTest {
     boardMap.put(new Posn(-1, 0), new QTile(purple, square));
     boardMap.put(new Posn(-2, 0), new QTile(purple, star));
 
-    IMap board = new QMap(boardMap);
+    QMap board = new QMap(boardMap);
     List<Integer> scores = List.of(3, 2);
     List<Tile> playerTiles = List.of(
       new QTile(green, circle), new QTile(yellow, eightStar), new QTile(blue, diamond),

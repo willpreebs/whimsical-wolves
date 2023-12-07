@@ -11,7 +11,7 @@ import java.util.Set;
 
 import qgame.state.Bag;
 import qgame.state.map.Posn;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.state.Placement;
 
@@ -193,7 +193,7 @@ public class ImageCreator {
     return result;
   }
 
-  public static BufferedImage drawBoard(IMap map) {
+  public static BufferedImage drawBoard(QMap map) {
 
     //map.printMap();
     Set<Posn> posns = map.getBoardState().keySet();

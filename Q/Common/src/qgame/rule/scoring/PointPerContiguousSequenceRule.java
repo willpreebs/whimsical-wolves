@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import qgame.state.map.Posn;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.IGameState;
 import qgame.state.Placement;
 import qgame.util.PosnUtil;
@@ -29,7 +29,7 @@ public class PointPerContiguousSequenceRule extends CrawlingRule {
     POINTS_PER_CONTIGUOUS_TILE = pointsPerContiguousTile;
   }
 
-  private void updateSetsWithConnectedSequences(Placement placement, IMap map,
+  private void updateSetsWithConnectedSequences(Placement placement, QMap map,
                                           Set<Posn> horizontalTiles, Set<Posn> verticalTiles) {
     Posn posn = placement.posn();
     if (PosnUtil.hasVerticalNeighbor(posn,map)) {
@@ -44,7 +44,7 @@ public class PointPerContiguousSequenceRule extends CrawlingRule {
   }
 
   private List<Set<Posn>> findAllContiguousSequences(List<Placement> placements,
-                                                 IMap map) {
+                                                 QMap map) {
     Set<Posn> horizontal = new HashSet<>();
     Set<Posn> vertical = new HashSet<>();
     placements.forEach(
@@ -54,7 +54,7 @@ public class PointPerContiguousSequenceRule extends CrawlingRule {
 
   @Override
   public int pointsFor(List<Placement> placements, IGameState state) {
-    IMap map = state.getBoard();
+    QMap map = state.getBoard();
     List<Set<Posn>> connected = findAllContiguousSequences(placements, map);
     return connected
       .stream()

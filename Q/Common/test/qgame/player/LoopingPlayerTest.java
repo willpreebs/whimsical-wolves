@@ -19,7 +19,6 @@ import qgame.json.JsonToObject;
 import qgame.player.DummyAIPlayer.FailStep;
 import qgame.player.strategy.DagStrategy;
 import qgame.referee.GameResults;
-import qgame.referee.IReferee;
 import qgame.referee.QReferee;
 import qgame.state.IGameState;
 import qgame.util.RuleUtil;
@@ -103,7 +102,7 @@ public class LoopingPlayerTest {
 
         state = JsonToObject.initializeNewStateWithNewPlayerList(state, players);
 
-        IReferee ref = new QReferee(RuleUtil.createPlaceRules(), RuleUtil.createScoreRules(), 20000);
+        QReferee ref = new QReferee(RuleUtil.createPlaceRules(), RuleUtil.createScoreRules(), 20000);
         GameResults gr = ref.playGame(state, players);
         return gr;
     }

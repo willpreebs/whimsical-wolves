@@ -13,7 +13,7 @@ import org.junit.Test;
 import qgame.state.IGameState;
 import qgame.state.Placement;
 import qgame.state.QGameState;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Posn;
 import qgame.state.map.QMap;
 import qgame.state.map.QTile;
@@ -36,21 +36,21 @@ public class RuleTests {
   Tile.Shape star = Tile.Shape.STAR;
   Tile.Shape eight = Tile.Shape.EIGHT_STAR;
 
-  ScoringRule owned = new PlaceAllOwnedTiles(6);
-  ScoringRule perTile = new PointPerTileRule(1);
-  ScoringRule contiguousTile = new PointPerContiguousSequenceRule(1);
-  ScoringRule qRule = new QRule(6);
-  ScoringRule multi = new MultiScoringRule(perTile, contiguousTile, qRule);
+  IScoringRule owned = new PlaceAllOwnedTiles(6);
+  IScoringRule perTile = new PointPerTileRule(1);
+  IScoringRule contiguousTile = new PointPerContiguousSequenceRule(1);
+  IScoringRule qRule = new QRule(6);
+  IScoringRule multi = new MultiScoringRule(perTile, contiguousTile, qRule);
 
-  IMap allOwnedMap;
+  QMap allOwnedMap;
 
-  IMap oneQMap;
+  QMap oneQMap;
 
-  IMap twoQMap;
+  QMap twoQMap;
 
-  IMap multConsecutiveSeqMap;
+  QMap multConsecutiveSeqMap;
 
-  IMap oneTile;
+  QMap oneTile;
 
   List<Placement> placements1;
   List<Placement> placements2;

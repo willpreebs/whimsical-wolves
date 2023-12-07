@@ -6,14 +6,14 @@ import java.util.List;
 import qgame.state.IGameState;
 import qgame.state.Placement;
 
-public class MultiScoringRule implements ScoringRule {
+public class MultiScoringRule implements IScoringRule {
 
-  private final List<ScoringRule> rules;
+  private final List<IScoringRule> rules;
 
-  public MultiScoringRule(ScoringRule... rules) {
+  public MultiScoringRule(IScoringRule... rules) {
     this.rules = new ArrayList<>(List.of(rules));
   }
-  public MultiScoringRule(List<ScoringRule> rules) {
+  public MultiScoringRule(List<IScoringRule> rules) {
     this.rules = new ArrayList<>(rules);
   }
 
@@ -21,7 +21,7 @@ public class MultiScoringRule implements ScoringRule {
   public int pointsFor(List<Placement> placements, IGameState state) {
     // return rules.stream().mapToInt(rule -> rule.pointsFor(placements, state)).sum();
     int sum = 0;
-    for (ScoringRule r : rules) {
+    for (IScoringRule r : rules) {
       int add = r.pointsFor(placements, state);
       sum += add;
     }

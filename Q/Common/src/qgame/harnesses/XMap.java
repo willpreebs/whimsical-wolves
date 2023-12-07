@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import qgame.state.map.Posn;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.util.RuleUtil;
 import qgame.json.JsonToObject;
@@ -26,7 +26,7 @@ public class XMap {
 
     while (parser.hasNext()) {
       JsonElement input = parser.next();
-      IMap map = JsonToObject.qGameMapFromJMap(input);
+      QMap map = JsonToObject.qGameMapFromJMap(input);
       Tile t = JsonToObject.tileFromJTile(parser.next());
       IPlacementRule rules = RuleUtil.createPlaceRules();
       IPlayerGameState basicGame = new QPlayerGameState(new ArrayList<>(), map, 10,

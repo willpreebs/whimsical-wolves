@@ -21,7 +21,7 @@ import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.rule.placement.state.StateRule;
-import qgame.rule.scoring.ScoringRule;
+import qgame.rule.scoring.IScoringRule;
 import qgame.state.IGameState;
 import qgame.util.RuleUtil;
 
@@ -33,7 +33,7 @@ public class TestXGamesFailures {
     MoveRule mRule;
     StateRule sRule;
 
-    ScoringRule scoreRules;
+    IScoringRule scoreRules;
 
     @Before
     public void init() {

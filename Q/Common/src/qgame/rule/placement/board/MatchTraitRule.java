@@ -8,7 +8,7 @@ import java.util.function.BiPredicate;
 import qgame.rule.placement.move.EmptyMoveRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.state.Placement;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.util.PosnUtil;
@@ -28,7 +28,7 @@ public class MatchTraitRule extends BoardRule {
   }
   
   @Override
-  public boolean isLegalPlacementOnBoard(Placement move, IMap qGameBoard) {
+  public boolean isLegalPlacementOnBoard(Placement move, QMap qGameBoard) {
     Posn posn = move.posn();
     Tile tile = move.tile();
     if (qGameBoard.posnHasTile(posn)) {
@@ -46,7 +46,7 @@ public class MatchTraitRule extends BoardRule {
             && sameTraitSubset(tile, horizNeighbors);
   }
   
-  private List<Posn> getAllNeighborsWithTile(Posn posn, IMap board){
+  private List<Posn> getAllNeighborsWithTile(Posn posn, QMap board){
     return neighbors(posn)
             .stream()
             .filter(board::posnHasTile)
@@ -54,7 +54,7 @@ public class MatchTraitRule extends BoardRule {
   }
   
   private List<Tile> filterTileLocationsByPredicate
-          (List<Posn> posns, Posn posn, BiPredicate<Posn, Posn> func, IMap board){
+          (List<Posn> posns, Posn posn, BiPredicate<Posn, Posn> func, QMap board){
     return posns
             .stream()
             .filter(neighbor -> func.test(posn, neighbor))

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import qgame.state.map.Posn;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.state.IGameState;
 import qgame.state.Placement;
@@ -27,12 +27,12 @@ public class QRule extends CrawlingRule {
   }
 
   // Returns a stream of the tiles at the given positions in the qGameState
-  private Stream<Tile> tilesFrom(List<Posn> positions, IMap map) {
+  private Stream<Tile> tilesFrom(List<Posn> positions, QMap map) {
     return positions.stream().map(map::getTileAtPosn);
   }
 
   // Checks if a sequence of positions is a Q in a given PlayerGameState
-  private int qPoints(List<Posn> positions, IMap map) {
+  private int qPoints(List<Posn> positions, QMap map) {
     if (positions.size() != Tile.Color.values().length
       || positions.size() != Tile.Shape.values().length) {
       return 0;
@@ -56,7 +56,7 @@ public class QRule extends CrawlingRule {
   // Find all horizontal and vertical contiguous sequences connected to a given position.
 
   // POSSIBLE BUG HERE SHOULD EXPLORE MULTI PLACEMENT IN A LINE WITH A Q
-  private Set<Set<Posn>> findVertAndHorizontalSequences(Posn posn, IMap map) {
+  private Set<Set<Posn>> findVertAndHorizontalSequences(Posn posn, QMap map) {
     Set<Posn> verticals = new HashSet<>();
     exploreVertical(posn, map, verticals);
     verticals.add(posn);
@@ -71,7 +71,7 @@ public class QRule extends CrawlingRule {
 
   // Calculates points earned for if there were any Qs completed in the game state by the given
   // placement. Returns 0 if no Qs satisfied by a placement.
-  private void collectStreaks(Placement placement, IMap map, Set<Set<Posn>> streaks) {
+  private void collectStreaks(Placement placement, QMap map, Set<Set<Posn>> streaks) {
     Posn posn = placement.posn();
     Set<Set<Posn>> possibleStreaks = findVertAndHorizontalSequences(posn, map);
     streaks.addAll(possibleStreaks);
@@ -79,7 +79,7 @@ public class QRule extends CrawlingRule {
 
   @Override
   public int pointsFor(List<Placement> placements, IGameState state) {
-    IMap map = state.getBoard();
+    QMap map = state.getBoard();
     Set<Set<Posn>> streaks = new HashSet<>();
 
     placements

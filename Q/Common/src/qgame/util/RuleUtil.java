@@ -18,7 +18,7 @@ import qgame.rule.scoring.PlaceAllOwnedTiles;
 import qgame.rule.scoring.PointPerContiguousSequenceRule;
 import qgame.rule.scoring.PointPerTileRule;
 import qgame.rule.scoring.QRule;
-import qgame.rule.scoring.ScoringRule;
+import qgame.rule.scoring.IScoringRule;
 
 public class RuleUtil {
 
@@ -51,8 +51,8 @@ public class RuleUtil {
    * Creates a ScoringRule containing all of the scoring rules with default point
    * values
    */
-  public static ScoringRule createScoreRules() {
-    List<ScoringRule> rules = List.of(
+  public static IScoringRule createScoreRules() {
+    List<IScoringRule> rules = List.of(
       new PointPerTileRule(POINTS_PER_TILE),
       new QRule(Q_BONUS),
       new PointPerContiguousSequenceRule(POINTS_PER_CONTIGUOUS_TILE),
@@ -60,8 +60,8 @@ public class RuleUtil {
     return new MultiScoringRule(rules);
   }
 
-  public static ScoringRule createScoreRules(RefereeStateConfig sConfig) {
-    List<ScoringRule> rules = List.of(
+  public static IScoringRule createScoreRules(RefereeStateConfig sConfig) {
+    List<IScoringRule> rules = List.of(
       new PointPerTileRule(POINTS_PER_TILE),
       new QRule(sConfig.getqBonus()),
       new PointPerContiguousSequenceRule(POINTS_PER_CONTIGUOUS_TILE),
@@ -69,8 +69,8 @@ public class RuleUtil {
     return new MultiScoringRule(rules);
   }
  
-  public static ScoringRule createScoreRules(int pointsPerTile, int qBonus, int pointsPerContiguousTile, int allTilesBonus) {
-    List<ScoringRule> rules = List.of(
+  public static IScoringRule createScoreRules(int pointsPerTile, int qBonus, int pointsPerContiguousTile, int allTilesBonus) {
+    List<IScoringRule> rules = List.of(
       new PointPerTileRule(pointsPerTile),
       new QRule(qBonus),
       new PointPerContiguousSequenceRule(pointsPerContiguousTile),
@@ -84,8 +84,8 @@ public class RuleUtil {
    * Place all owned tiles rule is omitted
    * @return
    */
-  public static ScoringRule createOldScoreRules() {
-    List<ScoringRule> rules = List.of(
+  public static IScoringRule createOldScoreRules() {
+    List<IScoringRule> rules = List.of(
       new PointPerTileRule(POINTS_PER_TILE),
       new QRule(6),
       new PointPerContiguousSequenceRule(POINTS_PER_CONTIGUOUS_TILE));

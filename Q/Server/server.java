@@ -27,7 +27,6 @@ import com.google.gson.JsonStreamParser;
 import qgame.json.JsonConverter;
 import qgame.player.Player;
 import qgame.referee.GameResults;
-import qgame.referee.IReferee;
 import qgame.referee.QReferee;
 
 
@@ -102,7 +101,7 @@ public class Server implements Runnable {
             return;
         }
 
-        IReferee ref = new QReferee();
+        QReferee ref = new QReferee();
         GameResults r = ref.playGame(proxies);
         System.out.println(ObjectToJson.jResultsFromGameResults(r));
 

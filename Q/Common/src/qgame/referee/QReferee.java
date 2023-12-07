@@ -23,7 +23,7 @@ import qgame.observer.QGameObserver;
 import qgame.player.Player;
 import qgame.player.PlayerInfo;
 import qgame.rule.placement.IPlacementRule;
-import qgame.rule.scoring.ScoringRule;
+import qgame.rule.scoring.IScoringRule;
 import qgame.server.DebugStream;
 import qgame.state.Bag;
 import qgame.state.IGameState;
@@ -60,10 +60,10 @@ import qgame.util.TileUtil;
  * the game
  * 
  */
-public class QReferee implements IReferee {
+public class QReferee{
 
   private final IPlacementRule placementRules;
-  private final ScoringRule scoringRules;
+  private final IScoringRule scoringRules;
 
   // list of Players in order
   private List<Player> players;
@@ -135,7 +135,7 @@ public class QReferee implements IReferee {
     this.players = new ArrayList<>();
   }
 
-  public QReferee(IPlacementRule placementRules, ScoringRule scoringRules, int timeout) {
+  public QReferee(IPlacementRule placementRules, IScoringRule scoringRules, int timeout) {
     this(placementRules, scoringRules, timeout, List.of());
   }
 
@@ -147,7 +147,7 @@ public class QReferee implements IReferee {
    * @param timeout
    * @param observers
    */
-  public QReferee(IPlacementRule placementRules, ScoringRule scoringRules,
+  public QReferee(IPlacementRule placementRules, IScoringRule scoringRules,
       int timeout, List<IGameObserver> observers) {
     this.placementRules = placementRules;
     this.scoringRules = scoringRules;
@@ -173,7 +173,6 @@ public class QReferee implements IReferee {
    * @throws IllegalArgumentException if the number of players given does not match,
    * or the order of the players does not match the expected order.
    */
-  @Override
   public GameResults playGame(IGameState state, List<Player> players) throws IllegalArgumentException {
     if(state.getAllPlayerInformation().size() != players.size()) {
       throw new IllegalArgumentException("Number of Players must match number of PlayerInfos in the GameState");
@@ -197,7 +196,6 @@ public class QReferee implements IReferee {
    * Plays a game with a list of players. Assigns the player tiles
    * and places the first tile on the board.
    */
-  @Override
   public GameResults playGame(List<Player> players) {
 
     if (startState == null || demoMode) {
@@ -739,7 +737,6 @@ public class QReferee implements IReferee {
    * - All actions in the given list of actions are not place actions
    * 
    * @param actions
-   * @param players
    * @return
    */
   private boolean checkGameOverConditions(List<TurnAction> actions) {

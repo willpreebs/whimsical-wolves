@@ -35,7 +35,7 @@ import qgame.state.IPlayerGameState;
 import qgame.state.Placement;
 import qgame.state.QGameState;
 import qgame.state.QPlayerGameState;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Posn;
 import qgame.state.map.QMap;
 import qgame.state.map.QTile;
@@ -50,7 +50,7 @@ public class JsonToObject {
      * @param element the JMap that is a 2D Jason array
      * @return a QGameMap
      */
-    public static IMap qGameMapFromJMap(JsonElement element) {
+    public static QMap qGameMapFromJMap(JsonElement element) {
         Map<Posn, Tile> map = new HashMap<>();
         JsonElement[] arr = JsonConverterUtil.getAsElementArray(element);
         Stream.of(arr)
@@ -167,7 +167,7 @@ public class JsonToObject {
     public static IPlayerGameState playerGameStateFromJPub(JsonElement jPub)
             throws IllegalArgumentException {
         JsonObject jPubAsObj = jPub.getAsJsonObject();
-        IMap board = qGameMapFromJMap(jPubAsObj.get("map"));
+        QMap board = qGameMapFromJMap(jPubAsObj.get("map"));
         int tiles = JsonConverterUtil.getAsInt(jPubAsObj.get("tile*"));
         List<Integer> scores = scoresFromJPlayers(jPubAsObj.get("players"));
         JsonElement[] playerArr = JsonConverterUtil.getAsElementArray(jPubAsObj.get("players"));
@@ -186,7 +186,7 @@ public class JsonToObject {
 
     public static IGameState jStateToQGameState(JsonElement jState) {
         JsonObject jStateObj = jState.getAsJsonObject();
-        IMap gameMap = qGameMapFromJMap(jStateObj.get("map"));
+        QMap gameMap = qGameMapFromJMap(jStateObj.get("map"));
         Bag<Tile> tiles = new Bag<>(tilesFromJTileArray(jStateObj.get("tile*")));
         List<PlayerInfo> players = playerInfosFromJPlayers(jStateObj.get("players"));
         return new QGameState(gameMap, tiles, players);
@@ -195,7 +195,7 @@ public class JsonToObject {
     // parses an IGameState without requiring inclusion of player names
     public static IGameState jStateToOldQGameState(JsonElement jState) {
         JsonObject jStateObj = jState.getAsJsonObject();
-        IMap gameMap = qGameMapFromJMap(jStateObj.get("map"));
+        QMap gameMap = qGameMapFromJMap(jStateObj.get("map"));
         Bag<Tile> tiles = new Bag<>(tilesFromJTileArray(jStateObj.get("tile*")));
         List<PlayerInfo> players = playerInfosFromOldJPlayers(jStateObj.get("players"));
         return new QGameState(gameMap, tiles, players);

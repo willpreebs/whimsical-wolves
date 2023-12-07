@@ -9,7 +9,7 @@ import qgame.state.Placement;
  * Represents a rule for assigning points for placements in a Q game.
  * Currently, all scoring rules should have natural numbers as their outputs.
  */
-public interface ScoringRule {
+public interface IScoringRule {
   /**
    * Returns the points earned by the list of placements on the game state according to the rule.
    * @param placements The list of placements to score. This class operates assuming that each

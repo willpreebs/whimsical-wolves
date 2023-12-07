@@ -15,7 +15,7 @@ import qgame.rule.placement.move.MoveRule;
 import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
 import qgame.state.Placement;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Posn;
 import qgame.state.map.QMap;
 import qgame.state.map.Tile;
@@ -59,7 +59,7 @@ public abstract class SmallestTileStrategy implements TurnStrategy {
         return new MultiPlacementRule(boardRule, moveRule); 
     }
 
-    private boolean canPlaceTile(IMap board, Tile tile) {
+    private boolean canPlaceTile(QMap board, Tile tile) {
         // TODO: can optimize
         return !boardRule.getValidPlacements(tile, board).isEmpty();
     }
@@ -70,7 +70,7 @@ public abstract class SmallestTileStrategy implements TurnStrategy {
      * @param tiles
      * @return
      */
-    private boolean canPlaceAnyOnBoard(IMap board, Bag<Tile> tiles) {
+    private boolean canPlaceAnyOnBoard(QMap board, Bag<Tile> tiles) {
         return tiles.getItems()
         .stream()
         .anyMatch(tile -> canPlaceTile(board, tile));
@@ -99,7 +99,7 @@ public abstract class SmallestTileStrategy implements TurnStrategy {
     }
 
     /**
-     * Returns an IMap that is the given IMap with
+     * Returns an QMap that is the given QMap with
      * every placement in the given list placed on it.
      * 
      * Assumes that every Placement in move is legal when
@@ -108,8 +108,8 @@ public abstract class SmallestTileStrategy implements TurnStrategy {
      * @param move
      * @return
      */
-    private IMap getMapWithPlacements(IMap start, List<Placement> move) {
-        IMap mapWithPlacements = new QMap(start.getBoardState());
+    private QMap getMapWithPlacements(QMap start, List<Placement> move) {
+        QMap mapWithPlacements = new QMap(start.getBoardState());
         move.forEach(p -> mapWithPlacements.placeTile(p));
         return mapWithPlacements;
     }
@@ -129,7 +129,7 @@ public abstract class SmallestTileStrategy implements TurnStrategy {
      */
     private Optional<Placement> getBestTilePlacement(IPlayerGameState state, List<Placement> move) {
 
-        IMap mapWithPlacements = getMapWithPlacements(state.getBoard(), move);
+        QMap mapWithPlacements = getMapWithPlacements(state.getBoard(), move);
         
         List<Tile> tilesLeft = getTilesLeft(state, move);
         tilesLeft.sort(TileUtil::smallestTile);

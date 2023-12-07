@@ -28,7 +28,6 @@ import qgame.json.JsonPrintWriter;
 import qgame.json.ObjectToJson;
 import qgame.player.Player;
 import qgame.referee.GameResults;
-import qgame.referee.IReferee;
 import qgame.referee.QReferee;
 import qgame.referee.RefereeConfig;
 

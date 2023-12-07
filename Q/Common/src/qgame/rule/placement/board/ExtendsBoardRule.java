@@ -1,7 +1,7 @@
 package qgame.rule.placement.board;
 
 import qgame.state.map.Posn;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.Placement;
 
 import static qgame.util.PosnUtil.neighbors;
@@ -15,14 +15,14 @@ import qgame.rule.placement.move.MoveRule;
  */
 public class ExtendsBoardRule extends BoardRule {
 
-  private boolean hasNeighbor(Posn posn, IMap map) {
+  private boolean hasNeighbor(Posn posn, QMap map) {
     return neighbors(posn)
       .stream()
       .anyMatch(map::posnHasTile);
   }
 
   @Override
-  public boolean isLegalPlacementOnBoard(Placement move, IMap map) {
+  public boolean isLegalPlacementOnBoard(Placement move, QMap map) {
     Posn posn = move.posn();
     return !map.posnHasTile(posn) && hasNeighbor(posn, map);
   }

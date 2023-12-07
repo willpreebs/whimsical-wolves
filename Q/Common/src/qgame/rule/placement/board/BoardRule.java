@@ -6,7 +6,7 @@ import java.util.List;
 import qgame.rule.placement.ARule;
 import qgame.state.IPlayerGameState;
 import qgame.state.Placement;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Posn;
 import qgame.state.map.QMap;
 import qgame.state.map.Tile;
@@ -18,9 +18,9 @@ import qgame.state.map.Tile;
  */
 public abstract class BoardRule extends ARule {
 
-  public abstract boolean isLegalPlacementOnBoard(Placement placement, IMap map);
+  public abstract boolean isLegalPlacementOnBoard(Placement placement, QMap map);
 
-  public List<Placement> getValidPlacements(Tile tile, IMap map) {
+  public List<Placement> getValidPlacements(Tile tile, QMap map) {
       List<Posn> validPosns = map.validPositions();
 
       List<Placement> validPlacements = new ArrayList<>();
@@ -33,7 +33,7 @@ public abstract class BoardRule extends ARule {
 
   @Override
   public boolean isPlacementListLegal(List<Placement> placements, IPlayerGameState state) {
-    IMap board = new QMap(state.getBoard().getBoardState());
+    QMap board = new QMap(state.getBoard().getBoardState());
     for (Placement placement : placements) {
       if (!isLegalPlacementOnBoard(placement, board)) {
         return false;

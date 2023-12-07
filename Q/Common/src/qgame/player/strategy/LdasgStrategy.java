@@ -8,7 +8,7 @@ import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.state.IPlayerGameState;
 import qgame.state.Placement;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.util.PosnUtil;
@@ -28,7 +28,7 @@ public class LdasgStrategy extends SmallestTileStrategy {
         super(rule.getBoardRule(), rule.getMoveRule());
     }
 
-    private long getNumberNeighbors(IMap map, Posn p) {
+    private long getNumberNeighbors(QMap map, Posn p) {
         return PosnUtil.neighbors(p)
         .stream()
         .filter(map::posnHasTile)
@@ -36,7 +36,7 @@ public class LdasgStrategy extends SmallestTileStrategy {
     }
 
     private List<Posn> getMaxConstrainedPosns(IPlayerGameState state, List<Placement> move, List<Posn> posns) {
-        IMap map = state.getBoard();
+        QMap map = state.getBoard();
         move.forEach(p -> map.placeTile(p));
 
         List<Posn> maxList = new ArrayList<>();

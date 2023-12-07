@@ -17,11 +17,11 @@ import qgame.rule.placement.MultiPlacementRule;
 import qgame.rule.placement.board.BoardRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.rule.placement.state.StateRule;
-import qgame.rule.scoring.ScoringRule;
+import qgame.rule.scoring.IScoringRule;
 import qgame.state.IGameState;
 import qgame.state.Placement;
 import qgame.state.QGameState;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.util.RuleUtil;
 
 
@@ -33,7 +33,7 @@ public class TestXScore {
     MoveRule mRule;
     StateRule sRule;
 
-    ScoringRule scoreRules;
+    IScoringRule scoreRules;
 
     @Before
     public void init() {
@@ -48,10 +48,10 @@ public class TestXScore {
     public int getTestResults(String directory, int testNum) throws FileNotFoundException {
         List<JsonElement> elements = TestUtil.getJsonTestElements(directory, testNum);
 
-        IMap boardState = JsonToObject.qGameMapFromJMap(elements.get(0));
+        QMap boardState = JsonToObject.qGameMapFromJMap(elements.get(0));
         List<Placement> placements = JsonToObject.placementsFromJPlacements(elements.get(1));
 
-        ScoringRule rules = RuleUtil.createOldScoreRules();
+        IScoringRule rules = RuleUtil.createOldScoreRules();
         IGameState state = new QGameState(boardState);
 
         return rules.pointsFor(placements, state);

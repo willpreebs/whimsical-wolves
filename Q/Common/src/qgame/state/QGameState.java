@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import qgame.player.PlayerInfo;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.util.ValidationUtil;
@@ -21,7 +21,7 @@ import qgame.util.ValidationUtil;
  * 
  * It contains the following data:
  * 
- * - IMap board: Contains all of the Tiles placed on the board
+ * - QMap board: Contains all of the Tiles placed on the board
  * - Bag<Tile> refereeTiles: Contains the Tiles not owned by any player,
  * aka the tiles 'in the bag' not yet in play. The Bag is assumed to 
  * be shuffled.
@@ -37,7 +37,7 @@ import qgame.util.ValidationUtil;
  */
 public class QGameState implements IGameState {
 
-  private IMap board;
+  private QMap board;
   private Bag<Tile> refereeTiles;
   private List<PlayerInfo> playerInformation;
 
@@ -47,7 +47,7 @@ public class QGameState implements IGameState {
    * @param tiles the list of tiles in a game
    * @param players list of who will play in the game
    */
-  public QGameState(IMap map, Bag<Tile> tiles, List<PlayerInfo> players)
+  public QGameState(QMap map, Bag<Tile> tiles, List<PlayerInfo> players)
     throws IllegalArgumentException {
     validate(map, tiles, players);
     this.board = new QMap(map.getBoardState());
@@ -63,7 +63,7 @@ public class QGameState implements IGameState {
     this(new QMap(new HashMap<>()), new Bag<>(), new ArrayList<>());
   }
 
-  public QGameState(IMap map) {
+  public QGameState(QMap map) {
     this(map, new Bag<>(), new ArrayList<>());
   }
 
@@ -74,7 +74,7 @@ public class QGameState implements IGameState {
    * @param tiles the referee's tiles
    * @param players the list of players represented through their information
    */
-  private void validate(IMap map,  Bag<Tile> tiles,
+  private void validate(QMap map,  Bag<Tile> tiles,
                    List<PlayerInfo> players) {
     ValidationUtil.nonNullObj(map, "Map cannot be null");
     nonNull(List.of(tiles.getItems()), "Tiles");
@@ -108,7 +108,7 @@ public class QGameState implements IGameState {
   }
 
   @Override
-  public IMap getBoard() {
+  public QMap getBoard() {
     return this.board;
   }
 
@@ -135,7 +135,7 @@ public class QGameState implements IGameState {
   @Override
   public IPlayerGameState getCurrentPlayerState() {
     List<Integer> scores = allScores();
-    IMap boardState = getBoard();
+    QMap boardState = getBoard();
     int tileCount = getRefereeTiles().size();
     Bag<Tile> playerTile = getCurrentPlayerInfo().getTiles();
     String playerName = getCurrentPlayerInfo().getName();

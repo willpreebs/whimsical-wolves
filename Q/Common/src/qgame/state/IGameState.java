@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import qgame.player.PlayerInfo;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 
 /**
@@ -27,7 +27,7 @@ public interface IGameState {
    * 
    * @return QGameMapState
    */
-  IMap getBoard();
+  QMap getBoard();
 
   /**
    * Gets how many tiles the ref has left.

@@ -15,7 +15,7 @@ import qgame.rule.placement.IPlacementRule;
 import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
 import qgame.state.Placement;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.util.PosnUtil;
@@ -39,7 +39,7 @@ public class CheatStrategy implements TurnStrategy {
         return ((MultiPlacementRule) backupStrategy.getPlacementRule()).getBoardRules();
     }
 
-    private Posn getNotAdjacentPosn(IMap map) {
+    private Posn getNotAdjacentPosn(QMap map) {
         Set<Posn> posns = map.getBoardState().keySet();
         int topRow = posns.stream().map(Posn::y).reduce(Integer.MAX_VALUE, Integer::min);
         int leftCol = posns.stream().map(Posn::x).reduce(Integer.MAX_VALUE, Integer::min);

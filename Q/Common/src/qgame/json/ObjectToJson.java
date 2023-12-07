@@ -28,14 +28,14 @@ import qgame.referee.GameResults;
 import qgame.state.IGameState;
 import qgame.state.IPlayerGameState;
 import qgame.state.Placement;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.Posn;
 import qgame.state.map.Tile;
 import qgame.util.PosnUtil;
 
 public class ObjectToJson {
 
-    public static JsonElement jMapFromQGameMap(IMap map) {
+    public static JsonElement jMapFromQGameMap(QMap map) {
         SortedMap<Integer, SortedMap<Integer, Tile>> rowMap = create2DMapFromState(map.getBoardState());
         return createJMapFrom2DMap(rowMap);
     }

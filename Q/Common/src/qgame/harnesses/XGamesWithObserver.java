@@ -12,10 +12,9 @@ import qgame.observer.IGameObserver;
 import qgame.observer.QGameObserver;
 import qgame.player.Player;
 import qgame.referee.GameResults;
-import qgame.referee.IReferee;
 import qgame.referee.QReferee;
 import qgame.rule.placement.IPlacementRule;
-import qgame.rule.scoring.ScoringRule;
+import qgame.rule.scoring.IScoringRule;
 import qgame.state.IGameState;
 import qgame.util.RuleUtil;
 
@@ -24,7 +23,7 @@ public class XGamesWithObserver {
     public static void main(String[]args) {
 
         IPlacementRule rules = RuleUtil.createPlaceRules();
-        ScoringRule scoreRules = RuleUtil.createScoreRules();
+        IScoringRule scoreRules = RuleUtil.createScoreRules();
         JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(System.in));
         JsonElement jState = parser.next();
         JsonElement jActorSpecA = parser.next();
@@ -41,7 +40,7 @@ public class XGamesWithObserver {
             }
         }
         
-        IReferee ref = new QReferee(rules, scoreRules, 10000);
+        QReferee ref = new QReferee(rules, scoreRules, 10000);
         if (withObserver) {
             IGameObserver observer = new QGameObserver();
             ref = new QReferee(rules, scoreRules, 10000, List.of(observer));

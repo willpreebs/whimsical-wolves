@@ -6,7 +6,7 @@ import java.util.List;
 import qgame.rule.placement.move.EmptyMoveRule;
 import qgame.rule.placement.move.MoveRule;
 import qgame.state.Placement;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 
 public class MultiBoardRule extends BoardRule {
 
@@ -21,7 +21,7 @@ public class MultiBoardRule extends BoardRule {
     }
 
     @Override
-    public boolean isLegalPlacementOnBoard(Placement placement, IMap map) {
+    public boolean isLegalPlacementOnBoard(Placement placement, QMap map) {
         for (BoardRule r : this.rules) {
             if (!r.isLegalPlacementOnBoard(placement, map)) {
                 return false;

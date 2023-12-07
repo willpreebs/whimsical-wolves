@@ -10,7 +10,6 @@ import qgame.json.JsonToObject;
 import qgame.json.ObjectToJson;
 import qgame.player.Player;
 import qgame.referee.GameResults;
-import qgame.referee.IReferee;
 import qgame.referee.QReferee;
 import qgame.state.IGameState;
 import qgame.util.RuleUtil;
@@ -28,7 +27,7 @@ public class XBaddies {
 
         state = JsonToObject.initializeNewStateWithNewPlayerList(state, players);
 
-        IReferee ref = new QReferee(RuleUtil.createPlaceRules(), RuleUtil.createScoreRules(), 20000);
+        QReferee ref = new QReferee(RuleUtil.createPlaceRules(), RuleUtil.createScoreRules(), 20000);
         GameResults gr = ref.playGame(state, players);
         System.out.println(ObjectToJson.jResultsFromGameResults(gr));
     }

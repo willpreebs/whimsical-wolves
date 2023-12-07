@@ -8,7 +8,7 @@ import qgame.state.Placement;
 /**
  * Represents a rule that awards 1 point for each tile placed in a given list of placements.
  */
-public class PointPerTileRule implements ScoringRule {
+public class PointPerTileRule implements IScoringRule {
 
   private final int POINTS_PER_TILE;
 

@@ -9,7 +9,7 @@ Thank you for honest and helpful self eval
 
 ## Programming [130/190]
 - [-15] There are no unit tests that checks if `PlayerProxy` reads/writes correct JSON from/to mock input/output stream.
-- You are right, `RefereeProxy` does not need to implement `IReferee` interface. The question in the self-eval was trying to ask how the proxy referee acts similar to the actual referee. (invoking methods on the player).
+- You are right, `RefereeProxy` does not need to implement `QReferee` interface. The question in the self-eval was trying to ask how the proxy referee acts similar to the actual referee. (invoking methods on the player).
 - [-5] `RefereeProxy` should not ignore exceptions in `listenForMessages`.
 - [-5] The loop in RefereeProxy's `listenForMessages` method should check whether there are more JSON coming from the input stream.
 - [-15] There are no unit tests that checks if `RefereeProxy` reads/writes correct JSON from/to mock input/output stream.

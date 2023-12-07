@@ -14,12 +14,12 @@ import qgame.util.PosnUtil;
 import qgame.util.ValidationUtil;
 
 /**
- * An implementation of IMap. Supports checking if there is a tile at a given position,
+ * An implementation of QMap. Supports checking if there is a tile at a given position,
  * getting the current board state, determining all the positions that extend upon previously
  * placed tiles, getting a tile at a given position, and extending the map by placing a tile next
  * to a neighbor.
  */
-public class QMap implements IMap {
+public class QMap {
   private final Map<Posn, Tile> tileMap;
 
   /**
@@ -50,8 +50,7 @@ public class QMap implements IMap {
     return this.tileMap.containsKey(posn);
   }
   
-
-  @Override
+  
   public Map<Posn, Tile> getBoardState() {
     return new HashMap<>(this.tileMap);
   }
@@ -62,7 +61,7 @@ public class QMap implements IMap {
   }
 
 
-  @Override
+  
   public List<Posn> validPositions() {
     Set<Posn> acc = allNeighborsOfPosns();
     Predicate<Posn> posnIsEmpty = Predicate.not(this::posnHasTile);
@@ -74,7 +73,7 @@ public class QMap implements IMap {
     return tileMap.get(posn);
   }
 
-  @Override
+  
   public void placeTile(Placement placement) throws IllegalArgumentException {
     ValidationUtil.nonNullObj(placement, "Placement cannot be null");
     Tile tile = placement.tile();
@@ -85,7 +84,7 @@ public class QMap implements IMap {
     this.tileMap.put(posn, tile);
   }
 
-  @Override
+  
   public void printMap() {
 
     Set<Posn> posns = this.tileMap.keySet();
@@ -112,10 +111,10 @@ public class QMap implements IMap {
       }
   }
 
-  @Override
+  
   public boolean equals(Object o) {
-    if (o instanceof IMap) {
-      IMap other = (IMap) o;
+    if (o instanceof QMap) {
+      QMap other = (QMap) o;
       return this.tileMap.equals(other.getBoardState());
     }
     else {

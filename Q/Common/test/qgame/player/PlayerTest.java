@@ -13,7 +13,7 @@ import qgame.action.TurnAction;
 import qgame.player.strategy.DagStrategy;
 import qgame.player.strategy.LdasgStrategy;
 import qgame.state.map.Posn;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.state.map.QTile;
@@ -75,7 +75,7 @@ public class PlayerTest {
     boardMap.put(new Posn(-2, 0), new QTile(purple, square));
     boardMap.put(new Posn(-3,0), new QTile(purple, star));
 
-    IMap board1 = new QMap(boardMap);
+    QMap board1 = new QMap(boardMap);
     List<Integer> scores = List.of(3, 2);
     List<Tile> playerTiles = List.of(
       new QTile(purple, star), new QTile(red, eightStar), new QTile(green, star),

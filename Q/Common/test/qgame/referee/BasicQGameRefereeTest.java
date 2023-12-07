@@ -15,7 +15,7 @@ import qgame.player.LoopingAIPlayer;
 import qgame.player.SimpleAIPlayer;
 import qgame.state.Bag;
 import qgame.state.map.Posn;
-import qgame.state.map.IMap;
+import qgame.state.map.QMap;
 import qgame.state.map.QMap;
 import qgame.state.map.Tile;
 import qgame.util.RuleUtil;
@@ -32,7 +32,7 @@ import qgame.rule.placement.board.ExtendsBoardRule;
 import qgame.rule.placement.board.MatchTraitRule;
 import qgame.rule.placement.move.ExtendSameLineRule;
 import qgame.rule.placement.state.CorrectPlayerTilesRule;
-import qgame.rule.scoring.ScoringRule;
+import qgame.rule.scoring.IScoringRule;
 import qgame.state.QGameState;
 import qgame.state.QStateBuilder;
 import qgame.state.IGameState;
@@ -71,7 +71,7 @@ public class BasicQGameRefereeTest {
 
   IGameState stateForceFirstPass;
   IGameState allPass;
-  IReferee ref;
+  QReferee ref;
 
   IGameState onePassOneExchange1;
   IGameState onePassOneExchange2;
@@ -85,7 +85,7 @@ public class BasicQGameRefereeTest {
     placementRules = new MultiPlacementRule(new MatchTraitRule(),
       new ExtendSameLineRule(),
       new ExtendsBoardRule(), new CorrectPlayerTilesRule());
-    ScoringRule scoringRules =  RuleUtil.createOldScoreRules();
+    IScoringRule scoringRules =  RuleUtil.createOldScoreRules();
 
     player1 = new DummyAIPlayer("Tester", new DagStrategy(placementRules));
     player2 = new DummyAIPlayer("SecondTester", new LdasgStrategy(placementRules));
@@ -98,7 +98,7 @@ public class BasicQGameRefereeTest {
   private void init1() {
     Map<Posn, Tile> tileMap = new HashMap<>();
     tileMap.put(new Posn(0, 1), new QTile(red, square));
-    IMap map = new QMap(tileMap);
+    QMap map = new QMap(tileMap);
 
 
     List<PlayerInfo> info = new ArrayList<>();
@@ -111,7 +111,7 @@ public class BasicQGameRefereeTest {
   public void initAllPass(){
     Map<Posn, Tile> tileMap = new HashMap<>();
     tileMap.put(new Posn(0, 1), new QTile(red, square));
-    IMap map = new QMap(tileMap);
+    QMap map = new QMap(tileMap);
     List<PlayerInfo> info = new ArrayList<>();
     info.add(new PlayerInfo(0, List.of(new QTile(orange, star)), "Tester"));
     info.add(new PlayerInfo(0, List.of(new QTile(orange, circle)), "SecondTester"));
@@ -475,7 +475,7 @@ public class BasicQGameRefereeTest {
 
   public void initCheat() {
     placementRules = RuleUtil.createPlaceRules();
-    ScoringRule scoringRules =  RuleUtil.createScoreRules();
+    IScoringRule scoringRules =  RuleUtil.createScoreRules();
 
     player1 = new DummyAIPlayer("Tester", new DagStrategy(placementRules));
     player2 = new DummyAIPlayer("SecondTester", new LdasgStrategy(placementRules));
@@ -753,7 +753,7 @@ public class BasicQGameRefereeTest {
 
   public void initLoop(){
     placementRules = RuleUtil.createPlaceRules();
-    ScoringRule scoringRules =  RuleUtil.createScoreRules();
+    IScoringRule scoringRules =  RuleUtil.createScoreRules();
     player1 = new SimpleAIPlayer("Tester", new DagStrategy(placementRules));
     player2 = new SimpleAIPlayer("SecondTester", new LdasgStrategy(placementRules));
     ref = new QReferee(placementRules, scoringRules, 900);

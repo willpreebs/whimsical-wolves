@@ -9,7 +9,7 @@ import qgame.state.Placement;
  * Represents a scoring rule that awards bonus points if a player places all tiles that they own in a
  * game of QGame.
  */
-public class PlaceAllOwnedTiles implements ScoringRule {
+public class PlaceAllOwnedTiles implements IScoringRule {
 
   private final int ALL_TILES_BONUS;
 
