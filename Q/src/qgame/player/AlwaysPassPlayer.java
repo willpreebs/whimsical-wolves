@@ -6,11 +6,11 @@ import qgame.state.Bag;
 import qgame.state.IPlayerGameState;
 import qgame.state.map.Tile;
 
-public class QPlayer implements Player {
+public class AlwaysPassPlayer implements Player {
 
     String name;
 
-    public QPlayer(String name) {
+    public AlwaysPassPlayer(String name) {
         this.name = name;
     }
 
